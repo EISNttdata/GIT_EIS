@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns0="http://www.tibco.com/namespaces/tnt/plugins/file/v2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:ns02="www.tibco.com/plugin/Sleep">
+    <pd:name>CommonProcesses/wait for complete file.process</pd:name>
+    <pd:description>Loop and check file size until it stops growing</pd:description>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="path" type="xsd:string"/>
+                    <xsd:element name="name" type="xsd:string"/>
+                    <xsd:element name="fileSize" type="xsd:long"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>40</pd:startX>
+    <pd:startY>231</pd:startY>
+    <pd:returnBindings>
+        <root>
+            <xsl:choose>
+                <xsl:when test="$_globalVariables/ns:GlobalVariables/FileAdapter/submitterChannel !='HTRIO-FTA'">
+                    <trxType>
+                        <xsl:value-of select="tib:substring-after-last($Read-File/pfx:ReadActivityOutputNoContentClass/fileInfo/fileName, '.')"/>
+                    </trxType>
+                </xsl:when>
+                <xsl:otherwise>
+                    <trxType>
+                        <xsl:value-of select="tib:substring-after-last(tib:substring-before-last($Read-File/pfx:ReadActivityOutputNoContentClass/fileInfo/fileName,'.'), '.')"/>
+                    </trxType>
+                </xsl:otherwise>
+            </xsl:choose>
+        </root>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="trxType" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:endType>
+    <pd:endX>560</pd:endX>
+    <pd:endY>245</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1329226638283</pd:targetNamespace>
+    <pd:group name="while file not finished">
+        <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:x>118</pd:x>
+        <pd:y>17</pd:y>
+        <pd:width>492</pd:width>
+        <pd:height>163</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>repeat</pd:groupType>
+            <pd:serializable>false</pd:serializable>
+            <pd:indexSlot>i</pd:indexSlot>
+            <pd:activityOutputName/>
+            <pd:repeatCondition>$Read-File/pfx:ReadActivityOutputNoContentClass/fileInfo/size = $Get-old-file-size/root/size</pd:repeatCondition>
+            <pd:accumulateOutput>false</pd:accumulateOutput>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>Get old file size</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Sleep one second</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Get old file size</pd:from>
+            <pd:to>Read File</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Read File</pd:from>
+            <pd:to>Set new file size</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Set new file size</pd:from>
+            <pd:to>Sleep one second</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="Read File">
+            <pd:type>com.tibco.plugin.file.FileReadActivity</pd:type>
+            <pd:resourceType>ae.activities.FileReadActivity</pd:resourceType>
+            <pd:x>305</pd:x>
+            <pd:y>73</pd:y>
+            <config>
+                <encoding>text</encoding>
+                <excludeContent>true</excludeContent>
+            </config>
+            <pd:inputBindings>
+                <ns0:ReadActivityInputClass>
+                    <fileName>
+                        <xsl:value-of select="concat($Start/root/path,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator, $Start/root/name)"/>
+                    </fileName>
+                </ns0:ReadActivityInputClass>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Get old file size">
+            <pd:type>com.tibco.pe.core.GetSharedVariableActivity</pd:type>
+            <pd:resourceType>ae.activities.getSharedVariable</pd:resourceType>
+            <pd:x>203</pd:x>
+            <pd:y>73</pd:y>
+            <config>
+                <variableConfig>/SharedResource/SharedVariables/File Size.jobsharedvariable</variableConfig>
+            </config>
+            <pd:inputBindings/>
+        </pd:activity>
+        <pd:activity name="Set new file size">
+            <pd:type>com.tibco.pe.core.SetSharedVariableActivity</pd:type>
+            <pd:resourceType>ae.activities.setSharedVariable</pd:resourceType>
+            <pd:x>396</pd:x>
+            <pd:y>77</pd:y>
+            <config>
+                <variableConfig>/SharedResource/SharedVariables/File Size.jobsharedvariable</variableConfig>
+            </config>
+            <pd:inputBindings>
+                <root>
+                    <size>
+                        <xsl:value-of select="$Read-File/pfx:ReadActivityOutputNoContentClass/fileInfo/size"/>
+                    </size>
+                </root>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Sleep one second">
+            <pd:type>com.tibco.plugin.timer.SleepActivity</pd:type>
+            <pd:resourceType>ae.activities.sleep</pd:resourceType>
+            <pd:x>509</pd:x>
+            <pd:y>122</pd:y>
+            <config/>
+            <pd:inputBindings>
+                <ns02:SleepInputSchema>
+                    <IntervalInMillisec>
+                        <xsl:value-of select="$_globalVariables/ns:GlobalVariables/FileAdapter/SleepTime"/>
+                    </IntervalInMillisec>
+                </ns02:SleepInputSchema>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:activity name="SetFileSize">
+        <pd:type>com.tibco.pe.core.SetSharedVariableActivity</pd:type>
+        <pd:resourceType>ae.activities.setSharedVariable</pd:resourceType>
+        <pd:x>37</pd:x>
+        <pd:y>82</pd:y>
+        <config>
+            <variableConfig>/SharedResource/SharedVariables/File Size.jobsharedvariable</variableConfig>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <size>
+                    <xsl:value-of select="$Start/root/fileSize"/>
+                </size>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>while file not finished</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>SetFileSize</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SetFileSize</pd:from>
+        <pd:to>while file not finished</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:label>
+        <pd:name>Label</pd:name>
+        <pd:description>Make sure the file has been completely written to disk
+by checking it's file size each second
+until it stops growing</pd:description>
+        <pd:x>293</pd:x>
+        <pd:y>230</pd:y>
+        <pd:width>304</pd:width>
+        <pd:height>76</pd:height>
+        <pd:fontColor>-16777216</pd:fontColor>
+        <pd:color>-13369549</pd:color>
+        <pd:type>solid</pd:type>
+        <pd:thickness>0</pd:thickness>
+        <pd:fade>true</pd:fade>
+    </pd:label>
+</pd:ProcessDefinition>

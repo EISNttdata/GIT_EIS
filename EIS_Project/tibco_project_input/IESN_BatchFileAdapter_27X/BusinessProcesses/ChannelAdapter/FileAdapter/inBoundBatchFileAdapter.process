@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pfx16="http://www.tibco.com/TNT/pe/activityschemas/BusinessProcesses/WTS-EDI-Processing/StarterProcesses/ProcessSOAP837Tx/Group/SendResponseToSOAP837Request/input" xmlns:pfx15="http://www.tibco.com/ns/ax/bc/SOAP/2002/10/aeschema" xmlns:Util="java://com.sf.bw.xpath.Util" xmlns:pfx14="http://www.w3.org/2001/12/xquery-functions" xmlns:ns="http://www.tibco.com/pe/CheckpointSchema" xmlns:pfx13="http://www.tibco.com/tnt/utilitySchema" xmlns:pfx12="http://N2DEV017/Schemas/SOAP/v1.1/WTS-EDI/v0.8/soap-edi-headers" xmlns:pfx11="http://N2DEV016:443/Schemas/SOAP/v1.1/WTS-EDI/v0.8/soap-edi-headers" xmlns:pfx10="http://N2DEV016:443/Schemas/SOAP/v1.1/WTS-EDI/v0.7/soap-edi-headers" xmlns:pfx19="http://www.tibco.com/TNT/pe/activityschemas/BusinessProcesses/WTS-EDI-Processing/StarterProcesses/ProcessSOAP270Tx/Group/SendResponseToSOAP276Request/input" xmlns:pfx18="http://www.tibco.com/TNT/pe/activityschemas/BusinessProcesses/WTS-EDI-Processing/StarterProcesses/ProcessSOAP276Tx/Group/SendResponseToSOAP276Request/input" xmlns:pfx17="http://www.tibco.com/TNT/pe/activityschemas/BusinessProcesses/WTS-EDI-Processing/StarterProcesses/ProcessSOAP276Tx/Group/SendResponseToSOAP837Request/input" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx="http://localhost/Schemas/SOAP/v1.1/WTS-EDI/v0.8/soap-edi-headers" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:pfx44="http://hphc.org/channel_adapter_internal_message" xmlns:pfx43="http://www.tibco.com/ns/no_namespace_schema_location/SharedResource/Schemas/TransactionService.xsd" xmlns:pfx41="http://www.tibco.com/pe/EngineTypes" xmlns:pfx40="http://www.tibco.com/pe/GenerateErrorActivity/InputSchema" xmlns:pfx39="http://www.tibco.com/bw/ax/bc/p/tibco/public/class/ae/SOAP/ResponderResponse" xmlns:pfx5="http://www.tibco.com/edi-demo-outbound" xmlns:pfx31="http://www.tibco.com/TNT/pe/activityschemas/BusinessProcesses/WTS-EDI-Processing/StarterProcesses/ProcessSOAP270Tx/Group/SendRealTimeResponse/input" xmlns:pfx4="http://www.tibco.com/bw/ax/bc/ae/msgheader//Shared Resources/Connections/Business Connect/BCServerSoapConfig" xmlns:pfx32="http://N2Dev017/Schemas/SOAP/v1.2/WTS-Services/v1.0/WTSServicesSchema.xsd" xmlns:pfx3="http://www.tibco.com/TNT/pe/activityschemas/BusinessProcesses/ExceptionsHandlingDemos/MessageRepairDemo/StarterProcesses/ProcessSOAP837Tx/ReceiveRequest837v1.5/output" xmlns:pfx33="http://www.tibco.com/TNT/pe/activityschemas/BusinessProcesses/WTS-EDI-Processing/StarterProcesses/ProcessSOAP270Tx/Group/PublishPositive271s" xmlns:HPHC="java://perot.java.util.GUIDUtil" xmlns:pfx2="http://www.tibco.com/edi-demo" xmlns:pfx34="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:pfx9="file:///c:/Inetpub/wwwroot/Schemas/SOAP/v1.1/WTS-EDI/v0.7/soap-edi-headers" xmlns:pfx35="http://www.tibco.com/TNT/pe/activityschemas/BusinessProcesses/WTS-EDI-Processing/StarterProcesses/ProcessSOAP837Tx/Send-Fault/input" xmlns:pfx8="http://LOCALHOST/Schemas/SOAP/v1.1/WTS-EDI/v0.7/soap-edi-headers" xmlns:pfx36="http://www.tibco.com/TNT/pe/activityschemas/BusinessProcesses/WTS-EDI-Processing/StarterProcesses/ProcessSOAP276Tx/Send-Fault/input" xmlns:pfx7="http://www.tibco.com/TNT/pe/activityschemas/BusinessProcesses/WTS-EDI-Processing/StarterProcesses/ProcessSOAP837Tx/ReceiveRequest837v1.5/output" xmlns:pfx37="http://www.tibco.com/TNT/pe/activityschemas/BusinessProcesses/WTS-EDI-Processing/StarterProcesses/ProcessSOAP270Tx/Send-Fault/input" xmlns:pfx6="http://www.tibco.com/TNT/pe/activityschemas/BusinessProcesses/ExceptionsHandlingDemos/WTS-EDI-Processing/StarterProcesses/ProcessSOAP837Tx/ReceiveRequest837v1.5/output" xmlns:pfx38="http://www.tibco.com/bw/ax/bc/p/tibco/public/class/ae/SOAP/ResponderRequest" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pfx30="http://www.tibco.com/TNT/pe/activityschemas/BusinessProcesses/WTS-EDI-Processing/StarterProcesses/ProcessSOAP276Tx/Group/SendRealTimeResponse/input" xmlns:ns1="http://www.tibco.com/pe/DeployedVarsType" xmlns:pfx28="http://www.tibco.com/TNT/pe/activityschemas/BusinessProcesses/WTS-EDI-Processing/StarterProcesses/ProcessSOAP837Tx/Group/SendResponse/input" xmlns:pfx29="http://www.tibco.com/TNT/pe/activityschemas/BusinessProcesses/WTS-EDI-Processing/StarterProcesses/ProcessSOAP837Tx/Group/SendRealTimeResponse/input" xmlns:utils="java://org.hphc.Utilities" xmlns:ns0="www.tibco.com/plugin/Sleep" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx22="http://www.tibco.com/TNT/pe/activityschemas/BusinessProcesses/WTS-EDI-Processing/StarterProcesses/ProcessSOAP276Tx/ReceiveRequest276v1.5/output" xmlns:pfx23="http://www.tibco.com/TNT/pe/activityschemas/BusinessProcesses/WTS-EDI-Processing/StarterProcesses/ProcessSOAP270Tx/ReceiveRequestv1.5/output" xmlns:pfx20="http://www.tibco.com/TNT/pe/activityschemas/BusinessProcesses/WTS-EDI-Processing/StarterProcesses/ProcessSOAP270Tx/Group/SendResponseToSOAPRequest/input" xmlns:pfx21="http://www.tibco.com/TNT/XMLParseActivity" xmlns:pfx26="http://www.tibco.com/TNT/pe/activityschemas/BusinessProcesses/WTS-EDI-Processing/StarterProcesses/ProcessSOAP276Tx/Group/SendRendezvousRequest" xmlns:pfx27="http://www.tibco.com/TNT/pe/activityschemas/BusinessProcesses/WTS-EDI-Processing/StarterProcesses/ProcessSOAP270Tx/Group/SendRendezvousRequest" xmlns:pfx24="www.tibco.com/pe/GenerateErrorActivity/InputSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pfx25="http://www.tibco.com/TNT/pe/activityschemas/BusinessProcesses/WTS-EDI-Processing/StarterProcesses/ProcessSOAP837Tx/Group/SendRendezvousRequest">
+    <xsd:import namespace="http://localhost/Schemas/SOAP/v1.1/WTS-EDI/v0.8/soap-edi-headers" schemaLocation="/Shared Resources/Schema Definitions/Custom/Soap-EDI-Headers_v1.8.xsd"/>
+    <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/SharedResource/Schemas/TransactionService.xsd" schemaLocation="/SharedResource/Schemas/TransactionService.xsd"/>
+    <pd:name>BusinessProcesses/ChannelAdapter/FileAdapter/inBoundBatchFileAdapter.process</pd:name>
+    <pd:description/>
+    <pd:startName>Timer</pd:startName>
+    <pd:startX>0</pd:startX>
+    <pd:startY>0</pd:startY>
+    <pd:returnBindings/>
+    <pd:starter name="Timer">
+        <pd:type>com.tibco.plugin.timer.TimerEventSource</pd:type>
+        <pd:resourceType>ae.activities.timer</pd:resourceType>
+        <pd:x>46</pd:x>
+        <pd:y>171</pd:y>
+        <config>
+            <StartTime>1202438560000</StartTime>
+            <Frequency>true</Frequency>
+            <TimeInterval>1</TimeInterval>
+            <FrequencyIndex>Second</FrequencyIndex>
+        </config>
+        <pd:inputBindings/>
+    </pd:starter>
+    <pd:endName>End</pd:endName>
+    <pd:endX>1039</pd:endX>
+    <pd:endY>280</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1329222430652</pd:targetNamespace>
+    <pd:group name="Group (1)">
+        <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:x>139</pd:x>
+        <pd:y>8</pd:y>
+        <pd:width>821</pd:width>
+        <pd:height>450</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>repeat</pd:groupType>
+            <pd:serializable>false</pd:serializable>
+            <pd:indexSlot>idx</pd:indexSlot>
+            <pd:activityOutputName/>
+            <pd:repeatCondition>1&gt;2</pd:repeatCondition>
+            <pd:accumulateOutput>false</pd:accumulateOutput>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>listFiles</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Sleep</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Group</pd:from>
+            <pd:to>LogError</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>error</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Null</pd:from>
+            <pd:to>Sleep</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>LogError</pd:from>
+            <pd:to>Sleep</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Group</pd:from>
+            <pd:to>Sleep</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>listFiles</pd:from>
+            <pd:to>checkFileInPath</pd:to>
+            <pd:xpathDescription>file Found</pd:xpathDescription>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>xpath</pd:conditionType>
+            <pd:xpath>count($listFiles/root/fileNames) &gt;=0</pd:xpath>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>listFiles</pd:from>
+            <pd:to>Null</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>otherwise</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>checkFileInPath</pd:from>
+            <pd:to>Group</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="Null">
+            <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+            <pd:resourceType>ae.activities.null</pd:resourceType>
+            <pd:x>421</pd:x>
+            <pd:y>382</pd:y>
+            <config/>
+            <pd:inputBindings/>
+        </pd:activity>
+        <pd:group name="Group">
+            <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+            <pd:resourceType>ae.process.group</pd:resourceType>
+            <pd:x>288</pd:x>
+            <pd:y>96</pd:y>
+            <pd:width>549</pd:width>
+            <pd:height>234</pd:height>
+            <pd:collapsedWidth>57</pd:collapsedWidth>
+            <pd:collapsedHeight>70</pd:collapsedHeight>
+            <pd:joinToggle>inherit</pd:joinToggle>
+            <config>
+                <pd:groupType>inputLoop</pd:groupType>
+                <pd:serializable>false</pd:serializable>
+                <pd:over>$checkFileInPath/root/files</pd:over>
+                <pd:iterationElementSlot>currFilename</pd:iterationElementSlot>
+                <pd:indexSlot>fileIdx</pd:indexSlot>
+                <pd:activityOutputName/>
+                <pd:accumulateOutput>false</pd:accumulateOutput>
+            </config>
+            <pd:inputBindings/>
+            <pd:expanded>true</pd:expanded>
+            <pd:transition>
+                <pd:from>start</pd:from>
+                <pd:to>Null-1</pd:to>
+                <pd:lineType>Default</pd:lineType>
+                <pd:lineColor>-16777216</pd:lineColor>
+                <pd:conditionType>always</pd:conditionType>
+            </pd:transition>
+            <pd:transition>
+                <pd:from>Null-1</pd:from>
+                <pd:to>end</pd:to>
+                <pd:lineType>Default</pd:lineType>
+                <pd:lineColor>-16777216</pd:lineColor>
+                <pd:conditionType>otherwise</pd:conditionType>
+            </pd:transition>
+            <pd:transition>
+                <pd:from>InsertBatchFiles</pd:from>
+                <pd:to>end</pd:to>
+                <pd:lineType>Default</pd:lineType>
+                <pd:lineColor>-16777216</pd:lineColor>
+                <pd:conditionType>always</pd:conditionType>
+            </pd:transition>
+            <pd:transition>
+                <pd:from>Null-1</pd:from>
+                <pd:to>inboundFTA</pd:to>
+                <pd:xpathDescription>HTRIO-FTA</pd:xpathDescription>
+                <pd:lineType>Default</pd:lineType>
+                <pd:lineColor>-16777216</pd:lineColor>
+                <pd:conditionType>xpath</pd:conditionType>
+                <pd:xpath>$currFilename/files/Channel='HTRIO-FTA'</pd:xpath>
+            </pd:transition>
+            <pd:transition>
+                <pd:from>Null-1</pd:from>
+                <pd:to>inboundFTP</pd:to>
+                <pd:xpathDescription>FTP HTS CORE</pd:xpathDescription>
+                <pd:lineType>Default</pd:lineType>
+                <pd:lineColor>-16777216</pd:lineColor>
+                <pd:conditionType>xpath</pd:conditionType>
+                <pd:xpath>$checkFileInPath/root/files/Channel = 'HTS' or $checkFileInPath/root/files/Channel = 'CORE'  or  $checkFileInPath/root/files/Channel = 'NEHEN-FTP'</pd:xpath>
+            </pd:transition>
+            <pd:transition>
+                <pd:from>inboundFTP</pd:from>
+                <pd:to>Version</pd:to>
+                <pd:lineType>Default</pd:lineType>
+                <pd:lineColor>-16777216</pd:lineColor>
+                <pd:conditionType>always</pd:conditionType>
+            </pd:transition>
+            <pd:transition>
+                <pd:from>inboundFTA</pd:from>
+                <pd:to>Version</pd:to>
+                <pd:lineType>Default</pd:lineType>
+                <pd:lineColor>-16777216</pd:lineColor>
+                <pd:conditionType>always</pd:conditionType>
+            </pd:transition>
+            <pd:transition>
+                <pd:from>Version</pd:from>
+                <pd:to>InsertBatchFiles</pd:to>
+                <pd:lineType>Default</pd:lineType>
+                <pd:lineColor>-16777216</pd:lineColor>
+                <pd:conditionType>always</pd:conditionType>
+            </pd:transition>
+            <pd:activity name="InsertBatchFiles">
+                <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+                <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+                <pd:x>709</pd:x>
+                <pd:y>178</pd:y>
+                <config>
+                    <timeout>%%DBMS/DBMS_Timeout%%</timeout>
+                    <commit>false</commit>
+                    <emptyStrAsNil>true</emptyStrAsNil>
+                    <jdbcSharedConfig>/SharedResource/DBConnections/JDBCConnection.sharedjdbc</jdbcSharedConfig>
+                    <statement>INSERT INTO IESNLOG.EDI_BATCH_FILES (TRX_ID, In_File_Nm, Trx_Type, 
+                             Channel, Status, Last_Upd_By, 
+                             Recvd_Dt, last_modified_dt, Access_Id)
+values (? , ?,  ?, ? , ?, ?, sysdate, sysdate, ?)</statement>
+                    <Prepared_Param_DataType>
+                        <parameter>
+                            <parameterName>TrxId</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>InFileNm</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>TrxType</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>Channel</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>Status</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>LastUpdBy</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>AccessId</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                    </Prepared_Param_DataType>
+                </config>
+                <pd:inputBindings>
+                    <jdbcUpdateActivityInput>
+                        <TrxId>
+                            <xsl:value-of select="$currFilename/files/TrackingID"/>
+                        </TrxId>
+                        <InFileNm>
+                            <xsl:value-of select="if ($currFilename/files/Channel = 'HTRIO-FTA') then  utils:ReplaceAll( utils:ReplaceAll(utils:ReplaceAll($inboundFTA/root/inFilename , '/','\\'), '\\apps\\tibco_', '\\\\')  ,'.hphc.org','')&#xA;else utils:ReplaceAll(utils:ReplaceAll($inboundFTP/root/inFilename, '/','\\'), '\\apps\\tibco_', '\\\\') &#xA;{--concat($MapInOutURI/root/requestFilelocation,&quot;\&quot;,$MapInOutURI/root/requestFilename) --}"/>
+                        </InFileNm>
+                        <TrxType>
+                            <xsl:value-of select="if ($Version/root/version = $_globalVariables/ns1:GlobalVariables/X12-versions/X12_4010 )&#xA;then $currFilename/files/TrxType&#xA;else concat ( $currFilename/files/TrxType,'-5010')"/>
+                        </TrxType>
+                        <Channel>
+                            <xsl:value-of select="$currFilename/files/Channel"/>
+                        </Channel>
+                        <Status>
+                            <xsl:value-of select="$currFilename/files/Status"/>
+                        </Status>
+                        <LastUpdBy>
+                            <xsl:value-of select="$currFilename/files/LastUpdBy"/>
+                        </LastUpdBy>
+                        <AccessId>
+                            <xsl:value-of select="$inboundFTA/root/AccessId"/>
+                        </AccessId>
+                    </jdbcUpdateActivityInput>
+                </pd:inputBindings>
+            </pd:activity>
+            <pd:activity name="Null-1">
+                <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+                <pd:resourceType>ae.activities.null</pd:resourceType>
+                <pd:x>361</pd:x>
+                <pd:y>276</pd:y>
+                <config/>
+                <pd:inputBindings/>
+            </pd:activity>
+            <pd:activity name="inboundFTP">
+                <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+                <pd:resourceType>ae.process.subprocess</pd:resourceType>
+                <pd:x>388</pd:x>
+                <pd:y>176</pd:y>
+                <config>
+                    <processName>/CommonProcesses/inboundFTP.process</processName>
+                </config>
+                <pd:inputBindings>
+                    <root>
+                        <TrackingID>
+                            <xsl:value-of select="$currFilename/files/TrackingID"/>
+                        </TrackingID>
+                        <requestFilename>
+                            <xsl:value-of select="$currFilename/files/requestFilename"/>
+                        </requestFilename>
+                        <requestFilelocation>
+                            <xsl:value-of select="$currFilename/files/requestFilelocation"/>
+                        </requestFilelocation>
+                        <fullName>
+                            <xsl:value-of select="$currFilename/files/fullName"/>
+                        </fullName>
+                        <TrxType>
+                            <xsl:value-of select="$currFilename/files/TrxType"/>
+                        </TrxType>
+                        <Channel>
+                            <xsl:value-of select="$currFilename/files/Channel"/>
+                        </Channel>
+                    </root>
+                </pd:inputBindings>
+            </pd:activity>
+            <pd:activity name="inboundFTA">
+                <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+                <pd:resourceType>ae.process.subprocess</pd:resourceType>
+                <pd:x>491</pd:x>
+                <pd:y>221</pd:y>
+                <config>
+                    <processName>/CommonProcesses/inboundFTA.process</processName>
+                </config>
+                <pd:inputBindings>
+                    <root>
+                        <TrackingID>
+                            <xsl:value-of select="$currFilename/files/TrackingID"/>
+                        </TrackingID>
+                        <requestFilename>
+                            <xsl:value-of select="$currFilename/files/requestFilename"/>
+                        </requestFilename>
+                        <requestFilelocation>
+                            <xsl:value-of select="$currFilename/files/requestFilelocation"/>
+                        </requestFilelocation>
+                        <fullName>
+                            <xsl:value-of select="$currFilename/files/fullName"/>
+                        </fullName>
+                        <TrxType>
+                            <xsl:value-of select="$currFilename/files/TrxType"/>
+                        </TrxType>
+                        <Channel>
+                            <xsl:value-of select="$currFilename/files/Channel"/>
+                        </Channel>
+                    </root>
+                </pd:inputBindings>
+            </pd:activity>
+            <pd:activity name="Version">
+                <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+                <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+                <pd:x>588</pd:x>
+                <pd:y>169</pd:y>
+                <config>
+                    <element>
+                        <xsd:element name="root">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="version" type="xsd:string"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </element>
+                </config>
+                <pd:inputBindings>
+                    <root>
+                        <xsl:choose>
+                            <xsl:when test="exists($inboundFTA/root/version)">
+                                <version>
+                                    <xsl:value-of select="$inboundFTA/root/version"/>
+                                </version>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <version>
+                                    <xsl:value-of select="$inboundFTP/root/version"/>
+                                </version>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </root>
+                </pd:inputBindings>
+            </pd:activity>
+        </pd:group>
+        <pd:activity name="LogError">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>888</pd:x>
+            <pd:y>97</pd:y>
+            <config>
+                <processName>/CommonProcesses/Logger.process</processName>
+            </config>
+            <pd:inputBindings>
+                <LoggingService>
+                    <LogHeader>
+                        <ApplicationName>
+                            <xsl:value-of select="concat(&quot;EDI-&quot;,$currFilename/files/TrxType,-5010)"/>
+                        </ApplicationName>
+                        <ProcessName>
+                            <xsl:value-of select="$_processContext/pfx41:ProcessContext/ProjectName"/>
+                        </ProcessName>
+                        <From>
+                            <xsl:value-of select="$_globalVariables/ns1:GlobalVariables/FileAdapter/submitterChannel"/>
+                        </From>
+                        <TransactionID>
+                            <xsl:value-of select="$currFilename/files/TrackingID"/>
+                        </TransactionID>
+                        <BatchID>
+                            <xsl:value-of select="$currFilename/files/fullName"/>
+                        </BatchID>
+                        <LogType>
+                            <xsl:value-of select="'ERROR'"/>
+                        </LogType>
+                    </LogHeader>
+                    <SagaHeader/>
+                    <LogBody>
+                        <PayloadType>
+                            <xsl:value-of select="'BW-ERROR'"/>
+                        </PayloadType>
+                        <Payload>
+                            <xsl:value-of select="tib:render-xml($_error/pfx41:ErrorReport)"/>
+                        </Payload>
+                    </LogBody>
+                </LoggingService>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Sleep">
+            <pd:type>com.tibco.plugin.timer.SleepActivity</pd:type>
+            <pd:resourceType>ae.activities.sleep</pd:resourceType>
+            <pd:x>898</pd:x>
+            <pd:y>381</pd:y>
+            <config/>
+            <pd:inputBindings>
+                <ns0:SleepInputSchema>
+                    <IntervalInMillisec>
+                        <xsl:value-of select="$_globalVariables/ns1:GlobalVariables/FileAdapter/PollInterval"/>
+                    </IntervalInMillisec>
+                </ns0:SleepInputSchema>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="listFiles">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>220</pd:x>
+            <pd:y>381</pd:y>
+            <config>
+                <processName>/CommonProcesses/listFiles.process</processName>
+            </config>
+            <pd:inputBindings>
+                <root>
+                    <rootPath>
+                        <xsl:value-of select="$_globalVariables/ns1:GlobalVariables/FileAdapter/PollFolder"/>
+                    </rootPath>
+                    <xsl:for-each select="tib:tokenize($_globalVariables/ns1:GlobalVariables/FileAdapter/fileExtensions, &quot;,&quot;)">
+                        <fileExtensions>
+                            <xsl:value-of select="normalize-space(.)"/>
+                        </fileExtensions>
+                    </xsl:for-each>
+                </root>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="checkFileInPath">
+            <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+            <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+            <pd:x>219</pd:x>
+            <pd:y>174</pd:y>
+            <config>
+                <element>
+                    <xsd:element name="root">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="files" minOccurs="0" maxOccurs="unbounded">
+                                    <xsd:complexType>
+                                        <xsd:sequence>
+                                            <xsd:element name="TrackingID" type="xsd:string"/>
+                                            <xsd:element name="requestFilename" type="xsd:string"/>
+                                            <xsd:element name="requestFilelocation" type="xsd:string"/>
+                                            <xsd:element name="fullName" type="xsd:string"/>
+                                            <xsd:element name="TrxType" type="xsd:string"/>
+                                            <xsd:element name="Channel" type="xsd:string"/>
+                                            <xsd:element name="Status" type="xsd:string"/>
+                                            <xsd:element name="LastUpdBy" type="xsd:string"/>
+                                        </xsd:sequence>
+                                    </xsd:complexType>
+                                </xsd:element>
+                            </xsd:sequence>
+                        </xsd:complexType>
+                    </xsd:element>
+                </element>
+            </config>
+            <pd:inputBindings>
+                <root>
+                    <xsl:for-each select="$listFiles/root/fileNames">
+                        <xsl:variable name="varFilename" select="current()"/>
+                        <xsl:variable name="vToHPHC" select="tib:substring-after-last(tib:substring-before-last($varFilename, $_globalVariables/ns1:GlobalVariables/FileAdapter/FileSeperator),$_globalVariables/ns1:GlobalVariables/FileAdapter/FileSeperator)"/>
+                        <xsl:variable name="vTrxFolder" select="tib:substring-after-last(tib:substring-before-last(tib:substring-before-last($varFilename, $_globalVariables/ns1:GlobalVariables/FileAdapter/FileSeperator),$_globalVariables/ns1:GlobalVariables/FileAdapter/FileSeperator),$_globalVariables/ns1:GlobalVariables/FileAdapter/FileSeperator)"/>
+                        <xsl:if test="2 > 1">
+                            <files>
+                                <TrackingID>
+                                    <xsl:value-of select="HPHC:createGUID()"/>
+                                </TrackingID>
+                                <requestFilename>
+                                    <xsl:value-of select="'AUTHORIZED ACCESS.270'"/>
+                                </requestFilename>
+                                <requestFilelocation>
+                                    <xsl:value-of select="'C:\apps\tibco_n2vdev009\TEST\nehen\FTA-TM8\270\tohphc'"/>
+                                </requestFilelocation>
+                                <fullName>
+                                    <xsl:value-of select="$varFilename"/>
+                                </fullName>
+                                <TrxType>
+                                    <xsl:value-of select="'270'"/>
+                                </TrxType>
+                                <Channel>
+                                    <xsl:value-of select="if (contains($varFilename, $_globalVariables/ns1:GlobalVariables/FileAdapter/WTSFolderName)) then 'HTS'&#xA;else&#xA; if (contains($varFilename, $_globalVariables/ns1:GlobalVariables/FileAdapter/COREFolderName)) then 'CORE'&#xA;else&#xA; $_globalVariables/ns1:GlobalVariables/FileAdapter/submitterChannel"/>
+                                </Channel>
+                                <Status>
+                                    <xsl:value-of select="'RECEIVED'"/>
+                                </Status>
+                                <LastUpdBy>
+                                    <xsl:value-of select="$_processContext/pfx41:ProcessContext/ProjectName"/>
+                                </LastUpdBy>
+                            </files>
+                        </xsl:if>
+                    </xsl:for-each>
+                </root>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:transition>
+        <pd:from>Group (1)</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Timer</pd:from>
+        <pd:to>Group (1)</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns1="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns="http://www.tibco.com/pe/WriteToLogActivitySchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx="http://www.tibco.com/ns/no_namespace_schema_location/SharedResource/Schemas/LoggingService.xsd">
+    <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/SharedResource/Schemas/LoggingService.xsd" schemaLocation="/SharedResource/Schemas/LoggingService.xsd"/>
+    <pd:name>CommonProcesses/Logger.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType ref="pfx:LoggingService"/>
+    <pd:startX>134</pd:startX>
+    <pd:startY>117</pd:startY>
+    <pd:returnBindings>
+        <root>
+            <isError>
+                <xsl:value-of select="'true'"/>
+            </isError>
+        </root>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="isError" type="xsd:boolean"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:endType>
+    <pd:endX>644</pd:endX>
+    <pd:endY>128</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1329225962561</pd:targetNamespace>
+    <pd:activity name="Publish Rendezvous Message">
+        <pd:type>com.tibco.plugin.tibrv.RVPubActivity</pd:type>
+        <pd:resourceType>ae.rvpalette.RVPubActivity</pd:resourceType>
+        <pd:x>383</pd:x>
+        <pd:y>81</pd:y>
+        <config>
+            <wantsXMLCompliantFieldNames>false</wantsXMLCompliantFieldNames>
+            <sharedChannel>/SharedResource/RVConnections/rvTransport.rvtransport</sharedChannel>
+            <xmlEncoding>true</xmlEncoding>
+            <xsdString ref="pfx:LoggingService"/>
+        </config>
+        <pd:inputBindings>
+            <ActivityInput>
+                <subject>
+                    <xsl:value-of select="$_globalVariables/ns1:GlobalVariables/RV/LoggingService"/>
+                </subject>
+                <body>
+                    <xsl:copy-of select="$Start/LoggingService/ancestor-or-self::*/namespace::node()"/>
+                    <xsl:copy-of select="$Start/LoggingService/@*"/>
+                    <xsl:copy-of select="$Start/LoggingService/node()"/>
+                </body>
+            </ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Null">
+        <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+        <pd:resourceType>ae.activities.null</pd:resourceType>
+        <pd:x>339</pd:x>
+        <pd:y>197</pd:y>
+        <config/>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Publish Rendezvous Message</pd:to>
+        <pd:xpathDescription>Error or Debug</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$_globalVariables/ns1:GlobalVariables/Debug="true" or $Start/LoggingService/LogHeader/LogType="ERROR"</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Publish Rendezvous Message</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Null</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Null</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

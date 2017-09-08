@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:ns2="http://www.tibco.com/pe/GenerateErrorActivity/InputSchema" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns1="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions">
+    <pd:name>Test/CopyFileToXE.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType/>
+    <pd:startX>38</pd:startX>
+    <pd:startY>157</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>745</pd:endX>
+    <pd:endY>156</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables>
+        <Archive>
+            <xsd:element name="Success" type="xsd:boolean"/>
+        </Archive>
+    </pd:processVariables>
+    <pd:targetNamespace>http://xmlns.example.com/1329221956070</pd:targetNamespace>
+    <pd:activity name="Copy File">
+        <pd:type>com.tibco.plugin.file.FileCopyActivity</pd:type>
+        <pd:resourceType>ae.activities.FileCopyActivity</pd:resourceType>
+        <pd:x>337</pd:x>
+        <pd:y>160</pd:y>
+        <config>
+            <overwrite>true</overwrite>
+        </config>
+        <pd:inputBindings>
+            <ns1:CopyActivityConfig>
+                <fromFileName>
+                    <xsl:value-of select="'C:\Documents and Settings\mpatel\My Documents\bATCH fILES'"/>
+                </fromFileName>
+                <toFileName>
+                    <xsl:value-of select="'C:\Documents and Settings\mpatel\My Documents\Test'"/>
+                </toFileName>
+            </ns1:CopyActivityConfig>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Null">
+        <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+        <pd:resourceType>ae.activities.null</pd:resourceType>
+        <pd:x>521</pd:x>
+        <pd:y>161</pd:y>
+        <config/>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Null</pd:from>
+        <pd:to>End</pd:to>
+        <pd:xpathDescription/>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Copy File</pd:from>
+        <pd:to>Null</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Copy File</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

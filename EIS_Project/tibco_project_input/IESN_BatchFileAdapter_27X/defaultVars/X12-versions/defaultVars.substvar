@@ -1,0 +1,45 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
+	<globalVariables>
+		<globalVariable>
+			<name>X12_270</name>
+			<value>X12_270_Request_005010X279A1</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1400793462067</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>X12_276</name>
+			<value>X12_276_Request_005010X212</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1400793462257</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>X12_4010</name>
+			<value>4010</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1329395545283</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>X12_5010</name>
+			<value>5010</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1329395545283</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>noc</name>
+			<value>300</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1329395545283</modTime>
+		</globalVariable>
+	</globalVariables>
+</repository>

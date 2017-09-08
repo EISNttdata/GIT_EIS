@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Repository:repository xmlns:Repository="http://www.tibco.com/xmlns/repo/types/2002">
+    <enterpriseArchive>
+        <sharedArchive name="Shared Archive">
+            <resourceType>shared.archive.resource</resourceType>
+            <authorProperty>VMandula</authorProperty>
+        </sharedArchive>
+        <processArchive name="IESN_BatchFileAdapter">
+            <resourceType>process.archive.resource</resourceType>
+            <authorProperty>pswaroop</authorProperty>
+            <processProperty>/BusinessProcesses/Initialize/onFileAdapterStartup.process,/BusinessProcesses/ChannelAdapter/FileAdapter/inBoundBatchFileAdapter.process,/BusinessProcesses/ChannelAdapter/FileAdapter/outBoundBatchFIleAdapter.process,/BusinessProcesses/ChannelAdapter/FileAdapter/inBoundBatchFileAdapter_CAQH4.process</processProperty>
+        </processArchive>
+        <versionProperty>32</versionProperty>
+        <authorProperty>btadimet</authorProperty>
+        <addServiceSettableGvars>true</addServiceSettableGvars>
+        <name>IESN_BatchFileAdapter_27X</name>
+        <designer>
+            <lockedProperties/>
+            <fixedChildren/>
+            <resourceDescriptions/>
+        </designer>
+        <fileLocationProperty>C:\temp\IESN_BatchFileAdapter_27X.ear</fileLocationProperty>
+        <description>1] TM.8 Update
+2] FTP Update
+3] FTA-Update</description>
+    </enterpriseArchive>
+</Repository:repository>

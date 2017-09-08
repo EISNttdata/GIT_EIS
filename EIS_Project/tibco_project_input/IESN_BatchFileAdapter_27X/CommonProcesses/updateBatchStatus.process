@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns1="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns="http://www.tibco.com/pe/EngineTypes" xmlns:utils="java://org.hphc.Utilities" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <pd:name>CommonProcesses/updateBatchStatus.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="TrxID" type="xsd:string"/>
+                    <xsd:element name="outFilename" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="Ack997URI" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="AckTA1URI" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="Ack999URI" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="Txn_Type" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>59</pd:startX>
+    <pd:startY>77</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>624</pd:endX>
+    <pd:endY>77</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1329226580419</pd:targetNamespace>
+    <pd:activity name="Map OutFileName">
+        <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+        <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+        <pd:x>331</pd:x>
+        <pd:y>83</pd:y>
+        <config>
+            <element>
+                <xsd:element name="root">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="OutFileName" type="xsd:string" minOccurs="0"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </element>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <xsl:choose>
+                    <xsl:when test="$Start/root/Txn_Type = '270-5010'  and string-length($Start/root/outFilename) > 0">
+                        <OutFileName>
+                            <xsl:value-of select="concat($_globalVariables/ns1:GlobalVariables/XEServer/archive_folder_5010, $Start/root/TrxID,'.271')"/>
+                        </OutFileName>
+                    </xsl:when>
+                    <xsl:when test="$Start/root/Txn_Type = '270' and string-length($Start/root/outFilename) > 0">
+                        <OutFileName>
+                            <xsl:value-of select="concat($_globalVariables/ns1:GlobalVariables/XEServer/archive_folder_4010, $Start/root/TrxID,'.271')"/>
+                        </OutFileName>
+                    </xsl:when>
+                    <xsl:when test="$Start/root/Txn_Type = '276-5010' and string-length($Start/root/outFilename) > 0">
+                        <OutFileName>
+                            <xsl:value-of select="concat($_globalVariables/ns1:GlobalVariables/XEServer/archive_folder_5010, $Start/root/TrxID,'.277')"/>
+                        </OutFileName>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:if test="string-length($Start/root/outFilename) > 0">
+                            <OutFileName>
+                                <xsl:value-of select="concat($_globalVariables/ns1:GlobalVariables/XEServer/archive_folder_4010, $Start/root/TrxID,'.277')"/>
+                            </OutFileName>
+                        </xsl:if>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Map_999_997">
+        <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+        <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+        <pd:x>172</pd:x>
+        <pd:y>77</pd:y>
+        <config>
+            <element>
+                <xsd:element name="root">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="ACK999_ACK997" type="xsd:string"/>
+                            <xsd:element name="TA1_loc" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="EDITxn" type="xsd:string" minOccurs="0"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </element>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <xsl:choose>
+                    <xsl:when test="string-length($Start/root/Ack997URI) > 0">
+                        <ACK999_ACK997>
+                            <xsl:value-of select="utils:ReplaceAll(utils:ReplaceAll($Start/root/Ack997URI, '/','\\'), '\\apps\\tibco_', '\\\\')"/>
+                        </ACK999_ACK997>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:choose>
+                            <xsl:when test="string-length($Start/root/Ack999URI) > 0">
+                                <ACK999_ACK997>
+                                    <xsl:value-of select="utils:ReplaceAll(utils:ReplaceAll($Start/root/Ack999URI, '/','\\'), '\\apps\\tibco_', '\\\\')"/>
+                                </ACK999_ACK997>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <ACK999_ACK997>
+                                    <xsl:value-of select="''"/>
+                                </ACK999_ACK997>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:otherwise>
+                </xsl:choose>
+                <xsl:if test="string-length($Start/root/AckTA1URI) > 0">
+                    <TA1_loc>
+                        <xsl:value-of select="utils:ReplaceAll(utils:ReplaceAll($Start/root/AckTA1URI, '/','\\'), '\\apps\\tibco_', '\\\\')"/>
+                    </TA1_loc>
+                </xsl:if>
+                <EDITxn>
+                    <xsl:value-of select="substring($Start/root/Txn_Type, 1, 3)"/>
+                </EDITxn>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="UpdateBatchStatus">
+        <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+        <pd:x>493</pd:x>
+        <pd:y>77</pd:y>
+        <config>
+            <timeout>%%DBMS/DBMS_Timeout%%</timeout>
+            <commit>false</commit>
+            <emptyStrAsNil>true</emptyStrAsNil>
+            <statement>UPDATE IESNLOG.EDI_BATCH_FILES
+SET OUT_FILE_NM = NVL(?,OUT_FILE_NM),
+ACK_997_URI = NVL(?,ACK_997_URI),
+ACK_TA1_URI = NVL(?,ACK_TA1_URI),
+LAST_UPD_BY = ?,
+LAST_MODIFIED_DT = sysdate
+WHERE TRX_ID = ?
+</statement>
+            <jdbcSharedConfig>/SharedResource/DBConnections/JDBCConnection.sharedjdbc</jdbcSharedConfig>
+            <Prepared_Param_DataType>
+                <parameter>
+                    <parameterName>outFilename</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>ack997URI</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>ackTA1URI</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>LastUpdateBy</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>TrxID</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+            </Prepared_Param_DataType>
+        </config>
+        <pd:inputBindings>
+            <jdbcUpdateActivityInput>
+                <outFilename>
+                    <xsl:value-of select="$Map-OutFileName/root/OutFileName"/>
+                </outFilename>
+                <ack997URI>
+                    <xsl:value-of select="$Map_999_997/root/ACK999_ACK997"/>
+                </ack997URI>
+                <ackTA1URI>
+                    <xsl:value-of select="$Map_999_997/root/TA1_loc"/>
+                </ackTA1URI>
+                <LastUpdateBy>
+                    <xsl:value-of select="$_processContext/ns:ProcessContext/ProjectName"/>
+                </LastUpdateBy>
+                <TrxID>
+                    <xsl:value-of select="$Start/root/TrxID"/>
+                </TrxID>
+            </jdbcUpdateActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Map_999_997</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>UpdateBatchStatus</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Map_999_997</pd:from>
+        <pd:to>Map OutFileName</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Map OutFileName</pd:from>
+        <pd:to>UpdateBatchStatus</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

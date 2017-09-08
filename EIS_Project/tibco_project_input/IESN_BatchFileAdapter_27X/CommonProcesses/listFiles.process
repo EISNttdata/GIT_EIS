@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns1="http://www.tibco.com/pe/EngineTypes" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:utils="java://org.hphc.Utilities" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions">
+    <pd:name>CommonProcesses/listFiles.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="rootPath" type="xsd:string"/>
+                    <xsd:element name="fileExtensions" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>148</pd:startX>
+    <pd:startY>140</pd:startY>
+    <pd:returnBindings>
+        <root>
+            <xsl:for-each select="$InFolders/javaCodeActivityOutput/fileNames">
+                <fileNames>
+                    <xsl:value-of select="."/>
+                </fileNames>
+            </xsl:for-each>
+        </root>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="fileNames" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:endType>
+    <pd:endX>580</pd:endX>
+    <pd:endY>50</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1329221793777</pd:targetNamespace>
+    <pd:activity name="InFolders">
+        <pd:type>com.tibco.plugin.java.JavaActivity</pd:type>
+        <pd:resourceType>ae.javapalette.javaActivity</pd:resourceType>
+        <pd:x>296</pd:x>
+        <pd:y>160</pd:y>
+        <config>
+            <fileName>listFilesInFolders</fileName>
+            <packageName>CommonProcesses.listFiles</packageName>
+            <fullsource>package CommonProcesses.listFiles;
+import java.util.*;
+import java.io.*;
+import java.lang.*;
+public class listFilesInFolders{
+/****** START SET/GET METHOD, DO NOT MODIFY *****/
+	protected String rootPath = "";
+	protected String[] fileExtensions = null;
+	protected String[] fileNames = null;
+	public String getrootPath() {
+		return rootPath;
+	}
+	public void setrootPath(String val) {
+		rootPath = val;
+	}
+	public String[] getfileExtensions() {
+		return fileExtensions;
+	}
+	public void setfileExtensions(String[] val) {
+		fileExtensions = val;
+	}
+	public String[] getfileNames() {
+		return fileNames;
+	}
+	public void setfileNames(String[] val) {
+		fileNames = val;
+	}
+/****** END SET/GET METHOD, DO NOT MODIFY *****/
+	public listFilesInFolders() {
+	}
+	public void invoke() throws Exception {
+/* Available Variables: DO NOT MODIFY
+	In  : String rootPath
+	In  : String[] fileExtensions
+	Out : String[] fileNames
+* Available Variables: DO NOT MODIFY *****/
+	Vector v = new Vector();
+        int counter = 0;
+   	File root = new File(rootPath);
+       	listFilesRecursive(v, root,fileExtensions);
+       	Enumeration e = v.elements();
+        String[] fileNames = new String[v.size()];
+	while(e.hasMoreElements())
+      	{
+	  File fn;
+	  fn = (File)e.nextElement();
+	 // System.out.println(fn.getPath());
+         fileNames[counter++] = fn.getPath();
+       }
+      setfileNames(fileNames);	               
+}
+
+
+	   public static void listFilesRecursive(Vector list, File rootPath, String[] fileExtensions) {
+		   if (rootPath.isFile()) {
+		    list.addElement(rootPath);
+		    return;
+		   }
+		   File[] files = rootPath.listFiles();
+		   for (int i=0; i &lt; files.length; i++) {
+		    if ( files[i].isFile()){
+                         for(int f = 0; f &lt; fileExtensions.length; f++) {
+                           if ( files[i].getName().endsWith(fileExtensions[f]) ) {
+		               list.addElement(files[i]);
+				//return;
+                            }
+                          }
+		    }
+		    if ( files[i].isDirectory()) {
+		/*Ignore archive and fromhphc folders */	
+		    	if(!(files[i].getAbsolutePath().endsWith("arch".toLowerCase()) ||  
+		    			files[i].getAbsolutePath().endsWith("fromhphc".toLowerCase()) ||
+		    			files[i].getAbsolutePath().endsWith("archive".toLowerCase()) 
+		    			)){		    	
+		    	
+				     listFilesRecursive(list,files[i], fileExtensions);
+		    	}
+		    }
+		   }
+	   }
+
+}
+</fullsource>
+            <outputData>
+                <row>
+                    <fieldName>fileNames</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>repeating</fieldRequired>
+                </row>
+            </outputData>
+            <inputData>
+                <row>
+                    <fieldName>rootPath</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>required</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>fileExtensions</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>repeating</fieldRequired>
+                </row>
+            </inputData>
+            <byteCode>
+                <class>
+                    <name>listFilesInFolders</name>
+                    <byteCode>yv66vgAAAC4AbQkAHQA5CQAdADoJAB0AOwoAHgA8CAA9BwA+CgAGADwHAD8KAAgAQAoAHQBBCgAGAEIKAAYAQwcARAsARQBGCwBFAEcKAAgASAoAHQBJCgAIAEoKAAYASwoACABMCgAIAE0KAA0ATgoACABPCgAIAFAIAFEKAA0AUggAUwgAVAcAVQcAVgEACHJvb3RQYXRoAQASTGphdmEvbGFuZy9TdHJpbmc7AQAOZmlsZUV4dGVuc2lvbnMBABNbTGphdmEvbGFuZy9TdHJpbmc7AQAJZmlsZU5hbWVzAQALZ2V0cm9vdFBhdGgBABQoKUxqYXZhL2xhbmcvU3RyaW5nOwEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAAtzZXRyb290UGF0aAEAFShMamF2YS9sYW5nL1N0cmluZzspVgEAEWdldGZpbGVFeHRlbnNpb25zAQAVKClbTGphdmEvbGFuZy9TdHJpbmc7AQARc2V0ZmlsZUV4dGVuc2lvbnMBABYoW0xqYXZhL2xhbmcvU3RyaW5nOylWAQAMZ2V0ZmlsZU5hbWVzAQAMc2V0ZmlsZU5hbWVzAQAGPGluaXQ+AQADKClWAQAGaW52b2tlAQAKRXhjZXB0aW9ucwcAVwEAEmxpc3RGaWxlc1JlY3Vyc2l2ZQEANihMamF2YS91dGlsL1ZlY3RvcjtMamF2YS9pby9GaWxlO1tMamF2YS9sYW5nL1N0cmluZzspVgEAClNvdXJjZUZpbGUBABdsaXN0RmlsZXNJbkZvbGRlcnMuamF2YQwAHwAgDAAhACIMACMAIgwAMAAxAQAAAQAQamF2YS91dGlsL1ZlY3RvcgEADGphdmEvaW8vRmlsZQwAMAApDAA1ADYMAFgAWQwAWgBbAQAQamF2YS9sYW5nL1N0cmluZwcAXAwAXQBeDABfAGAMAGEAJQwALwAtDABiAF4MAGMAZAwAZQBmDABnACUMAGgAaQwAagBeDABrACUBAARhcmNoDABsACUBAAhmcm9taHBoYwEAB2FyY2hpdmUBACxDb21tb25Qcm9jZXNzZXMvbGlzdEZpbGVzL2xpc3RGaWxlc0luRm9sZGVycwEAEGphdmEvbGFuZy9PYmplY3QBABNqYXZhL2xhbmcvRXhjZXB0aW9uAQAIZWxlbWVudHMBABkoKUxqYXZhL3V0aWwvRW51bWVyYXRpb247AQAEc2l6ZQEAAygpSQEAFWphdmEvdXRpbC9FbnVtZXJhdGlvbgEAD2hhc01vcmVFbGVtZW50cwEAAygpWgEAC25leHRFbGVtZW50AQAUKClMamF2YS9sYW5nL09iamVjdDsBAAdnZXRQYXRoAQAGaXNGaWxlAQAKYWRkRWxlbWVudAEAFShMamF2YS9sYW5nL09iamVjdDspVgEACWxpc3RGaWxlcwEAESgpW0xqYXZhL2lvL0ZpbGU7AQAHZ2V0TmFtZQEACGVuZHNXaXRoAQAVKExqYXZhL2xhbmcvU3RyaW5nOylaAQALaXNEaXJlY3RvcnkBAA9nZXRBYnNvbHV0ZVBhdGgBAAt0b0xvd2VyQ2FzZQAhAB0AHgAAAAMABAAfACAAAAAEACEAIgAAAAQAIwAiAAAACQABACQAJQABACYAAAAdAAEAAQAAAAUqtAABsAAAAAEAJwAAAAYAAQAAAAsAAQAoACkAAQAmAAAAIgACAAIAAAAGKiu1AAGxAAAAAQAnAAAACgACAAAADgAFAA8AAQAqACsAAQAmAAAAHQABAAEAAAAFKrQAArAAAAABACcAAAAGAAEAAAARAAEALAAtAAEAJgAAACIAAgACAAAABiortQACsQAAAAEAJwAAAAoAAgAAABQABQAVAAEALgArAAEAJgAAAB0AAQABAAAABSq0AAOwAAAAAQAnAAAABgABAAAAFwABAC8ALQABACYAAAAiAAIAAgAAAAYqK7UAA7EAAAABACcAAAAKAAIAAAAaAAUAGwABADAAMQABACYAAAA9AAIAAQAAABUqtwAEKhIFtQABKgG1AAIqAbUAA7EAAAABACcAAAAWAAUAAAAdAAQABwAKAAgADwAJABQAHgABADIAMQACACYAAACaAAMABwAAAFq7AAZZtwAHTAM9uwAIWSq0AAG3AAlOKy0qtAACuAAKK7YACzoEK7YADL0ADToFGQS5AA4BAJkAHhkEuQAPAQDAAAg6BhkFHIQCARkGtgAQU6f/3ioZBbYAEbEAAAABACcAAAAuAAsAAAAlAAgAJgAKACcAFgAoAB8AKQAlACoALgArADgALgBEADAAUwAyAFkAMwAzAAAABAABADQACQA1ADYAAQAmAAAA7wADAAYAAACfK7YAEpkACSortgATsSu2ABROAzYEFQQtvqIAhS0VBDK2ABKZACwDNgUVBSy+ogAiLRUEMrYAFSwVBTK2ABaZAAsqLRUEMrYAE4QFAaf/3S0VBDK2ABeZAEItFQQytgAYEhm2ABq2ABaaADAtFQQytgAYEhu2ABq2ABaaAB4tFQQytgAYEhy2ABq2ABaaAAwqLRUEMiy4AAqEBAGn/3qxAAAAAQAnAAAAPgAPAAAANwAHADgADAA5AA0AOwASADwAHAA9ACYAPgAwAD8AQQBAAEkAPgBPAEUAWQBHAI8ATACYADwAngBQAAEANwAAAAIAOA==</byteCode>
+                </class>
+            </byteCode>
+        </config>
+        <pd:inputBindings>
+            <javaCodeActivityInput>
+                <rootPath>
+                    <xsl:value-of select="utils:ReplaceAll($Start/root/rootPath, &quot;\\&quot;, &quot;/&quot;)"/>
+                </rootPath>
+                <xsl:for-each select="$Start/root/fileExtensions">
+                    <fileExtensions>
+                        <xsl:value-of select="normalize-space(.)"/>
+                    </fileExtensions>
+                </xsl:for-each>
+            </javaCodeActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Null">
+        <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+        <pd:resourceType>ae.activities.null</pd:resourceType>
+        <pd:x>376</pd:x>
+        <pd:y>95</pd:y>
+        <config/>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="LogError">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>467</pd:x>
+        <pd:y>171</pd:y>
+        <config>
+            <processName>/CommonProcesses/Logger.process</processName>
+        </config>
+        <pd:inputBindings>
+            <LoggingService>
+                <LogHeader>
+                    <ApplicationName>
+                        <xsl:value-of select="&quot;EDI-BatchFileAdapter&quot;"/>
+                    </ApplicationName>
+                    <ProcessName>
+                        <xsl:value-of select="$_processContext/ns1:ProcessContext/ProjectName"/>
+                    </ProcessName>
+                    <From>
+                        <xsl:value-of select="$_globalVariables/ns:GlobalVariables/FileAdapter/submitterChannel"/>
+                    </From>
+                    <LogType>
+                        <xsl:value-of select="'ERROR'"/>
+                    </LogType>
+                </LogHeader>
+                <SagaHeader/>
+                <LogBody>
+                    <PayloadType>
+                        <xsl:value-of select="'BW-ERROR'"/>
+                    </PayloadType>
+                    <Payload>
+                        <xsl:value-of select="tib:render-xml($_error/ns1:ErrorReport)"/>
+                    </Payload>
+                </LogBody>
+            </LoggingService>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>InFolders</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>InFolders</pd:from>
+        <pd:to>Null</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Null</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>InFolders</pd:from>
+        <pd:to>LogError</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-65536</pd:lineColor>
+        <pd:conditionType>error</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogError</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-65536</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:label>
+        <pd:name>Label</pd:name>
+        <pd:description>Java Code lists matching files from folders and subfolders recursively based on the rootPath and fileExtensions</pd:description>
+        <pd:x>156</pd:x>
+        <pd:y>40</pd:y>
+        <pd:width>288</pd:width>
+        <pd:height>60</pd:height>
+        <pd:fontColor>-16776961</pd:fontColor>
+        <pd:color>-1</pd:color>
+        <pd:type>solid</pd:type>
+        <pd:thickness>0</pd:thickness>
+        <pd:fade>true</pd:fade>
+    </pd:label>
+</pd:ProcessDefinition>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:File="java://FileUtils" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions">
+    <pd:name>CommonProcesses/VersionFinder.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="requestFilename" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>100</pd:startX>
+    <pd:startY>79</pd:startY>
+    <pd:returnBindings>
+        <root>
+            <version>
+                <xsl:value-of select="$X12-version/root/version"/>
+            </version>
+        </root>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="version" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:endType>
+    <pd:endX>504</pd:endX>
+    <pd:endY>79</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1329222820843</pd:targetNamespace>
+    <pd:activity name="Readfilecontent">
+        <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+        <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+        <pd:x>225</pd:x>
+        <pd:y>79</pd:y>
+        <config>
+            <element>
+                <xsd:element name="root">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="filecontent" type="xsd:string"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </element>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <filecontent>
+                    <xsl:value-of select="tib:trim(File:read($Start/root/requestFilename, $_globalVariables/ns:GlobalVariables/X12-versions/noc))"/>
+                </filecontent>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="X12-version">
+        <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+        <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+        <pd:x>377</pd:x>
+        <pd:y>79</pd:y>
+        <config>
+            <element>
+                <xsd:element name="root">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="version" type="xsd:string"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </element>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <version>
+                    <xsl:value-of select="if  (contains($Readfilecontent/root/filecontent,concat( substring($Readfilecontent/root/filecontent,4,1),$_globalVariables/ns:GlobalVariables/X12_TrxnID/X12_270_4010)) )&#xA;then&#xA;$_globalVariables/ns:GlobalVariables/X12-versions/X12_4010&#xA;else if  (contains($Readfilecontent/root/filecontent,concat( substring($Readfilecontent/root/filecontent,4,1),$_globalVariables/ns:GlobalVariables/X12_TrxnID/X12_270_5010)) )&#xA;then&#xA;$_globalVariables/ns:GlobalVariables/X12-versions/X12_5010&#xA;else if (contains($Readfilecontent/root/filecontent,concat( substring($Readfilecontent/root/filecontent,4,1),$_globalVariables/ns:GlobalVariables/X12_TrxnID/X12_276_4010)) )&#xA;then&#xA;$_globalVariables/ns:GlobalVariables/X12-versions/X12_4010&#xA;else  $_globalVariables/ns:GlobalVariables/X12-versions/X12_5010"/>
+                </version>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Readfilecontent</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Readfilecontent</pd:from>
+        <pd:to>X12-version</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>X12-version</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

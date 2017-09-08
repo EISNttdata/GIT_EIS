@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title></title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="css/content.css">
+  <link rel="stylesheet" href="css/simple-sidebar.css">
+  <style>
+ html, body{
+	height:100%;
+	width:100%;
+  }
+  </style>
+
+<script>
+		$(document).ready(function() {
+			$("button").click(function(){
+			window.open("./progress.html","_self");
+			})
+
+		});
+
+		</script>
+</head>
+
+<body>
+<div class="container-fluid" style="background:rgb(0,66,126);height:20%">
+<div class="row">
+
+<div class="col-lg-2 col-md-2 col-sm-2">
+<img src="img/Dell_Logo.png" class="img-responsive" style="margin-top:5%">
+</div>
+<div class="col-lg-10 col-md-10 col-sm-10"  style="text-align:center;color:white;font-size:2.7em;padding-top:2%">
+Enterprise Integration Simplification Suite
+</div>
+</div>
+</div>
+<div  class="container-fluid" style="height:80%">
+
+<div  class="row"  style="height:100%">
+
+  <div class=" col-lg-2 col-md-3 col-sm-6" id="sidebar" >
+            <ul class="sidebar-nav">
+				<li><a href="index.html" class="tab" id="1">Home</a></li>
+				<li><a href="migration_home.html" class="tab" id="2">Migration</a></li>
+				<li><a href="upgrade_home.html" class="tab" id="3">Upgrade</a></li>
+				<li><a href="generation_kit.html" class="tab" id="4">Interface Generation Kit</a></li>
+				<li><a href="validation_kit.html" class="tab" id="5">Validation Kit</a>
+					<ul class="sub-menu" style="color:white">
+						<li><a href="simulator.html"> Simulators</a></li>
+						<li><a href="tdg.html">Test Data Generators</a></li>
+						<li><a href="datamasking.html">Data Masking</a></li>
+						<li><a href="progress.html">Comparator</a></li>
+					</ul>
+				</li>
+				<li><a href="assessment_kit.html" class="tab" id="5">Assessment Kit</a></li>
+				<li><a href="rmt.html" class="tab" id="5">Release Management Kit</a></li>
+			</ul>
+        </div>
+	  <div class="col-lg-10 col-md-9 col-sm-6 col-xs-12"  style="background: rgb(155,155,155);height:8%">
+
+	 <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12 col-md-10 col-sm-9 col-xs-8" >
+						<p style="margin-top:15px">
+			<a href="upgrade.html"><b>Home</b></a>
+			<img src="img/arrow_navigate.png" style="width:10px;height:15px" />
+			<a href="./upgrade_next.html"><b>Interface Generation</b></a>
+
+			</p>
+
+                    </div>
+                </div>
+            </div>
+	</div>
+
+	<div class="col-lg-10 col-md-9 col-sm-6 col-xs-12"  style="height:92%;background: rgb(242,245,246);
+background: -moz-radial-gradient(center, ellipse cover,  rgba(242,245,246,1) 0%, rgba(200,215,220,1) 100%);
+background: -webkit-radial-gradient(center, ellipse cover,  rgba(242,245,246,1) 0%,rgba(200,215,220,1) 100%);
+background: radial-gradient(ellipse at center,  rgba(242,245,246,1) 0%,rgba(200,215,220,1) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f5f6', endColorstr='#c8d7dc',GradientType=1 );"  >
+
+			<div class="container-fluid">
+
+				<div class="row">
+									<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form" >
+						<p id="source_path"> Upload Design Document(s) Path/document:</p>
+					</div>
+					</div>
+
+					<div class="row">
+									<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"  >
+						<!-- <p > Upload Design Document(s):</p> -->
+						<!-- </div>
+						<div class="col-lg-5 col-md-12 col-sm-12 col-xs-12"> -->
+						<input id="source_path" type="text" size="40"  style="background-color:rgb(241,243,243)"/>
+						<!-- </div>
+						<div class="col-lg-5 col-md-12 col-sm-12 col-xs-12"> -->
+					<input type="file" id="choose_file" style="display:inline;margin-left:10px"
+					onchange="document.getElementById('source_path').value = this.value.split('\\').pop().split('/').pop()" />
+
+					</div>
+					</div>
+				<div class="row">
+									<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+			<button value="Submit" id="submit_migration" class="btn btn-primary btn-raised">Submit</button>
+			</div>
+					</div>
+
+</div>
+	</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="static">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/EIS_Demo_Merge/WebContent/WEB-INF/static/simulator.zip!/" />
+      <root url="jar://$PROJECT_DIR$/EIS_Demo_Merge/WebContent/WEB-INF/static/datamasking.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

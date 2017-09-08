@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="FileAdapterConfiguration">
+		<xs:annotation>
+			<xs:documentation>Define the source and destination folders for the edi transactions</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="SubmitterChannel" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:attribute name="channelType" type="xs:string"/>
+						<xs:attribute name="trxType" type="xs:string"/>
+						<xs:attribute name="sourceFolder" type="xs:string"/>
+						<xs:attribute name="destFolder" type="xs:string"/>
+						<xs:attribute name="ackFolder" type="xs:string"/>
+						<xs:attribute name="archiveFolder" type="xs:string"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

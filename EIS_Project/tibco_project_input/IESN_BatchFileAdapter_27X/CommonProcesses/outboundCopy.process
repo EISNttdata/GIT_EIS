@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:ns2="http://www.tibco.com/pe/DeployedVarsType" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns1="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/file/v2" xmlns:utils="java://org.hphc.Utilities" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx="http://www.tibco.com/ns/no_namespace_schema_location/SharedResource/Schemas/EDITransaction.xsd">
+    <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/SharedResource/Schemas/EDITransaction.xsd" schemaLocation="/SharedResource/Schemas/EDITransaction.xsd"/>
+    <pd:name>CommonProcesses/outboundCopy.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startDescription>FileName:UAT_Converted_270_5010_test1.270_21270047,FileLocation:/apps/tibco_n2vuat020/ftp/Test/270/arch,Source:/apps/tibco_n2ftp001/edifecs-qa/outboundFileConnector/271/ffffff9b000136665d73480000d161a3.271,</pd:startDescription>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="requestFilename" type="xsd:string"/>
+                    <xsd:element name="requestFileLocation" type="xsd:string"/>
+                    <xsd:element name="sourcefileName" type="xsd:string"/>
+                    <xsd:element name="channel" type="xsd:string"/>
+                    <xsd:element name="fileType" type="xsd:string"/>
+                    <xsd:element name="AccessId" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="trxType" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>27</pd:startX>
+    <pd:startY>167</pd:startY>
+    <pd:returnBindings>
+        <root>
+            <responseFilename>
+                <xsl:value-of select="$responseFile/root/responseFilename"/>
+            </responseFilename>
+            <responseLocation>
+                <xsl:value-of select="$responseFile/root/responseLocation"/>
+            </responseLocation>
+        </root>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="responseFilename" type="xsd:string"/>
+                    <xsd:element name="responseLocation" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:endType>
+    <pd:endX>803</pd:endX>
+    <pd:endY>207</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables>
+        <responseFile>
+            <xsd:element name="root">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="responseFilename" type="xsd:string"/>
+                        <xsd:element name="responseLocation" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </responseFile>
+    </pd:processVariables>
+    <pd:targetNamespace>http://xmlns.example.com/1329226274069</pd:targetNamespace>
+    <pd:activity name="copyFile">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>341</pd:x>
+        <pd:y>70</pd:y>
+        <config>
+            <processName>/CommonProcesses/CopyFile.process</processName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <fromFile>
+                    <xsl:value-of select="$Start/root/sourcefileName"/>
+                </fromFile>
+                <toFolder>
+                    <xsl:value-of select="$responseFile/root/responseLocation"/>
+                </toFolder>
+                <archive>
+                    <xsl:value-of select="'false'"/>
+                </archive>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="XMLFile">
+        <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+        <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+        <pd:x>539</pd:x>
+        <pd:y>78</pd:y>
+        <config>
+            <element>
+                <xsd:element name="transaction-file" type="pfx:transaction-file"/>
+            </element>
+        </config>
+        <pd:inputBindings>
+            <transaction-file>
+                <file>
+                    <xsl:attribute name="name">
+                        <xsl:value-of select="$Read-File/ns1:ReadActivityOutputNoContentClass/fileInfo/fileName"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="type">
+                        <xsl:value-of select="concat('application/EDI-X12.',$Start/root/fileType)"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="size">
+                        <xsl:value-of select="$Read-File/ns1:ReadActivityOutputNoContentClass/fileInfo/size"/>
+                    </xsl:attribute>
+                </file>
+                <description>
+                    <xsl:value-of select="concat('Response to File:',$Start/root/requestFilename)"/>
+                </description>
+                <destination>
+                    <xsl:attribute name="type">
+                        <xsl:value-of select="'access_list_id'"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="id">
+                        <xsl:value-of select="$Start/root/AccessId"/>
+                    </xsl:attribute>
+                </destination>
+            </transaction-file>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="WriteXMLFile">
+        <pd:type>com.tibco.plugin.file.FileWriteActivity</pd:type>
+        <pd:resourceType>ae.activities.FileWriteActivity</pd:resourceType>
+        <pd:x>655</pd:x>
+        <pd:y>78</pd:y>
+        <config>
+            <encoding>text</encoding>
+            <compressFile>None</compressFile>
+        </config>
+        <pd:inputBindings>
+            <ns1:WriteActivityInputTextClass>
+                <fileName>
+                    <xsl:value-of select="concat($responseFile/root/responseLocation,$_globalVariables/ns2:GlobalVariables/FileAdapter/FileSeperator,$responseFile/root/responseFilename,&quot;.xml&quot;)"/>
+                </fileName>
+                <textContent>
+                    <xsl:value-of select="utils:ReplaceAll(utils:ReplaceAll(tib:render-xml($XMLFile/transaction-file), 'ns0:', ''), ':ns0', '')"/>
+                </textContent>
+            </ns1:WriteActivityInputTextClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="renameFile">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>345</pd:x>
+        <pd:y>193</pd:y>
+        <config>
+            <processName>/CommonProcesses/ArchiveFile.process</processName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <fromFile>
+                    <xsl:value-of select="concat($responseFile/root/responseLocation, $_globalVariables/ns2:GlobalVariables/FileAdapter/FileSeperator, tib:substring-after-last($Start/root/sourcefileName,$_globalVariables/ns2:GlobalVariables/FileAdapter/FileSeperator))"/>
+                </fromFile>
+                <toFile>
+                    <xsl:value-of select="concat($responseFile/root/responseLocation,$_globalVariables/ns2:GlobalVariables/FileAdapter/FileSeperator,$responseFile/root/responseFilename)"/>
+                </toFile>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Read File">
+        <pd:type>com.tibco.plugin.file.FileReadActivity</pd:type>
+        <pd:resourceType>ae.activities.FileReadActivity</pd:resourceType>
+        <pd:x>435</pd:x>
+        <pd:y>78</pd:y>
+        <config>
+            <encoding>text</encoding>
+            <excludeContent>true</excludeContent>
+        </config>
+        <pd:inputBindings>
+            <ns:ReadActivityInputClass>
+                <fileName>
+                    <xsl:value-of select="concat($responseFile/root/responseLocation,$_globalVariables/ns2:GlobalVariables/FileAdapter/FileSeperator,$responseFile/root/responseFilename)"/>
+                </fileName>
+            </ns:ReadActivityInputClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="setResponseFile">
+        <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+        <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+        <pd:x>217</pd:x>
+        <pd:y>182</pd:y>
+        <config>
+            <variableName>responseFile</variableName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <xsl:variable name="pVar" select="if ($Start/root/channel = 'HTRIO-FTA') then&#xA;$GetVariable/FileAdapterConfiguration/SubmitterChannel[@channelType='HTRIO-FTA' and @trxType = $Start/root/trxType]/@destFolder&#xA;else &#xA;if ($Start/root/channel = 'CORE') then&#xA;concat(tib:substring-before-last($Start/root/requestFileLocation,$_globalVariables/ns2:GlobalVariables/FileAdapter/FileSeperator), &#xA;$GetVariable/FileAdapterConfiguration/SubmitterChannel[@channelType='CORE' and @trxType = $Start/root/trxType]/@destFolder)&#xA;else&#xA;concat(tib:substring-before-last($Start/root/requestFileLocation,$_globalVariables/ns2:GlobalVariables/FileAdapter/FileSeperator), &#xA;$GetVariable/FileAdapterConfiguration/SubmitterChannel[@channelType='NEHEN-FTP' and @trxType = $Start/root/trxType]/@destFolder)"/>
+                <xsl:variable name="varISA06" select="tib:tokenize($Start/root/requestFilename,'_')[1]"/>
+                <xsl:variable name="varGS02" select="tib:tokenize($Start/root/requestFilename,'_')[2]"/>
+                <xsl:variable name="varCurrentDate" select="tib:format-date('yyyyMMdd',current-date())"/>
+                <xsl:variable name="varCurrentTime" select="tib:format-dateTime('HHmmssss',current-dateTime())"/>
+                <responseFilename>
+                    <xsl:value-of select="if (($Start/root/channel !='HTS') and ($Start/root/channel !='CORE')) then&#xA;concat($varISA06, &quot;_&quot;, $varGS02, &quot;_&quot;,$varCurrentDate,&quot;_&quot;,$varCurrentTime,&quot;.&quot;,$Start/root/fileType)&#xA;else concat($Start/root/requestFilename,&quot;.&quot;,$Start/root/fileType)"/>
+                </responseFilename>
+                <responseLocation>
+                    <xsl:value-of select="$pVar"/>
+                </responseLocation>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Null">
+        <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+        <pd:resourceType>ae.activities.null</pd:resourceType>
+        <pd:x>425</pd:x>
+        <pd:y>209</pd:y>
+        <config/>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="WriteCntrlFile">
+        <pd:type>com.tibco.plugin.file.FileWriteActivity</pd:type>
+        <pd:resourceType>ae.activities.FileWriteActivity</pd:resourceType>
+        <pd:x>590</pd:x>
+        <pd:y>148</pd:y>
+        <config>
+            <encoding>text</encoding>
+            <compressFile>None</compressFile>
+        </config>
+        <pd:inputBindings>
+            <ns1:WriteActivityInputTextClass>
+                <fileName>
+                    <xsl:value-of select="concat($responseFile/root/responseLocation,$_globalVariables/ns2:GlobalVariables/FileAdapter/FileSeperator,$responseFile/root/responseFilename, &quot;.ctl&quot;)"/>
+                </fileName>
+                <textContent>
+                    <xsl:value-of select="&quot; &quot;"/>
+                </textContent>
+            </ns1:WriteActivityInputTextClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="GetVariable">
+        <pd:type>com.tibco.pe.core.GetSharedVariableActivity</pd:type>
+        <pd:resourceType>ae.activities.getSharedVariable</pd:resourceType>
+        <pd:x>125</pd:x>
+        <pd:y>165</pd:y>
+        <config>
+            <variableConfig>/SharedResource/SharedVariables/FileConfig.sharedvariable</variableConfig>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="CopytoShare">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:description>FileName:UAT_Converted_270_5010_test1.270_21270047,FileLocation:/apps/tibco_n2vuat020/ftp/Test/270/arch,Source:/apps/tibco_n2ftp001/edifecs-qa/outboundFileConnector/271/ffffff9b000136665d73480000d161a3.271,FileName:UAT_Converted_20120330_22210055.271,FileLocation:/apps/tibco_n2vuat020/ftp/Test/270/fromhphc  
+</pd:description>
+        <pd:x>234</pd:x>
+        <pd:y>72</pd:y>
+        <config>
+            <processName>/CommonProcesses/CopyFile.process</processName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <fromFile>
+                    <xsl:value-of select="$Start/root/sourcefileName"/>
+                </fromFile>
+                <toFolder>
+                    <xsl:value-of select="concat($_globalVariables/ns2:GlobalVariables/FileAdapter/BusinessArchiveFolder, $_globalVariables/ns2:GlobalVariables/FileAdapter/FileSeperator,$Start/root/trxType,$_globalVariables/ns2:GlobalVariables/FileAdapter/FileSeperator,&quot;Batch&quot;)"/>
+                </toFolder>
+                <archive>
+                    <xsl:value-of select="'false'"/>
+                </archive>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>copyFile</pd:from>
+        <pd:to>renameFile</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>XMLFile</pd:from>
+        <pd:to>WriteXMLFile</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>WriteXMLFile</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>renameFile</pd:from>
+        <pd:to>Null</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Read File</pd:from>
+        <pd:to>XMLFile</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>setResponseFile</pd:from>
+        <pd:to>CopytoShare</pd:to>
+        <pd:xpathDescription>TA1/997/999</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Start/root/fileType  = 'TA1' or  $Start/root/fileType  = '997' or $Start/root/fileType  = '999'</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Null</pd:from>
+        <pd:to>Read File</pd:to>
+        <pd:xpathDescription>FTA</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Start/root/channel = 'HTRIO-FTA'</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Null</pd:from>
+        <pd:to>WriteCntrlFile</pd:to>
+        <pd:xpathDescription>HTS</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Start/root/channel = "HTS"</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>WriteCntrlFile</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Null</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GetVariable</pd:from>
+        <pd:to>setResponseFile</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>CopytoShare</pd:from>
+        <pd:to>copyFile</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>setResponseFile</pd:from>
+        <pd:to>copyFile</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>GetVariable</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

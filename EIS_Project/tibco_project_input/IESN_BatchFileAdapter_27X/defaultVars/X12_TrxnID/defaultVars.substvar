@@ -1,0 +1,29 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
+	<globalVariables>
+		<globalVariable>
+			<name>X12_270_4010</name>
+			<value>004010X092A1</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1329395545283</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>X12_270_5010</name>
+			<value>005010X279A1</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1329395545283</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>X12_276_4010</name>
+			<value>004010X093A1</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1329395545283</modTime>
+		</globalVariable>
+	</globalVariables>
+</repository>

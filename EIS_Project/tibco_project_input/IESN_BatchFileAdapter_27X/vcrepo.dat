@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<repository version="2" commitCount="1">
+  <instanceInfo>
+    <instanceInfoProperty name="fileType" value="VC"/>
+    <instanceInfoProperty name="version" value="5.3.0"/> 
+    <instanceInfoProperty name="rootDir" value="."/>
+    <instanceInfoProperty name="instanceType" value="localFile"/>
+    <instanceInfoProperty name="creationTime" value="1329395545291"/>
+    <instanceInfoProperty name="encoding" value="ISO8859-1"/>
+  </instanceInfo>
+</repository>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2005 rel. 3 U (http://www.altova.com) by Venu Mandulapalli (Harvard Pilgrim Health Care) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="ediTransaction">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="TrxType" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>EDI Transaction type e.g EDI-270/EDI-276</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Channel" type="xs:string" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Authorized channel to submit transactions e.g NEHEN/FTA/WTS</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:choice>
+					<xs:element name="ediRealtimeTransaction">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="TrackingID" type="xs:string" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Channel Adapter assigns a unique identifier to identify the realtime transactions</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="ediData" type="xs:string"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ediBatchTransaction" nillable="true">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="batchTrackingID" type="xs:string">
+									<xs:annotation>
+										<xs:documentation>Batch file name to identify the the bacthed transactions</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="inBoundURI" type="xs:string" nillable="true" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Submitters transaction specific Inbound mailbox folder</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="outBoundURI" type="xs:string" nillable="true" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Submitters transaction specific Outbound mailbox folder</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="ack997URI" type="xs:string" nillable="true" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Submitters transaction specific Outbound mailbox folder</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="ediData" nillable="true"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

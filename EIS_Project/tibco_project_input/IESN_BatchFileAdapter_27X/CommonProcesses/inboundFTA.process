@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <pd:name>CommonProcesses/inboundFTA.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="TrackingID" type="xsd:string"/>
+                    <xsd:element name="requestFilename" type="xsd:string"/>
+                    <xsd:element name="requestFilelocation" type="xsd:string"/>
+                    <xsd:element name="fullName" type="xsd:string"/>
+                    <xsd:element name="TrxType" type="xsd:string"/>
+                    <xsd:element name="Channel" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>150</pd:startX>
+    <pd:startY>64</pd:startY>
+    <pd:returnBindings>
+        <root>
+            <inFilename>
+                <xsl:value-of select="$CopyAndArchive/root/toFile"/>
+            </inFilename>
+            <AccessId>
+                <xsl:value-of select="$XMLMetafile/transaction-file/destination/@id"/>
+            </AccessId>
+            <version>
+                <xsl:value-of select="$CopyAndArchive/root/version"/>
+            </version>
+        </root>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="inFilename" type="xsd:string"/>
+                    <xsd:element name="AccessId" type="xsd:string"/>
+                    <xsd:element name="version" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:endType>
+    <pd:endX>622</pd:endX>
+    <pd:endY>82</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1329225893512</pd:targetNamespace>
+    <pd:activity name="XMLMetafile">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>296</pd:x>
+        <pd:y>90</pd:y>
+        <config>
+            <processName>/CommonProcesses/XMLMetaFile.process</processName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <fileName>
+                    <xsl:value-of select="$Start/root/fullName"/>
+                </fileName>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="CopyAndArchive">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>467</pd:x>
+        <pd:y>70</pd:y>
+        <config>
+            <processName>/CommonProcesses/inboundCopy.process</processName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <TrackingID>
+                    <xsl:value-of select="$Start/root/TrackingID"/>
+                </TrackingID>
+                <requestFilename>
+                    <xsl:value-of select="$XMLMetafile/transaction-file/file/@name"/>
+                </requestFilename>
+                <requestFilelocation>
+                    <xsl:value-of select="$Start/root/requestFilelocation"/>
+                </requestFilelocation>
+                <TrxType>
+                    <xsl:value-of select="$Start/root/TrxType"/>
+                </TrxType>
+                <fullname>
+                    <xsl:value-of select="$Start/root/fullName"/>
+                </fullname>
+                <XMLMetafilename>
+                    <xsl:value-of select="$Start/root/requestFilename"/>
+                </XMLMetafilename>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>XMLMetafile</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>XMLMetafile</pd:from>
+        <pd:to>CopyAndArchive</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>CopyAndArchive</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

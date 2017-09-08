@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BWSharedResource xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <name>File Size</name>
+    <resourceType>ae.shared.jobSharedVariable</resourceType>
+    <config>
+        <initialValue>byData</initialValue>
+        <initialValueRef>0</initialValueRef>
+        <initialValueData>&lt;?xml version="1.0" encoding="UTF-8"?&gt; &lt;root&gt;     &lt;size&gt;0&lt;/size&gt; &lt;/root&gt;</initialValueData>
+        <xsdString>
+            <xsd:element name="root">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="size" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsdString>
+    </config>
+</BWSharedResource>

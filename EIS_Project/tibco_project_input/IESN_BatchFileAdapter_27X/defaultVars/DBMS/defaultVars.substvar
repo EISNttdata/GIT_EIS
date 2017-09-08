@@ -1,0 +1,45 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
+	<globalVariables>
+		<globalVariable>
+			<name>DBMS_Driver</name>
+			<value>tibcosoftwareinc.jdbc.oracle.OracleDriver (RAC)</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1329395545282</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>DBMS_Password</name>
+			<value>#!BrRHhEbyVMvngijAvcli9EJZp68VLaG3FX3Ao8lRM2A=</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>Password</type>
+			<modTime>1400772398687</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>DBMS_Timeout</name>
+			<value>20</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1329395545282</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>DBMS_URL</name>
+			<value>jdbc:tibcosoftwareinc:oracle://devdb-scan.hphc.org:1531;ServiceName=edbdevsvc.hphc.org;EnableCancelTimeout=true</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1403029855804</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>DBMS_User</name>
+			<value>iesnlog</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1400772398745</modTime>
+		</globalVariable>
+	</globalVariables>
+</repository>

@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/file/v2" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:File="java://FileUtils" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions">
+    <pd:name>CommonProcesses/inboundCopy.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="TrackingID" type="xsd:string"/>
+                    <xsd:element name="requestFilename" type="xsd:string"/>
+                    <xsd:element name="requestFilelocation" type="xsd:string"/>
+                    <xsd:element name="TrxType" type="xsd:string"/>
+                    <xsd:element name="fullname" type="xsd:string"/>
+                    <xsd:element name="XMLMetafilename" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="Channel" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>27</pd:startX>
+    <pd:startY>116</pd:startY>
+    <pd:returnBindings>
+        <xsl:choose>
+            <xsl:when test="exists($ArchiveTRIOEDIFile)">
+                <root>
+                    <fromFile>
+                        <xsl:value-of select="$ArchiveTRIOEDIFile/root/fromFile"/>
+                    </fromFile>
+                    <toFile>
+                        <xsl:value-of select="$ArchiveTRIOEDIFile/root/toFile"/>
+                    </toFile>
+                    <version>
+                        <xsl:value-of select="$findversion/root/version"/>
+                    </version>
+                </root>
+            </xsl:when>
+            <xsl:otherwise>
+                <root>
+                    <fromFile>
+                        <xsl:value-of select="$ArchiveFTPEDIFile/root/fromFile"/>
+                    </fromFile>
+                    <toFile>
+                        <xsl:value-of select="$ArchiveFTPEDIFile/root/toFile"/>
+                    </toFile>
+                    <version>
+                        <xsl:value-of select="$findversion/root/version"/>
+                    </version>
+                </root>
+            </xsl:otherwise>
+        </xsl:choose>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="fromFile" type="xsd:string"/>
+                    <xsd:element name="toFile" type="xsd:string"/>
+                    <xsd:element name="version" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:endType>
+    <pd:endX>911</pd:endX>
+    <pd:endY>98</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1329222458653</pd:targetNamespace>
+    <pd:group name="ArchiveGroup">
+        <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:x>304</pd:x>
+        <pd:y>5</pd:y>
+        <pd:width>555</pd:width>
+        <pd:height>319</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>simpleGroup</pd:groupType>
+            <pd:serializable>false</pd:serializable>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>CopytoFileShare1</pd:to>
+            <pd:xpathDescription>Metafile</pd:xpathDescription>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>xpath</pd:conditionType>
+            <pd:xpath>$_globalVariables/ns:GlobalVariables/FileAdapter/submitterChannel = 'HTRIO-FTA'</pd:xpath>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>CopytoFileShare</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>otherwise</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>ArchiveTRIOEDIFile</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>ArchiveFTPEDIFile</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>ArchiveMetaFile</pd:from>
+            <pd:to>CopyTRIOInboundFolder</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>CopyToInboundFolder</pd:from>
+            <pd:to>ArchiveFTPEDIFile</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>CopyTRIOInboundFolder</pd:from>
+            <pd:to>ArchiveTRIOEDIFile</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>CopytoFileShare</pd:from>
+            <pd:to>CopyToInboundFolder</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>CopytoFileShare1</pd:from>
+            <pd:to>ArchiveMetaFile</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="ArchiveMetaFile">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>516</pd:x>
+            <pd:y>69</pd:y>
+            <config>
+                <processName>/CommonProcesses/ArchiveFile.process</processName>
+            </config>
+            <pd:inputBindings>
+                <root>
+                    <fromFile>
+                        <xsl:value-of select="concat($Start/root/requestFilelocation,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,$Start/root/XMLMetafilename)"/>
+                    </fromFile>
+                    <toFile>
+                        <xsl:value-of select="concat($GetVariable/FileAdapterConfiguration/SubmitterChannel[@channelType='HTRIO-FTA' and @trxType = $Start/root/TrxType]/@archiveFolder,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,&#xA;$Start/root/XMLMetafilename, &quot;_&quot;,tib:format-dateTime('HHmmssss',current-dateTime()))"/>
+                    </toFile>
+                </root>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="ArchiveTRIOEDIFile">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>766</pd:x>
+            <pd:y>82</pd:y>
+            <config>
+                <processName>/CommonProcesses/ArchiveFile.process</processName>
+            </config>
+            <pd:inputBindings>
+                <root>
+                    <fromFile>
+                        <xsl:value-of select="concat($Start/root/requestFilelocation,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,$Start/root/requestFilename)"/>
+                    </fromFile>
+                    <toFile>
+                        <xsl:value-of select="concat($GetVariable/FileAdapterConfiguration/SubmitterChannel[@channelType='HTRIO-FTA' and @trxType = $Start/root/TrxType]/@archiveFolder,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,&#xA;$Start/root/requestFilename, &quot;_&quot;,tib:format-dateTime('HHmmssss',current-dateTime()))"/>
+                    </toFile>
+                </root>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="ArchiveFTPEDIFile">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>671</pd:x>
+            <pd:y>224</pd:y>
+            <config>
+                <processName>/CommonProcesses/ArchiveFile.process</processName>
+            </config>
+            <pd:inputBindings>
+                <root>
+                    <fromFile>
+                        <xsl:value-of select="concat($Start/root/requestFilelocation,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,$Start/root/requestFilename)"/>
+                    </fromFile>
+                    <toFile>
+                        <xsl:value-of select="concat(tib:substring-before-last($Start/root/requestFilelocation,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator),$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,'arch',$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,&#xA;$Start/root/requestFilename, &quot;_&quot;,tib:format-dateTime('HHmmssss',current-dateTime()))"/>
+                    </toFile>
+                </root>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="CopyToInboundFolder">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>539</pd:x>
+            <pd:y>227</pd:y>
+            <config>
+                <processName>/CommonProcesses/CopyFileToXE.process</processName>
+            </config>
+            <pd:inputBindings>
+                <root>
+                    <fromFile>
+                        <xsl:value-of select="concat($Start/root/requestFilelocation,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,$Start/root/requestFilename)"/>
+                    </fromFile>
+                    <toFolder>
+                        <xsl:value-of select="if ($findversion/root/version = $_globalVariables/ns:GlobalVariables/X12-versions/X12_4010 ) then&#xA;$_globalVariables/ns:GlobalVariables/XEServer/inboundFolder_4010&#xA;else&#xA;$_globalVariables/ns:GlobalVariables/XEServer/inboundFolder_5010"/>
+                    </toFolder>
+                    <renameFile>
+                        <xsl:value-of select="if ($findversion/root/version = $_globalVariables/ns:GlobalVariables/X12-versions/X12_4010 ) then&#xA;concat($_globalVariables/ns:GlobalVariables/XEServer/inboundFolder_4010,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,$Start/root/TrackingID,&quot;.dat&quot;)&#xA;else&#xA;concat($_globalVariables/ns:GlobalVariables/XEServer/inboundFolder_5010,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,$Start/root/TrackingID,&quot;.dat&quot;)"/>
+                    </renameFile>
+                    <archive>
+                        <xsl:value-of select="'true'"/>
+                    </archive>
+                    <CopytoXE>
+                        <xsl:value-of select="'Y'"/>
+                    </CopytoXE>
+                    <TxnID>
+                        <xsl:value-of select="$Start/root/TrackingID"/>
+                    </TxnID>
+                    <OFN>
+                        <xsl:value-of select="$Start/root/requestFilename"/>
+                    </OFN>
+                    <TrxType>
+                        <xsl:value-of select="if($Start/root/TrxType='270')&#xA;then&#xA;$_globalVariables/ns:GlobalVariables/X12-versions/X12_270&#xA;else if($Start/root/TrxType='276')&#xA;then&#xA;$_globalVariables/ns:GlobalVariables/X12-versions/X12_276&#xA;else&#xA;$Start/root/TrxType"/>
+                    </TrxType>
+                    <Channel>
+                        <xsl:value-of select="if($_globalVariables/ns:GlobalVariables/FileAdapter/submitterChannel = 'HTRIO-FTA')&#xA;then 'FTA'&#xA;else&#xA;$Start/root/Channel"/>
+                    </Channel>
+                </root>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="CopyTRIOInboundFolder">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>629</pd:x>
+            <pd:y>69</pd:y>
+            <config>
+                <processName>/CommonProcesses/CopyFileToXE.process</processName>
+            </config>
+            <pd:inputBindings>
+                <root>
+                    <fromFile>
+                        <xsl:value-of select="concat($Start/root/requestFilelocation,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,$Start/root/requestFilename)"/>
+                    </fromFile>
+                    <toFolder>
+                        <xsl:value-of select="if ($findversion/root/version = $_globalVariables/ns:GlobalVariables/X12-versions/X12_4010 ) then&#xA;concat($_globalVariables/ns:GlobalVariables/XEServer/inboundFolder_4010, $_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,$Start/root/TrxType)&#xA;else&#xA;$_globalVariables/ns:GlobalVariables/XEServer/inboundFolder_5010"/>
+                    </toFolder>
+                    <renameFile>
+                        <xsl:value-of select="if ($findversion/root/version = $_globalVariables/ns:GlobalVariables/X12-versions/X12_4010 ) then&#xA;concat($_globalVariables/ns:GlobalVariables/XEServer/inboundFolder_4010,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,$Start/root/TrxType,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,$Start/root/TrackingID,&quot;.dat&quot;)&#xA;else&#xA;concat($_globalVariables/ns:GlobalVariables/XEServer/inboundFolder_5010,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,$Start/root/TrackingID,&quot;.dat&quot;)"/>
+                    </renameFile>
+                    <archive>
+                        <xsl:value-of select="'true'"/>
+                    </archive>
+                    <CopytoXE>
+                        <xsl:value-of select="'Y'"/>
+                    </CopytoXE>
+                    <TxnID>
+                        <xsl:value-of select="$Start/root/TrackingID"/>
+                    </TxnID>
+                    <OFN>
+                        <xsl:value-of select="$Start/root/requestFilename"/>
+                    </OFN>
+                    <TrxType>
+                        <xsl:value-of select="if($Start/root/TrxType='270')&#xA;then&#xA;$_globalVariables/ns:GlobalVariables/X12-versions/X12_270&#xA;else if($Start/root/TrxType='276')&#xA;then&#xA;$_globalVariables/ns:GlobalVariables/X12-versions/X12_276&#xA;else&#xA;$Start/root/TrxType"/>
+                    </TrxType>
+                    <Channel>
+                        <xsl:value-of select="'FTA'"/>
+                    </Channel>
+                </root>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="CopytoFileShare">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>425</pd:x>
+            <pd:y>225</pd:y>
+            <config>
+                <processName>/CommonProcesses/CopyFile.process</processName>
+            </config>
+            <pd:inputBindings>
+                <root>
+                    <fromFile>
+                        <xsl:value-of select="concat($Start/root/requestFilelocation,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,$Start/root/requestFilename)"/>
+                    </fromFile>
+                    <toFolder>
+                        <xsl:value-of select="concat($_globalVariables/ns:GlobalVariables/FileAdapter/BusinessArchiveFolder, $_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,$Start/root/TrxType,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,&quot;Batch&quot;)"/>
+                    </toFolder>
+                    <renameFile>
+                        <xsl:value-of select="concat($_globalVariables/ns:GlobalVariables/FileAdapter/BusinessArchiveFolder, $_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,$Start/root/TrxType,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,&quot;Batch&quot;,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,$Start/root/TrackingID,&quot;.&quot;,$Start/root/TrxType)"/>
+                    </renameFile>
+                    <archive>
+                        <xsl:value-of select="'false'"/>
+                    </archive>
+                    <TxnID>
+                        <xsl:value-of select="$Start/root/TrackingID"/>
+                    </TxnID>
+                    <OFN>
+                        <xsl:value-of select="$Start/root/requestFilename"/>
+                    </OFN>
+                    <xsl:if test="$Start/root/Channel">
+                        <Channel>
+                            <xsl:value-of select="$Start/root/Channel"/>
+                        </Channel>
+                    </xsl:if>
+                    <TrxType>
+                        <xsl:value-of select="if($Start/root/TrxType='270')&#xA;then&#xA;$_globalVariables/ns:GlobalVariables/X12-versions/X12_270&#xA;else if($Start/root/TrxType='276')&#xA;then&#xA;$_globalVariables/ns:GlobalVariables/X12-versions/X12_276&#xA;else&#xA;$Start/root/TrxType"/>
+                    </TrxType>
+                </root>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="CopytoFileShare1">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>409</pd:x>
+            <pd:y>72</pd:y>
+            <config>
+                <processName>/CommonProcesses/CopyFile.process</processName>
+            </config>
+            <pd:inputBindings>
+                <root>
+                    <fromFile>
+                        <xsl:value-of select="concat($Start/root/requestFilelocation,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,$Start/root/requestFilename)"/>
+                    </fromFile>
+                    <toFolder>
+                        <xsl:value-of select="concat($_globalVariables/ns:GlobalVariables/FileAdapter/BusinessArchiveFolder, $Start/root/TrxType,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,&quot;Batch&quot;)"/>
+                    </toFolder>
+                    <renameFile>
+                        <xsl:value-of select="concat($_globalVariables/ns:GlobalVariables/FileAdapter/BusinessArchiveFolder,$Start/root/TrxType,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,&quot;Batch&quot;,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,$Start/root/TrackingID,&quot;.&quot;,$Start/root/TrxType)"/>
+                    </renameFile>
+                    <archive>
+                        <xsl:value-of select="'false'"/>
+                    </archive>
+                </root>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:activity name="GetVariable">
+        <pd:type>com.tibco.pe.core.GetSharedVariableActivity</pd:type>
+        <pd:resourceType>ae.activities.getSharedVariable</pd:resourceType>
+        <pd:x>100</pd:x>
+        <pd:y>114</pd:y>
+        <config>
+            <variableConfig>/SharedResource/SharedVariables/FileConfig.sharedvariable</variableConfig>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="findversion">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>211</pd:x>
+        <pd:y>128</pd:y>
+        <config>
+            <processName>/CommonProcesses/VersionFinder.process</processName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <requestFilename>
+                    <xsl:value-of select="concat($Start/root/requestFilelocation,$_globalVariables/ns:GlobalVariables/FileAdapter/FileSeperator,$Start/root/requestFilename)"/>
+                </requestFilename>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>GetVariable</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ArchiveGroup</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GetVariable</pd:from>
+        <pd:to>findversion</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>findversion</pd:from>
+        <pd:to>ArchiveGroup</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>
