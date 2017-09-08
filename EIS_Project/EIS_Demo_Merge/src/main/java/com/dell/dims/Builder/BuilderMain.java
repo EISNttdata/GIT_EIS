@@ -833,8 +833,7 @@ public class BuilderMain {
 
     private static void InitializeOutputProject() {
 
-        //outputProject.setProjectFolder("C:\\Tibco2OracleSOA\\oracle_soa_output");
-        outputProject.setProjectFolder("C:\\Users\\manoj_mehta\\Desktop\\output");
+        outputProject.setProjectFolder("C:\\Tibco2OracleSOA\\oracle_soa_output");
 
         outputProject.setProjectName("IESN_BatchFileAdapter_27X");
         outputProject.setProcessName(getCurrentProcessData().getProcessName());
