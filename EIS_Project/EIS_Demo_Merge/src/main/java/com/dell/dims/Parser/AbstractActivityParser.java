@@ -1,12 +1,16 @@
 package com.dell.dims.Parser;
 
 import com.dell.dims.Model.Activity;
+import com.dell.dims.Model.InterfaceInventoryDetails.InterfaceInventory;
 import com.dell.dims.Utils.ActivityBeanExtractor;
 import com.dell.dims.Utils.InputBindingExtractor;
 import com.dell.dims.Utils.NodesExtractorUtil;
 import com.dell.dims.Utils.PropertiesUtil;
+import com.dell.dims.service.DimsServiceImpl;
 import im.nll.data.extractor.Extractors;
 import org.w3c.dom.Node;
+
+import java.util.List;
 
 import static im.nll.data.extractor.Extractors.xpath;
 
@@ -100,6 +104,11 @@ public abstract class AbstractActivityParser implements IActivityParser {
     return inputBindingsString;
   }
 
+  public void addToMap(InterfaceInventory inventory){
 
+     /*DimsServiceImpl.interfaceInventoryMap.put(inventory.getActivityNameforInventory() + "#" + inventory.getActivityTypeforInventory(),inventory);*/
+    DimsServiceImpl.interfaceInventoryMap.put(inventory.getActivityNameforInventory(),inventory);
+
+  }
 }
 

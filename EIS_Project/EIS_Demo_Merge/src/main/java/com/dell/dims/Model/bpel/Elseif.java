@@ -61,7 +61,8 @@ import javax.xml.bind.annotation.XmlType;
     "_while"
 })
 public class Elseif
-    extends ExtensibleElements
+    //extends ExtensibleElements
+    extends Activity
 {
 
     @XmlElement(required = true)

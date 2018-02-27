@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <pd:name>ProjectComponents/GWROutbound/Process/Sub/UpdateFileStatus.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="FileStatus" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="Filename" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="TrackingID" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="ComponentName" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="Description" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="TransmissionStatus" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="OperationType" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="TradingpartnerID" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>187</pd:startX>
+    <pd:startY>161</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>505</pd:endX>
+    <pd:endY>162</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1464109391036</pd:targetNamespace>
+    <pd:activity name="GetTPInfo">
+        <pd:type>com.tibco.plugin.jdbc.JDBCCallActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCCallActivity</pd:resourceType>
+        <pd:x>188</pd:x>
+        <pd:y>40</pd:y>
+        <config>
+            <timeout>10</timeout>
+            <maxRows>100</maxRows>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/ProjectComponents/Resources/Connections/JDBC/TPMConnetion.sharedjdbc</jdbcSharedConfig>
+            <schema>%%GWROutbound/JDBC/schema%%</schema>
+            <ProcedureName>EDFCS_CUSTOM_FIELDS</ProcedureName>
+            <parameterTypes>
+                <parameter>
+                    <colName>P_PARTY_SID</colName>
+                    <colType>1</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_CHANNEL</colName>
+                    <colType>4</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_INBOX</colName>
+                    <colType>4</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_ACCESS_ID</colName>
+                    <colType>4</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_USER</colName>
+                    <colType>4</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_PASSWORD</colName>
+                    <colType>4</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_SERVER</colName>
+                    <colType>4</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_ACTIVE</colName>
+                    <colType>4</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+            </parameterTypes>
+        </config>
+        <pd:inputBindings>
+            <inputs>
+                <inputSet>
+                    <P_PARTY_SID>
+                        <xsl:choose>
+                            <xsl:when test="exists($Start/root/TradingpartnerID)">
+                                <xsl:value-of select="$Start/root/TradingpartnerID"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </P_PARTY_SID>
+                </inputSet>
+            </inputs>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="InsertRecord">
+        <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+        <pd:x>508</pd:x>
+        <pd:y>40</pd:y>
+        <config>
+            <timeout>10</timeout>
+            <commit>false</commit>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/ProjectComponents/Resources/Connections/JDBC/EDIfecsDBConn.sharedjdbc</jdbcSharedConfig>
+            <statement>INSERT into XE_FILE_PRCS_LOG (FILE_PRCS_LOG_ID, FILE_TRACKINGID, SENDER_FILE_NAME, HPHC_FILE_NAME, DIRECTION, 
+CHANNEL, MAILBOX_ID, CHNL_FILE_PATH, CHNL_ARCH_FILE_PATH, DESCRIPTION,COMPONENT_NAME, FILE_STATUS, INSERT_TIMSTAMP, UPDATE_TIMESTAMP, TRANSMISSION_STATUS)
+values 
+(?, ?, ?, ?, 'OUT', ?, ?, ?, ?, ?, ?, ?, sysdate, sysdate, ?)</statement>
+            <Prepared_Param_DataType>
+                <parameter>
+                    <parameterName>FILE_PRCS_LOG_ID</parameterName>
+                    <dataType>DECIMAL</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>FILE_TRACKINGID</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>SENDER_FILE_NAME</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>HPHC_FILE_NAME</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CHANNEL</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>MAILBOX_ID</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CHNL_FILE_PATH</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CHNL_ARCH_FILE_PATH</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>DESCRIPTION</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>COMPONENT_NAME</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>FILE_STATUS</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>TRANSMISSION_STATUS</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+            </Prepared_Param_DataType>
+        </config>
+        <pd:inputBindings>
+            <jdbcUpdateActivityInput>
+                <FILE_PRCS_LOG_ID>
+                    <xsl:choose>
+                        <xsl:when test="exists($ProcessLogID/resultSet/Record[1]/NEXTVAL)">
+                            <xsl:value-of select="$ProcessLogID/resultSet/Record[1]/NEXTVAL"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </FILE_PRCS_LOG_ID>
+                <FILE_TRACKINGID>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/root/TrackingID)">
+                            <xsl:value-of select="$Start/root/TrackingID"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </FILE_TRACKINGID>
+                <SENDER_FILE_NAME>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/root/Filename)">
+                            <xsl:value-of select="$Start/root/Filename"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </SENDER_FILE_NAME>
+                <HPHC_FILE_NAME>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/root/Filename)">
+                            <xsl:value-of select="$Start/root/Filename"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </HPHC_FILE_NAME>
+                <CHANNEL>
+                    <xsl:choose>
+                        <xsl:when test="exists($GetTPInfo/resultSet/outputSet/P_CHANNEL)">
+                            <xsl:value-of select="$GetTPInfo/resultSet/outputSet/P_CHANNEL"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </CHANNEL>
+                <MAILBOX_ID>
+                    <xsl:choose>
+                        <xsl:when test="exists($GetTPInfo/resultSet/outputSet/P_INBOX)">
+                            <xsl:value-of select="$GetTPInfo/resultSet/outputSet/P_INBOX"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </MAILBOX_ID>
+                <CHNL_FILE_PATH>
+                    <xsl:value-of select="'/837/FromHPHC'"/>
+                </CHNL_FILE_PATH>
+                <CHNL_ARCH_FILE_PATH>
+                    <xsl:value-of select="'arch'"/>
+                </CHNL_ARCH_FILE_PATH>
+                <DESCRIPTION>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/root/Description)">
+                            <xsl:value-of select="$Start/root/Description"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </DESCRIPTION>
+                <COMPONENT_NAME>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/root/ComponentName)">
+                            <xsl:value-of select="$Start/root/ComponentName"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </COMPONENT_NAME>
+                <FILE_STATUS>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/root/FileStatus)">
+                            <xsl:value-of select="$Start/root/FileStatus"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </FILE_STATUS>
+                <TRANSMISSION_STATUS>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/root/TransmissionStatus)">
+                            <xsl:value-of select="$Start/root/TransmissionStatus"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </TRANSMISSION_STATUS>
+            </jdbcUpdateActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="ProcessLogID">
+        <pd:type>com.tibco.plugin.jdbc.JDBCQueryActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCQueryActivity</pd:resourceType>
+        <pd:x>350</pd:x>
+        <pd:y>40</pd:y>
+        <config>
+            <timeout>%%GWROutbound/JDBC/EDIfecsDBConnection/LoginTimeout%%</timeout>
+            <commit>false</commit>
+            <maxRows>%%GWROutbound/JDBC/EDIfecsDBConnection/MaxRows%%</maxRows>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/ProjectComponents/Resources/Connections/JDBC/EDIfecsDBConn.sharedjdbc</jdbcSharedConfig>
+            <statement>select  SEQ_FILE_PRCS_LOG.nextval  from DUAL </statement>
+            <oraObjects/>
+            <oraTables/>
+            <QueryOutputCachedSchemaColumns>NEXTVAL</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>2</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>number</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>OptionalElement</QueryOutputCachedSchemaStatus>
+        </config>
+        <pd:inputBindings>
+            <jdbcQueryActivityInput/>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="UpdateFileRecord">
+        <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+        <pd:x>189</pd:x>
+        <pd:y>289</pd:y>
+        <config>
+            <timeout>10</timeout>
+            <commit>false</commit>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/ProjectComponents/Resources/Connections/JDBC/EDIfecsDBConn.sharedjdbc</jdbcSharedConfig>
+            <statement>UPDATE XE_FILE_PRCS_LOG  set DESCRIPTION = ?, COMPONENT_NAME = ?, FILE_STATUS = ?, UPDATE_TIMESTAMP = sysdate where FILE_TRACKINGID = ?</statement>
+            <Prepared_Param_DataType>
+                <parameter>
+                    <parameterName>DESCRIPTION</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>COMPONENT_NAME</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>FILE_STATUS</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>FILE_TRACKINGID</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+            </Prepared_Param_DataType>
+        </config>
+        <pd:inputBindings>
+            <jdbcUpdateActivityInput>
+                <DESCRIPTION>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/root/Description)">
+                            <xsl:value-of select="$Start/root/Description"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </DESCRIPTION>
+                <COMPONENT_NAME>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/root/ComponentName)">
+                            <xsl:value-of select="$Start/root/ComponentName"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </COMPONENT_NAME>
+                <FILE_STATUS>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/root/FileStatus)">
+                            <xsl:value-of select="$Start/root/FileStatus"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </FILE_STATUS>
+                <FILE_TRACKINGID>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/root/TrackingID)">
+                            <xsl:value-of select="$Start/root/TrackingID"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </FILE_TRACKINGID>
+            </jdbcUpdateActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>GetTPInfo</pd:to>
+        <pd:xpathDescription>INSERT</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Start/root/OperationType = 'INSERT'</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>InsertRecord</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ProcessLogID</pd:from>
+        <pd:to>InsertRecord</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>UpdateFileRecord</pd:to>
+        <pd:xpathDescription>UPDATE</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Start/root/OperationType = 'UPDATE'</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>UpdateFileRecord</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GetTPInfo</pd:from>
+        <pd:to>ProcessLogID</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

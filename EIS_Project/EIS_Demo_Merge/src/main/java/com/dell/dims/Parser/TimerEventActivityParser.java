@@ -3,15 +3,18 @@ package com.dell.dims.Parser;
 
 import com.dell.dims.Model.Activity;
 import com.dell.dims.Model.ActivityType;
+import com.dell.dims.Model.InterfaceInventoryDetails.InterfaceInventory;
 import com.dell.dims.Model.TimerEventActivity;
 import im.nll.data.extractor.Extractors;
 import org.w3c.dom.Node;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static im.nll.data.extractor.Extractors.selector;
 
-public class TimerEventActivityParser extends AbstractActivityParser {
+public class TimerEventActivityParser extends AbstractActivityParser implements IActivityParser{
 
     public Activity parse(String node) throws Exception {
         return null;
@@ -34,6 +37,20 @@ public class TimerEventActivityParser extends AbstractActivityParser {
                 .asString()));
 
        activity.setStartTime(new Date());
+
+        InterfaceInventory interfaceInventory = new InterfaceInventory();
+        interfaceInventory.setActivityNameforInventory(activity.getName());
+        interfaceInventory.setActivityTypeforInventory(activity.getType().toString());
+        interfaceInventory.setInputBindingsforInventory(activity.getInputBindings());
+
+        Map<String,String> mapConfig = new HashMap<String,String>();
+        mapConfig.put("runOnce",Boolean.toString(activity.isRunOnce()));
+
+        interfaceInventory.setConfigforInventory(mapConfig);
+
+
+        addToMap(interfaceInventory);
+
 
         /*activity.setIntervalUnit((TimerUnit)Enum.Parse(TimerUnit.class, XElementParserUtils.GetStringValue(configElement.Element("FrequencyIndex"))));
         activity.setRunOnce(XElementParserUtils.GetBoolValue(configElement.Element("Frequency")));

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	 elementFormDefault="qualified"
+	 attributeFormDefault="unqualified">
+	<xs:element name="FileInfo">
+		<xs:annotation>
+			<xs:documentation>ftp info for a partner</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="FullFileName" type="xs:string"/>
+				<xs:element name="FileName" type="xs:string"/>
+				<xs:element name="Channel" type="xs:string"/>
+				<xs:element name="EDITranType" type="xs:string"/>
+				<xs:element name="GUID" type="xs:string"/>
+				<xs:element name="FTPServer" type="xs:string"/>
+				<xs:element name="FTPUser" type="xs:string"/>
+				<xs:element name="FTPPassword" type="xs:string"/>
+				<xs:element name="PartyID" type="xs:string"/>
+				<xs:element name="MailBox" type="xs:string" minOccurs="0"/>
+				<xs:element name="AccessID" type="xs:string" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

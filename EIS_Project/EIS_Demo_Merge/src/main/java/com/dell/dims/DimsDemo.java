@@ -8,9 +8,9 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @SpringBootApplication
-@ComponentScan
-@org.springframework.context.annotation.Configuration
-@EnableAutoConfiguration
+//@ComponentScan
+//@org.springframework.context.annotation.Configuration
+//@EnableAutoConfiguration
 public class DimsDemo extends WebMvcConfigurerAdapter {
 
     public static void main(String[] args) {

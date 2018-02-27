@@ -68,6 +68,8 @@ import java.util.List;
 })
 public class If
     extends Activity
+  //  extends StructuredActivity
+
 {
 
     @XmlElement(required = true)

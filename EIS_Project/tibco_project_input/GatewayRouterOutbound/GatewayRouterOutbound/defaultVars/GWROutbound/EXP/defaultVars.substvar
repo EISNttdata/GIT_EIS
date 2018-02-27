@@ -1,0 +1,21 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
+	<globalVariables>
+		<globalVariable>
+			<name>EDOCZipPath</name>
+			<value>/data/edi_staging/IESN/EXP/837/FromHPHC/</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1364826088842</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>Target</name>
+			<value>EXP</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1364459211059</modTime>
+		</globalVariable>
+	</globalVariables>
+</repository>

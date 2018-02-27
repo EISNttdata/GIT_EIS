@@ -46,7 +46,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "scope"
 })
 public class ForEach
-    extends Activity
+   // extends Activity
+    extends BasicActivity
 {
 
     @XmlElement(required = true)

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BWSharedResource>
+    <name>TPMConnetion</name>
+    <resourceType>ae.shared.JDBCSharedResource</resourceType>
+    <config>
+        <driver>tibcosoftwareinc.jdbc.oracle.OracleDriver (RAC)</driver>
+        <maxConnections>10</maxConnections>
+        <loginTimeout>0</loginTimeout>
+        <connectionType>JDBC</connectionType>
+        <UseSharedJndiConfig>false</UseSharedJndiConfig>
+        <location>%%GWROutbound/JDBC/URL%%</location>
+        <user>%%GWROutbound/JDBC/User%%</user>
+        <password>%%GWROutbound/JDBC/Password%%</password>
+    </config>
+</BWSharedResource>

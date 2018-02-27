@@ -3,7 +3,7 @@
 <?xml version = "1.0" encoding = "UTF-8" ?>
 
 <process name="${processName}"
-         targetNamespace="http://xmlns.oracle.com/${projectName}/${processName}"
+         targetNamespace="${process.targetNamespace}"
          xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
          xmlns:ora="http://schemas.oracle.com/xpath/extension"
          xmlns:ui="http://xmlns.oracle.com/soa/designer"
@@ -18,8 +18,9 @@
          xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
          xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
          xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
-         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap" xmlns:ns4="http://www.example.org"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
          xmlns:mf="http://www.oracle.com/XSL/Transform/java/com.example.reusable.asset"
+         xmlns:client="http://xmlns.oracle.com/${projectName}/${processName}"
 
          <#list imports as import>
             xmlns:${import.prefix}="${import.namespace}"
@@ -33,11 +34,11 @@
 
 <#list imports as import>
 <import namespace="${import.namespace}"
-        location="${import.location}"  <#if import.importType=="element" >importType="http://www.w3.org/2001/XMLSchema"/></#if>
+        location="${import.location}"  <#if import.importType=="element" >importType="http://www.w3.org/2001/XMLSchema"</#if> />
 </#list>
 
 <#list wsdlImports as import>
 <import ui:processWSDL="true" namespace="${import.namespace}" location="${import.location}"
-         <#if import.importType=="wsdl" >importType="http://schemas.xmlsoap.org/wsdl/"/></#if>
+         <#if import.importType=="wsdl" >importType="http://schemas.xmlsoap.org/wsdl/" /></#if>
 </#list>
 

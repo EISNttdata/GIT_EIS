@@ -3,8 +3,12 @@ package com.dell.dims.Parser;
 import com.dell.dims.Model.Activity;
 import com.dell.dims.Model.ActivityType;
 import com.dell.dims.Model.EngineCommandActivity;
+import com.dell.dims.Model.InterfaceInventoryDetails.InterfaceInventory;
 import im.nll.data.extractor.Extractors;
 import org.w3c.dom.Node;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static im.nll.data.extractor.Extractors.selector;
 /* xml = "<pd:activity name=\"null activity\" xmlns:pd=\"http://xmlns.tibco.com/bw/process/2003\" xmlns:xsl=\"http://w3.org/1999/XSL/Transform\" xmlns:pfx4=\"com/tibco/pe/commands\">\n" +
@@ -20,7 +24,7 @@ import static im.nll.data.extractor.Extractors.selector;
         "</pd:activity>";
  */
 
-public class EngineCommandActivityParser extends AbstractActivityParser
+public class EngineCommandActivityParser extends AbstractActivityParser implements IActivityParser
 {
     public Activity parse(String node) throws Exception {
         return null;
@@ -39,6 +43,19 @@ public class EngineCommandActivityParser extends AbstractActivityParser
                 .extract(selector("command"))
                 .asString());
         activity.setGroupActivity(isGroupActivity);
+
+        InterfaceInventory interfaceInventory = new InterfaceInventory();
+        interfaceInventory.setActivityNameforInventory(activity.getName());
+        interfaceInventory.setActivityTypeforInventory(activity.getType().toString());
+        interfaceInventory.setInputBindingsforInventory(activity.getInputBindings());
+
+        Map<String,String> mapConfig = new HashMap<String,String>();
+        mapConfig.put("command",activity.getCommand());
+
+        interfaceInventory.setConfigforInventory(mapConfig);
+
+
+        addToMap(interfaceInventory);
 
         return activity;
     }

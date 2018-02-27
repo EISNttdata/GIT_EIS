@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx2="http://www.tibco.com/pe/DeployedVarsType" xmlns:pfx="http://www.tibco.com/ns/no_namespace_schema_location/ProjectComponents/Resources/Schemas/FileInfo.xsd">
+    <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/ProjectComponents/Resources/Schemas/FileInfo.xsd" schemaLocation="/ProjectComponents/Resources/Schemas/FileInfo.xsd"/>
+    <pd:name>ProjectComponents/GWROutbound/Process/Sub/TransferFile.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element ref="pfx:FileInfo"/>
+                    <xsd:element name="DirName" type="xsd:string"/>
+                    <xsd:element name="TrxType" type="xsd:string"/>
+                    <xsd:element name="Target" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>93</pd:startX>
+    <pd:startY>136</pd:startY>
+    <pd:returnBindings>
+        <root>
+            <xsl:if test="$ZipEDOCBundleFile/root/LocalEDOCBundleZipFile">
+                <LocalEDOCBundleZipFile>
+                    <xsl:value-of select="$ZipEDOCBundleFile/root/LocalEDOCBundleZipFile"/>
+                </LocalEDOCBundleZipFile>
+            </xsl:if>
+        </root>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="LocalEDOCBundleZipFile" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:endType>
+    <pd:endX>517</pd:endX>
+    <pd:endY>125</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1360598457602</pd:targetNamespace>
+    <pd:activity name="ZipEDOCBundleFile">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>255</pd:x>
+        <pd:y>55</pd:y>
+        <config>
+            <processName>/ProjectComponents/GWROutbound/Process/Sub/ZipEDOCBundleFile.process</processName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <xsl:copy-of select="$Start/root/FileInfo"/>
+                <TrxType>
+                    <xsl:value-of select="$Start/root/TrxType"/>
+                </TrxType>
+                <DirName>
+                    <xsl:value-of select="$Start/root/DirName"/>
+                </DirName>
+                <Target>
+                    <xsl:value-of select="$Start/root/Target"/>
+                </Target>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="CopyPutFile">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>254</pd:x>
+        <pd:y>226</pd:y>
+        <config>
+            <processName>/ProjectComponents/GWROutbound/Process/Sub/CopyPutFile.process</processName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <xsl:copy-of select="$Start/root/FileInfo"/>
+                <DirName>
+                    <xsl:value-of select="$Start/root/DirName"/>
+                </DirName>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>ZipEDOCBundleFile</pd:to>
+        <pd:xpathDescription>EXPXFR</pd:xpathDescription>
+        <pd:lineType>Straight</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Start/root/TrxType = $_globalVariables/pfx2:GlobalVariables/GWROutbound/TxnTypeEXP</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ZipEDOCBundleFile</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Multiple Bends</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>CopyPutFile</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>CopyPutFile</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Multiple Bends</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

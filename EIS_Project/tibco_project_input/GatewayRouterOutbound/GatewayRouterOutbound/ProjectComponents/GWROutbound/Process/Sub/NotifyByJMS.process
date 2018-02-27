@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:ns2="http://www.tibco.com/pe/EngineTypes" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns1="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:ns12="http://www.tibco.com/pe/WriteToLogActivitySchema" xmlns:pfx="http://www.tibco.com/schemas/IESN_NGNS_SERVICE/Shared Resources/Schemas/Schema.xsd">
+    <xsd:import namespace="http://www.tibco.com/schemas/IESN_NGNS_SERVICE/Shared Resources/Schemas/Schema.xsd" schemaLocation="/ProjectComponents/Resources/Schemas/EmailSchema.xsd"/>
+    <pd:name>ProjectComponents/GWROutbound/Process/Sub/NotifyByJMS.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="msg" type="xsd:string"/>
+                    <xsd:element name="level" type="xsd:string"/>
+                    <xsd:element name="subject" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>127</pd:startX>
+    <pd:startY>78</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>589</pd:endX>
+    <pd:endY>78</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1302719629209</pd:targetNamespace>
+    <pd:activity name="JMSNotification">
+        <pd:type>com.tibco.plugin.jms.JMSQueueSendActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueSendActivity</pd:resourceType>
+        <pd:x>375</pd:x>
+        <pd:y>76</pd:y>
+        <config>
+            <PermittedMessageType>Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>%%GWROutbound/JMSNotify/emailQueue%%</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/ProjectComponents/Resources/Connections/JMS/NotifyConn.sharedjmscon</ConnectionReference>
+        </config>
+        <pd:inputBindings>
+            <ns1:ActivityInput>
+                <Body>
+                    <xsl:value-of select="tib:render-xml($MapEmail/root/pfx:Input, true())"/>
+                </Body>
+            </ns1:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="MapEmail">
+        <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+        <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+        <pd:x>266</pd:x>
+        <pd:y>76</pd:y>
+        <config>
+            <element>
+                <xsd:element name="root">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element ref="pfx:Input"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </element>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <pfx:Input>
+                    <pfx:AppID>
+                        <xsl:value-of select="$_globalVariables/ns:GlobalVariables/GWROutbound/Notification/AppID"/>
+                    </pfx:AppID>
+                    <pfx:Body>
+                        <xsl:value-of select="$Start/root/msg"/>
+                    </pfx:Body>
+                    <pfx:EmailCC>
+                        <xsl:value-of select="$_globalVariables/ns:GlobalVariables/GWROutbound/Notification/EmailCC"/>
+                    </pfx:EmailCC>
+                    <pfx:EmailSubject>
+                        <xsl:value-of select="concat($_globalVariables/ns:GlobalVariables/GWROutbound/Env, &quot; - &quot;, $Start/root/level,  &quot;: &quot;, $_globalVariables/ns:GlobalVariables/GWROutbound/Notification/AppID, &quot;---&quot;, $Start/root/subject)"/>
+                    </pfx:EmailSubject>
+                    <pfx:FromEmail>
+                        <xsl:value-of select="$_globalVariables/ns:GlobalVariables/GWROutbound/Notification/FromEmail"/>
+                    </pfx:FromEmail>
+                    <pfx:ReplyTo>
+                        <xsl:value-of select="$_globalVariables/ns:GlobalVariables/GWROutbound/Notification/ReplyTo"/>
+                    </pfx:ReplyTo>
+                    <pfx:ToEmail>
+                        <xsl:value-of select="$_globalVariables/ns:GlobalVariables/GWROutbound/Notification/ToEmail"/>
+                    </pfx:ToEmail>
+                </pfx:Input>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LogSuccess">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>486</pd:x>
+        <pd:y>190</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <ns12:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat('Gateway Outbound Error...........',  &quot;&#xD;&#xA;&quot;,&#xA;'  Unable to send message to queue: ',   $_globalVariables/ns:GlobalVariables/GWROutbound/JMSNotify/emailQueue  ,  &quot;&#xD;&#xA;&quot;,&#xA;' Message : ', &quot;&#xD;&#xA;&quot;,&#xA;' msg: ',$Start/root/msg,  &quot;&#xD;&#xA;&quot;,&#xA;'level: ',$Start/root/level, &quot;&#xD;&#xA;&quot;,&#xA;'subject: ',$Start/root/subject, &quot;&#xD;&#xA;&quot;,&#xA;' Review error log',  &quot;&#xD;&#xA;&quot;,$_error/ns2:ErrorReport)"/>
+                </message>
+            </ns12:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>MapEmail</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>MapEmail</pd:from>
+        <pd:to>JMSNotification</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>JMSNotification</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>JMSNotification</pd:from>
+        <pd:to>LogSuccess</pd:to>
+        <pd:lineType>Multiple Bends</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>error</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogSuccess</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Multiple Bends</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

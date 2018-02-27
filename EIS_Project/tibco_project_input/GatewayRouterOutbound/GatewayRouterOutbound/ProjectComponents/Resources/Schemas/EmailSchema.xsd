@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	 xmlns="http://www.tibco.com/schemas/IESN_NGNS_SERVICE/Shared Resources/Schemas/Schema.xsd"
+	 targetNamespace="http://www.tibco.com/schemas/IESN_NGNS_SERVICE/Shared Resources/Schemas/Schema.xsd"
+	 elementFormDefault="qualified"
+	 attributeFormDefault="unqualified">
+	<xs:element name="EmailCC" type="xs:string"/>
+	<xs:element name="Body" type="xs:string"/>
+	<xs:element name="EmailSubject" type="xs:string"/>
+	<xs:element name="FromEmail" type="xs:string"/>
+	<xs:element name="ToEmail" type="xs:string"/>
+	<xs:element name="AppID" type="xs:string"/>
+	<xs:element name="ReplyTo" type="xs:string"/>
+	<xs:element name="Input">
+		<xs:complexType>
+			<xs:all>
+				<xs:element ref="AppID"/>
+				<xs:element ref="Body"/>
+				<xs:element ref="EmailCC"/>
+				<xs:element ref="EmailSubject"/>
+				<xs:element ref="FromEmail"/>
+				<xs:element ref="ReplyTo"/>
+				<xs:element ref="ToEmail"/>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

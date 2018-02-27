@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns1="http://www.tibco.com/pe/EngineTypes" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns12="http://www.tibco.com/pe/GenerateErrorActivity/InputSchema">
+    <pd:name>ProjectComponents/GWROutbound/Process/Sub/NotifyAndSetStatus.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="errorMsg" type="xsd:string"/>
+                    <xsd:element name="errorSource" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>130</pd:startX>
+    <pd:startY>68</pd:startY>
+    <pd:returnBindings>
+        <root>
+            <status>
+                <xsl:value-of select="&quot;failure&quot;"/>
+            </status>
+        </root>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="status" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:endType>
+    <pd:endX>684</pd:endX>
+    <pd:endY>74</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1302014902271</pd:targetNamespace>
+    <pd:activity name="SendNotification">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>235</pd:x>
+        <pd:y>70</pd:y>
+        <config>
+            <processName>/ProjectComponents/GWROutbound/Process/Sub/NotifyByJMS.process</processName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <msg>
+                    <xsl:value-of select="$Start/root/errorMsg"/>
+                </msg>
+                <level>
+                    <xsl:value-of select="&quot;Error&quot;"/>
+                </level>
+                <subject>
+                    <xsl:value-of select="$Start/root/errorSource"/>
+                </subject>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LogError">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>359</pd:x>
+        <pd:y>67</pd:y>
+        <config>
+            <processName>/ProjectComponents/GWROutbound/Process/Sub/Logger.process</processName>
+        </config>
+        <pd:inputBindings>
+            <LoggingService>
+                <LogHeader>
+                    <ApplicationName>
+                        <xsl:value-of select="$_globalVariables/ns:GlobalVariables/GWROutbound/LoggingSvc/AppName"/>
+                    </ApplicationName>
+                    <ProcessName>
+                        <xsl:value-of select="$_processContext/ns1:ProcessContext/ProjectName"/>
+                    </ProcessName>
+                    <Source>
+                        <xsl:value-of select="$Start/root/errorSource"/>
+                    </Source>
+                    <LogTimestamp>
+                        <xsl:value-of select="current-date()"/>
+                    </LogTimestamp>
+                    <LogType>
+                        <xsl:value-of select="'ERROR'"/>
+                    </LogType>
+                </LogHeader>
+                <LogBody>
+                    <PayloadType>
+                        <xsl:value-of select="'ERROR'"/>
+                    </PayloadType>
+                    <Payload>
+                        <xsl:value-of select="$Start/root/errorMsg"/>
+                    </Payload>
+                </LogBody>
+            </LoggingService>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Generate Error">
+        <pd:type>com.tibco.pe.core.GenerateErrorActivity</pd:type>
+        <pd:resourceType>ae.activities.throw</pd:resourceType>
+        <pd:x>358</pd:x>
+        <pd:y>180</pd:y>
+        <config>
+            <faultName/>
+        </config>
+        <pd:inputBindings>
+            <ns12:ActivityInput>
+                <message>
+                    <xsl:value-of select="'Trading Partner error'"/>
+                </message>
+                <messageCode>
+                    <xsl:value-of select="'TPINACTIVE'"/>
+                </messageCode>
+            </ns12:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>SendNotification</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SendNotification</pd:from>
+        <pd:to>LogError</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogError</pd:from>
+        <pd:to>Generate Error</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogError</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Repository:repository xmlns:Repository="http://www.tibco.com/xmlns/repo/types/2002">
+    <enterpriseArchive>
+        <sharedArchive name="Shared Archive">
+            <resourceType>shared.archive.resource</resourceType>
+            <authorProperty>kyadav</authorProperty>
+        </sharedArchive>
+        <processArchive name="Process Archive">
+            <resourceType>process.archive.resource</resourceType>
+            <authorProperty>rnamburi</authorProperty>
+            <processProperty>/ProjectComponents/GWROutbound/Process/Starter/outBoundRouterStart.process,/ProjectComponents/GWROutbound/Process/Starter/RecvFileStatus.process</processProperty>
+        </processArchive>
+        <versionProperty>8.4</versionProperty>
+        <authorProperty>aathicom</authorProperty>
+        <addServiceSettableGvars>true</addServiceSettableGvars>
+        <name>GatewayRouterOutbound</name>
+        <designer>
+            <lockedProperties/>
+            <fixedChildren/>
+            <resourceDescriptions/>
+        </designer>
+        <fileLocationProperty>C:\HPHC\EAR2SA\2016\Jul_13\GatewayRouterOutbound_SA.ear</fileLocationProperty>
+        <description>Outbound File Tracking</description>
+    </enterpriseArchive>
+</Repository:repository>

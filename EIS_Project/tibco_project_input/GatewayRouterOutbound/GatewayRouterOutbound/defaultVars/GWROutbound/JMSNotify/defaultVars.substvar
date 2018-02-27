@@ -1,0 +1,37 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
+	<globalVariables>
+		<globalVariable>
+			<name>emailQueue</name>
+			<value>HPHC.UAT.IESN.NGNS.SENDEMAIL1</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1329785496399</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>password</name>
+			<value>#!XWWxP3hBkK/ffWl+O4oXbCc06hn7v9zq5zobdmkMduQ=</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>Password</type>
+			<modTime>1329785496399</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>url</name>
+			<value>tcp://lnmdwu001a:7136,tcp://lnmdwu001b:7136</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1365702644881</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>user</name>
+			<value>amxedi</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1329785496399</modTime>
+		</globalVariable>
+	</globalVariables>
+</repository>

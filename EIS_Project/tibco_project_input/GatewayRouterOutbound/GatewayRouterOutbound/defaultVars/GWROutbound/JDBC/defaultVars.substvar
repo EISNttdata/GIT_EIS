@@ -1,0 +1,45 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
+	<globalVariables>
+		<globalVariable>
+			<name>Password</name>
+			<value>#!loqSvcJwFiqDlLxGT0WTsc9zcAQa9vRtqf3KDRdKk/VtWT3N2RzagQ==</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>Password</type>
+			<modTime>1391541789096</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>Timeout</name>
+			<value>10000</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1329785496399</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>URL</name>
+			<value>jdbc:tibcosoftwareinc:oracle://lndbd101a-vip:1521;ServiceName=efxdev1.hphc.org;AlternateServers=( lndbd101b-vip:1521, lndbd101c-vip:1521)</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1386021458912</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>User</name>
+			<value>ecenablement_usr</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1391541789986</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>schema</name>
+			<value>ecenablement3</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1386021459148</modTime>
+		</globalVariable>
+	</globalVariables>
+</repository>

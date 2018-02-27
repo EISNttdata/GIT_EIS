@@ -1,164 +1,84 @@
 package com.dell.dims.Model.InterfaceInventoryDetails;
 
-import java.util.List;
+import com.dell.dims.Model.InterfaceInventoryDetails.WriteInventory;
+
+import java.util.Map;
 
 /**
  * Created by Manoj_Mehta on 2/27/2017.
  */
-public class InterfaceInventory {
+public class InterfaceInventory extends WriteInventory {
 
-    private String connectorName;
-    private String connectorType;
-    private String direction;
-    private String communicationProtocol;
-    private String processor;
-    private List<String> subProcessor;
-    private String ipAddress;
-    private String PortNo;
-    private String serverName;
-    private String connectedConnectorName;
-    private String ftpIP;
-    private String ftpRemoteDirectory;
-    private String preProcessingComponent;
-    private String filePattern;
-    private String ftpConfigurationScriptName;
-    private String picupDirectory;
-    private String cronScheduler;
+    private String activityNameforInventory;
+    private String activityTypeforInventory;
+    private String inputBindingsforInventory;
+    private Map<String,String> configforInventory;
+    private String configProperty;
+    private String configValue;
+    private String inputSchema;
+    private String outputSchema;
 
-
-    public String getConnectorName() {
-        return connectorName;
+    public String getActivityNameforInventory() {
+        return activityNameforInventory;
     }
 
-    public void setConnectorName(String connectorName) {
-        this.connectorName = connectorName;
+    public void setActivityNameforInventory(String activityNameforInventory) {
+        this.activityNameforInventory = activityNameforInventory;
     }
 
-    public String getConnectorType() {
-        return connectorType;
+    public String getActivityTypeforInventory() {
+        return activityTypeforInventory;
     }
 
-    public void setConnectorType(String connectorType) {
-        this.connectorType = connectorType;
+    public void setActivityTypeforInventory(String activityTypeforInventory) {
+        this.activityTypeforInventory = activityTypeforInventory;
     }
 
-    public String getDirection() {
-        return direction;
+    public String getInputBindingsforInventory() {
+        return inputBindingsforInventory;
     }
 
-    public void setDirection(String direction) {
-        this.direction = direction;
+    public void setInputBindingsforInventory(String inputBindingsforInventory) {
+        this.inputBindingsforInventory = inputBindingsforInventory;
     }
 
-    public String getCommunicationProtocol() {
-        return communicationProtocol;
+    public Map<String, String> getConfigforInventory() {
+        return configforInventory;
     }
 
-    public void setCommunicationProtocol(String communicationProtocol) {
-        this.communicationProtocol = communicationProtocol;
+    public void setConfigforInventory(Map<String, String> configforInventory) {
+        this.configforInventory = configforInventory;
     }
 
-    public String getProcessor() {
-        return processor;
+    public String getConfigProperty() {
+        return configProperty;
     }
 
-    public void setProcessor(String processor) {
-        this.processor = processor;
+    public void setConfigProperty(String configProperty) {
+        this.configProperty = configProperty;
     }
 
-    public List<String> getSubProcessor() {
-        return subProcessor;
+    public String getConfigValue() {
+        return configValue;
     }
 
-    public void setSubProcessor(List<String> subProcessor) {
-        this.subProcessor = subProcessor;
+    public void setConfigValue(String configValue) {
+        this.configValue = configValue;
     }
 
-    public String getIpAddress() {
-        return ipAddress;
+    public String getInputSchema() {
+        return inputSchema;
     }
 
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
+    public void setInputSchema(String inputSchema) {
+        this.inputSchema = inputSchema;
     }
 
-    public String getPortNo() {
-        return PortNo;
+    public String getOutputSchema() {
+        return outputSchema;
     }
 
-    public void setPortNo(String portNo) {
-        PortNo = portNo;
-    }
-
-    public String getServerName() {
-        return serverName;
-    }
-
-    public void setServerName(String serverName) {
-        this.serverName = serverName;
-    }
-
-    public String getConnectedConnectorName() {
-        return connectedConnectorName;
-    }
-
-    public void setConnectedConnectorName(String connectedConnectorName) {
-        this.connectedConnectorName = connectedConnectorName;
-    }
-
-    public String getFtpIP() {
-        return ftpIP;
-    }
-
-    public void setFtpIP(String ftpIP) {
-        this.ftpIP = ftpIP;
-    }
-
-    public String getFtpRemoteDirectory() {
-        return ftpRemoteDirectory;
-    }
-
-    public void setFtpRemoteDirectory(String ftpRemoteDirectory) {
-        this.ftpRemoteDirectory = ftpRemoteDirectory;
-    }
-
-    public String getPreProcessingComponent() {
-        return preProcessingComponent;
-    }
-
-    public void setPreProcessingComponent(String preProcessingComponent) {
-        this.preProcessingComponent = preProcessingComponent;
-    }
-
-    public String getFilePattern() {
-        return filePattern;
-    }
-
-    public void setFilePattern(String filePattern) {
-        this.filePattern = filePattern;
-    }
-
-    public String getFtpConfigurationScriptName() {
-        return ftpConfigurationScriptName;
-    }
-
-    public void setFtpConfigurationScriptName(String ftpConfigurationScriptName) {
-        this.ftpConfigurationScriptName = ftpConfigurationScriptName;
-    }
-
-    public String getPicupDirectory() {
-        return picupDirectory;
-    }
-
-    public void setPicupDirectory(String picupDirectory) {
-        this.picupDirectory = picupDirectory;
-    }
-
-    public String getCronScheduler() {
-        return cronScheduler;
-    }
-
-    public void setCronScheduler(String cronScheduler) {
-        this.cronScheduler = cronScheduler;
+    public void setOutputSchema(String outputSchema) {
+        this.outputSchema = outputSchema;
     }
 }

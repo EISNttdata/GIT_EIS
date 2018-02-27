@@ -3,14 +3,19 @@ package com.dell.dims.Parser;
 import com.dell.dims.Model.Activity;
 import com.dell.dims.Model.ActivityType;
 import com.dell.dims.Model.ClassParameter;
+import com.dell.dims.Model.InterfaceInventoryDetails.InterfaceInventory;
 import com.dell.dims.Model.JavaActivity;
 import im.nll.data.extractor.Extractors;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static im.nll.data.extractor.Extractors.selector;
 
@@ -41,8 +46,67 @@ public class JavaActivityParser extends AbstractActivityParser implements IActiv
         javaActivity=parseInputOrOutPutData(node,javaActivity);
 
         javaActivity.setInputBindings(parseInputBindings(node,javaActivity));
+
+
+        InterfaceInventory interfaceInventory = new InterfaceInventory();
+        interfaceInventory.setActivityNameforInventory(javaActivity.getName());
+        interfaceInventory.setActivityTypeforInventory(javaActivity.getType().toString());
+        interfaceInventory.setInputBindingsforInventory(javaActivity.getInputBindings());
+
+        Map<String,String> mapConfig = new HashMap<String,String>();
+        mapConfig.put("fileName",javaActivity.getFileName());
+        mapConfig.put("packageName",javaActivity.getPackageName());
+        mapConfig.put("fullsource",javaActivity.getFullsource());
+
+        interfaceInventory.setConfigforInventory(mapConfig);
+
+        interfaceInventory.setConfigProperty(configProperty(mapConfig));
+        interfaceInventory.setConfigValue(configValue(mapConfig));
+
+        //  interfaceInventory.RendertoXls(interfaceInventory);
+        addToMap(interfaceInventory);
+
         return javaActivity;
     }
+
+    public static String configProperty(Map<String, String> map) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (String key : map.keySet()) {
+            if (stringBuilder.length() > 0) {
+                stringBuilder.append("\n");
+            }
+            String value = map.get(key);
+            try {
+                stringBuilder.append((key != null ? URLEncoder.encode(key, "UTF-8") : ""));
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException("This method requires UTF-8 encoding support", e);
+            }
+        }
+
+        return stringBuilder.toString();
+    }
+
+    public static String configValue(Map<String, String> map) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (String key : map.keySet()) {
+            if (stringBuilder.length() > 0) {
+                stringBuilder.append(System.lineSeparator());
+            }
+            String value = map.get(key);
+            try {
+                stringBuilder.append(value != null ? URLEncoder.encode(value, "UTF-8") : "");
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException("This method requires UTF-8 encoding support", e);
+            }
+        }
+
+        return stringBuilder.toString();
+
+    }
+
+
 
     /**
      * Parse Input/Output Data

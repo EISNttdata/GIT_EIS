@@ -106,9 +106,16 @@ public class NodesExtractorUtil {
         DocumentBuilder builder = builderFactory.newDocumentBuilder();
         Document document = builder.parse(new InputSource(new StringReader(nodeString)));
         Element rootElement = document.getDocumentElement();
-        for(int i=0;i<rootElement.getAttributes().getLength();i++)
+
+        if(rootElement.getAttributes().getLength()==0)
         {
-           return rootElement.getAttributes().item(0).getNodeValue();
+            return rootElement.getNodeName();
+        }
+        else
+        {
+            for (int i = 0; i < rootElement.getAttributes().getLength(); i++) {
+                return rootElement.getAttributes().item(0).getNodeValue();
+            }
         }
         return "";
     }

@@ -1,0 +1,45 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
+	<globalVariables>
+		<globalVariable>
+			<name>AlreadyProcessed</name>
+			<value>N</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1329785496399</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>HdrRecordType</name>
+			<value>000</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1329785496399</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>Platform</name>
+			<value>ISE</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1329785496399</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>TrailerRecordType</name>
+			<value>999</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1329785496399</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>Version</name>
+			<value>1.0  </value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1329785496399</modTime>
+		</globalVariable>
+	</globalVariables>
+</repository>

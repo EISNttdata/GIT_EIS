@@ -3,8 +3,8 @@
 package com.dell.dims.Parser;
 
 import com.dell.dims.Model.ClassParameter;
-import com.dell.dims.Utils.StringSupport;
 import com.dell.dims.Utils.TypeConstant;
+import com.dell.dims.Utils.StringSupport;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 

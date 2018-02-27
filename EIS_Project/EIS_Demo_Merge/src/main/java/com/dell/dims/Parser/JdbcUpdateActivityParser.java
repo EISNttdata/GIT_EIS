@@ -2,12 +2,15 @@ package com.dell.dims.Parser;
 
 import com.dell.dims.Model.Activity;
 import com.dell.dims.Model.ActivityType;
+import com.dell.dims.Model.InterfaceInventoryDetails.InterfaceInventory;
 import com.dell.dims.Model.JdbcUpdateActivity;
 import im.nll.data.extractor.Extractors;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,7 +49,7 @@ public class JdbcUpdateActivityParser extends AbstractActivityParser implements 
 
         // FETCH OTHER PARAMETERS
         //prepared_Param_DataType
-        Map<String,String> mapParams = new HashMap<String,String>();
+        Map<String,String> mapParams = new HashMap<String,String>();;
         NodeList childNodes= node.getChildNodes();
         for (int j = 0; j < childNodes.getLength(); j++) {
             Node configNode = childNodes.item(j);
@@ -95,9 +98,64 @@ public class JdbcUpdateActivityParser extends AbstractActivityParser implements 
         jdbcUpdateActivity.setPrepared_Param_DataType(mapParams);
         jdbcUpdateActivity.setInputBindings(parseInputBindings(node,jdbcUpdateActivity));
 
+        InterfaceInventory interfaceInventory = new InterfaceInventory();
+        interfaceInventory.setActivityNameforInventory(jdbcUpdateActivity.getName());
+        interfaceInventory.setActivityTypeforInventory(jdbcUpdateActivity.getType().toString());
+        interfaceInventory.setInputBindingsforInventory(jdbcUpdateActivity.getInputBindings());
+
+        Map<String,String> mapConfig = new HashMap<String,String>();
+        mapConfig.put("jdbcSharedConfig",jdbcUpdateActivity.getJdbcSharedConfig());
+        mapConfig.put("statement",jdbcUpdateActivity.getStatement());
+        mapConfig.put("timeout",jdbcUpdateActivity.getTimeOut());
+        mapConfig.put("commit", Boolean.toString(jdbcUpdateActivity.isCommit()));
+        mapConfig.put("emptyStrAsNil", Boolean.toString(jdbcUpdateActivity.isEmptyStringAsNull()));
+
+        interfaceInventory.setConfigforInventory(mapConfig);
+
+        interfaceInventory.setConfigProperty(configProperty(mapConfig));
+        interfaceInventory.setConfigValue(configValue(mapConfig));
+
+        addToMap(interfaceInventory);
+
         return jdbcUpdateActivity;
     }
 
+    public static String configProperty(Map<String, String> map) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (String key : map.keySet()) {
+            if (stringBuilder.length() > 0) {
+                stringBuilder.append("\n");
+            }
+            String value = map.get(key);
+            try {
+                stringBuilder.append((key != null ? URLEncoder.encode(key, "UTF-8") : ""));
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException("This method requires UTF-8 encoding support", e);
+            }
+        }
+
+        return stringBuilder.toString();
+    }
+
+    public static String configValue(Map<String, String> map) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (String key : map.keySet()) {
+            if (stringBuilder.length() > 0) {
+                stringBuilder.append(System.lineSeparator());
+            }
+            String value = map.get(key);
+            try {
+                stringBuilder.append(value != null ? URLEncoder.encode(value, "UTF-8") : "");
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException("This method requires UTF-8 encoding support", e);
+            }
+        }
+
+        return stringBuilder.toString();
+
+    }
 
 
 }

@@ -9,7 +9,30 @@ public class ComponentType
   private QName name;
   private String fileName;
   private Document document;
-  
+
+  //new fields added @ MM
+  private Service service;
+  private Reference reference;
+
+
+  public ComponentType() {
+  }
+  public Service getService() {
+    return service;
+  }
+
+  public void setService(Service service) {
+    this.service = service;
+  }
+
+  public Reference getReference() {
+    return reference;
+  }
+
+  public void setReference(Reference reference) {
+    this.reference = reference;
+  }
+
   public ComponentType(Document doc)
   {
     this.document = doc;

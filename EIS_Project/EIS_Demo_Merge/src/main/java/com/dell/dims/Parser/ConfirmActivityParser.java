@@ -3,7 +3,11 @@ package com.dell.dims.Parser;
 import com.dell.dims.Model.Activity;
 import com.dell.dims.Model.ActivityType;
 import com.dell.dims.Model.ConfirmActivity;
+import com.dell.dims.Model.InterfaceInventoryDetails.InterfaceInventory;
 import org.w3c.dom.Node;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /* Sample xml
     xml = "<pd:activity name=\"Mappe Equity\" xmlns:pd=\"http://xmlns.tibco.com/bw/process/2003\" xmlns:xsl=\"http://w3.org/1999/XSL/Transform\">\n" +
@@ -13,7 +17,7 @@ import org.w3c.dom.Node;
         "</config>\n" +
         "<pd:inputBindings/>\n" +
         "</pd:activity>";  */
-public class ConfirmActivityParser extends AbstractActivityParser
+public class ConfirmActivityParser extends AbstractActivityParser implements IActivityParser
 {
     public Activity parse(String node) throws Exception {
         return null;
@@ -27,6 +31,13 @@ public class ConfirmActivityParser extends AbstractActivityParser
 
         activity.setName(parseActivityName(node,isGroupActivity));
         activity.setType(new ActivityType(parseActivityType(node,isGroupActivity)));
+
+        InterfaceInventory interfaceInventory = new InterfaceInventory();
+        interfaceInventory.setActivityNameforInventory(activity.getName());
+        interfaceInventory.setActivityTypeforInventory(activity.getType().toString());
+        interfaceInventory.setInputBindingsforInventory(activity.getInputBindings());
+
+        addToMap(interfaceInventory);
 
         return activity;
     }

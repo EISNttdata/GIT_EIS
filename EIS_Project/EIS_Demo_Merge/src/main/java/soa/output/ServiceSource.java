@@ -2,12 +2,6 @@ package soa.output;
 
 import javax.xml.namespace.QName;
 
-
-
-
-
-
-
 public class ServiceSource
   extends ExternalEndpoint
   implements Source

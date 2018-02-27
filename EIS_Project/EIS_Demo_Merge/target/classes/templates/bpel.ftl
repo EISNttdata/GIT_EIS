@@ -23,9 +23,10 @@
          xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
          xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
          xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
-         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap" xmlns:ns4="http://www.example.org"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
          xmlns:mf="http://www.oracle.com/XSL/Transform/java/com.example.reusable.asset"
          xmlns:gbl="http://xmlns.oracle.com/${projectName}/GlobalVariables"
+         xmlns:client="http://xmlns.oracle.com/${projectName}/${processName}"
 
     <import namespace="http://xmlns.oracle.com/${projectName}/GlobalVariables"
             location="../Schemas/GlobalVariable.xsd" importType="http://www.w3.org/2001/XMLSchema"/>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BWSharedResource>
+    <name>EDIfecsDBConn</name>
+    <resourceType>ae.shared.JDBCSharedResource</resourceType>
+    <config>
+        <driver>tibcosoftwareinc.jdbc.oracle.OracleDriver</driver>
+        <maxConnections>%%GWROutbound/JDBC/EDIfecsDBConnection/MaxConnections%%</maxConnections>
+        <loginTimeout>%%GWROutbound/JDBC/EDIfecsDBConnection/LoginTimeout%%</loginTimeout>
+        <connectionType>JDBC</connectionType>
+        <UseSharedJndiConfig>false</UseSharedJndiConfig>
+        <location>%%GWROutbound/JDBC/EDIfecsDBConnection/URL%%</location>
+        <user>%%GWROutbound/JDBC/EDIfecsDBConnection/UserName%%</user>
+        <password>%%GWROutbound/JDBC/EDIfecsDBConnection/Password%%</password>
+    </config>
+</BWSharedResource>

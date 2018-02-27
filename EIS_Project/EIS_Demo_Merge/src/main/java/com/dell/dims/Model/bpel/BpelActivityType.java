@@ -5,6 +5,6 @@ package com.dell.dims.Model.bpel;
  */
 public enum BpelActivityType {
 
-  SCOPE,SEQUENCE,ASSIGN,ACTIVITY,REPLY
+  SCOPE,SEQUENCE,ASSIGN,ACTIVITY,REPLY,IF,ELSEIF, FOREACH
 
 }

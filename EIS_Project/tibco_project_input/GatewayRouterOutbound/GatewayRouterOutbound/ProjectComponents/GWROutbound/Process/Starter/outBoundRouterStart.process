@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns1="http://www.tibco.com/pe/EngineTypes" xmlns:ns4="http://www.tibco.com/pe/WriteToLogActivitySchema" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns3="www.tibco.com/plugin/Sleep" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:getGUID="java://perot.java.util.GUIDUtil" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <pd:name>ProjectComponents/GWROutbound/Process/Starter/outBoundRouterStart.process</pd:name>
+    <pd:startName>JMS Queue Receiver</pd:startName>
+    <pd:startX>0</pd:startX>
+    <pd:startY>0</pd:startY>
+    <pd:returnBindings/>
+    <pd:starter name="JMS Queue Receiver">
+        <pd:type>com.tibco.plugin.jms.JMSQueueEventSource</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueEventSource</pd:resourceType>
+        <pd:x>67</pd:x>
+        <pd:y>48</pd:y>
+        <config>
+            <PermittedMessageType>Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>%%GWROutbound/JMS/TriggerQueueName%%</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/ProjectComponents/Resources/Connections/JMS/JMS Connection.sharedjmscon</ConnectionReference>
+            <ApplicationProperties>/ProjectComponents/GWROutbound/Resources/JMS/JMS Application Properties.sharedjmsapp</ApplicationProperties>
+        </config>
+        <pd:inputBindings/>
+    </pd:starter>
+    <pd:endName>End</pd:endName>
+    <pd:endX>872</pd:endX>
+    <pd:endY>49</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables>
+        <pvTriggerMsg>
+            <xsd:element name="root">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="FullFileName" type="xsd:string"/>
+                        <xsd:element name="TrackingID" type="xsd:string"/>
+                        <xsd:element name="TradingPartnerID" type="xsd:string"/>
+                        <xsd:element name="TxnType" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </pvTriggerMsg>
+    </pd:processVariables>
+    <pd:targetNamespace>http://xmlns.example.com/1242403217242</pd:targetNamespace>
+    <pd:activity name="CatchAll">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>71</pd:x>
+        <pd:y>204</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <catchAll>true</catchAll>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="ExceptionHandler">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>790</pd:x>
+        <pd:y>270</pd:y>
+        <config>
+            <processName>/ProjectComponents/GWROutbound/Process/Sub/Logger.process</processName>
+        </config>
+        <pd:inputBindings>
+            <LoggingService>
+                <LogHeader>
+                    <ApplicationName>
+                        <xsl:value-of select="$_globalVariables/ns:GlobalVariables/GWROutbound/LoggingSvc/AppName"/>
+                    </ApplicationName>
+                    <ProcessName>
+                        <xsl:value-of select="$_processContext/ns1:ProcessContext/ProjectName"/>
+                    </ProcessName>
+                    <From>
+                        <xsl:value-of select="'OutboundRouter'"/>
+                    </From>
+                    <LogTimestamp>
+                        <xsl:value-of select="current-dateTime()"/>
+                    </LogTimestamp>
+                    <LogType>
+                        <xsl:value-of select="'ERROR'"/>
+                    </LogType>
+                </LogHeader>
+                <LogBody>
+                    <PayloadType>
+                        <xsl:value-of select="'BW_ERROR'"/>
+                    </PayloadType>
+                    <Payload>
+                        <xsl:value-of select="tib:render-xml($_error/ns1:ErrorReport)"/>
+                    </Payload>
+                </LogBody>
+            </LoggingService>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="GetVariable">
+        <pd:type>com.tibco.pe.core.GetSharedVariableActivity</pd:type>
+        <pd:resourceType>ae.activities.getSharedVariable</pd:resourceType>
+        <pd:x>376</pd:x>
+        <pd:y>48</pd:y>
+        <config>
+            <variableConfig>/ProjectComponents/GWROutbound/Resources/SharedVariables/TriggerMsg.jobsharedvariable</variableConfig>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="JMS Send RP">
+        <pd:type>com.tibco.plugin.jms.JMSQueueSendActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueSendActivity</pd:resourceType>
+        <pd:x>630</pd:x>
+        <pd:y>204</pd:y>
+        <config>
+            <PermittedMessageType>Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>%%GWROutbound/JMS/GwyOutRP%%</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/ProjectComponents/Resources/Connections/JMS/JMS Connection.sharedjmscon</ConnectionReference>
+            <ApplicationProperties>/ProjectComponents/GWROutbound/Resources/JMS/JMS Application Properties.sharedjmsapp</ApplicationProperties>
+        </config>
+        <pd:inputBindings>
+            <ns2:ActivityInput>
+                <xsl:copy-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties"/>
+                <Body>
+                    <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/Body"/>
+                </Body>
+            </ns2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LogFailure">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>169</pd:x>
+        <pd:y>204</pd:y>
+        <config>
+            <role>Error</role>
+        </config>
+        <pd:inputBindings>
+            <ns4:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat(&quot;Gateway Outbound Failed...........&quot;,&quot;&#xA;&quot;,&#xA;&quot;FILE NAME: &quot;, $JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Filename,&quot;&#xA;&quot;,&#xA;&quot;Transmission SID: &quot;, $JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/TransmissionSID,&quot;&#xA;&quot;,&#xA;&quot;Interchange_senderId: &quot;, $GetVariable/root/Interchange_senderId,&quot;&#xA;&quot;,&#xA;&quot;Interchange_ReceiverId: &quot;, $GetVariable/root/Interchange_ReceiverId,&quot;&#xA;&quot;,&#xA;&quot;Group_senderId: &quot;, $GetVariable/root/Group_senderId,&quot;&#xA;&quot;,&#xA;&quot;Group_ReceiverId: &quot;, $GetVariable/root/Group_ReceiverId,&quot;&#xA;&quot;,&#xA;&quot;CLAIM TYPE: &quot;, $JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/ClaimType,&#xA;&quot;Error details: &quot;, &quot;&#xD;&#xA;&quot;, &quot;&#xD;&#xA;&quot;,&#xA; tib:render-xml($_error/ns1:ErrorReport, true(),true()))"/>
+                </message>
+            </ns4:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LogSuccess">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>740</pd:x>
+        <pd:y>49</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <ns4:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat(&quot;Gateway Outbound Successful...........&quot;,&quot;&#xA;&quot;,&#xA;&quot;FILE NAME: &quot;, $JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Filename,&quot;&#xA;&quot;,&#xA;&quot;Transmission SID: &quot;, $JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/TransmissionSID,&quot;&#xA;&quot;,&#xA;&quot;Interchange_senderId: &quot;, $GetVariable/root/Interchange_senderId,&quot;&#xA;&quot;,&#xA;&quot;Interchange_ReceiverId: &quot;, $GetVariable/root/Interchange_ReceiverId,&quot;&#xA;&quot;,&#xA;&quot;Group_senderId: &quot;, $GetVariable/root/Group_senderId,&quot;&#xA;&quot;,&#xA;&quot;Group_ReceiverId: &quot;, $GetVariable/root/Group_ReceiverId,&quot;&#xA;&quot;,&#xA;&quot;CLAIM TYPE: &quot;, $JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/ClaimType)"/>
+                </message>
+            </ns4:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Null">
+        <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+        <pd:resourceType>ae.activities.null</pd:resourceType>
+        <pd:x>797</pd:x>
+        <pd:y>367</pd:y>
+        <config/>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Null-1">
+        <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+        <pd:resourceType>ae.activities.null</pd:resourceType>
+        <pd:x>473</pd:x>
+        <pd:y>366</pd:y>
+        <config/>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="outBoundRouter">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>590</pd:x>
+        <pd:y>50</pd:y>
+        <config>
+            <processName>/ProjectComponents/GWROutbound/Process/Main/outboundRouter.process</processName>
+        </config>
+        <pd:inputBindings>
+            <root/>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Send835ERAStatus">
+        <pd:type>com.tibco.plugin.jms.JMSQueueSendActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueSendActivity</pd:resourceType>
+        <pd:x>307</pd:x>
+        <pd:y>366</pd:y>
+        <config>
+            <PermittedMessageType>Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>%%GWROutbound/JMS/ERAStatus%%</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/ProjectComponents/Resources/Connections/JMS/JMS Connection.sharedjmscon</ConnectionReference>
+            <ApplicationProperties>/ProjectComponents/GWROutbound/Resources/JMS/EDI835ERAProps.sharedjmsapp</ApplicationProperties>
+        </config>
+        <pd:inputBindings>
+            <ns2:ActivityInput>
+                <OtherProperties>
+                    <ERADate>
+                        <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/ERADate"/>
+                    </ERADate>
+                    <ERAGUID>
+                        <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/ERAGUID"/>
+                    </ERAGUID>
+                    <ERAStatus>
+                        <xsl:value-of select="'TransferFailed'"/>
+                    </ERAStatus>
+                    <ComponentName>
+                        <xsl:value-of select="'EDIGatewayOutRouter'"/>
+                    </ComponentName>
+                    <EDI835TrackingID>
+                        <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Trackingid"/>
+                    </EDI835TrackingID>
+                    <EDI835Filename>
+                        <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Filename"/>
+                    </EDI835Filename>
+                    <ErrorDetail>
+                        <xsl:value-of select="substring(concat($_error/ns1:ErrorReport/Msg, &quot;More Error information about this message is :&quot;,&#xA; tib:render-xml($GetVariable/root, true(),true())), 1, 512)"/>
+                    </ErrorDetail>
+                </OtherProperties>
+                <Body>
+                    <xsl:value-of select="''"/>
+                </Body>
+            </ns2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="SendNotification">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>632</pd:x>
+        <pd:y>367</pd:y>
+        <config>
+            <processName>/ProjectComponents/GWROutbound/Process/Sub/NotifyByJMS.process</processName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <msg>
+                    <xsl:value-of select="concat($_error/ns1:ErrorReport/Msg, &quot;&#xD;&#xA;&quot;,&quot;           &quot;, &quot;&#xD;&#xA;&quot;, &#xA;&quot;More information about this message is available at:&quot;,&quot;&#xD;&#xA;&quot;,&#xA;&quot;&#x9;&quot;, $_globalVariables/ns:GlobalVariables/GWROutbound/Notification/MessageDocLink,&quot;&#xD;&#xA;&quot;,&quot;&#xD;&#xA;&quot;,&#xA;&quot;Incoming message detail:&quot;, &quot;&#xD;&#xA;&quot;,&#xA; tib:render-xml($GetVariable/root, true(),true()), &quot;&#xD;&#xA;&quot;, &quot;&#xD;&#xA;&quot;,&#xA;&quot;Error details: &quot;, &quot;&#xD;&#xA;&quot;, &quot;&#xD;&#xA;&quot;,&#xA; tib:render-xml($_error/ns1:ErrorReport, true(),true()),&#xA;&quot;               &quot;, &quot;&#xD;&#xA;&quot;,&quot;&#xD;&#xA;&quot;,&quot;&#xD;&#xA;&quot;,&#xA;&quot;Project Name:&quot;,$_processContext/ns1:ProcessContext/ProjectName,&quot;&#xD;&#xA;&quot;,&#xA;&quot;Engine Name:&quot;, $_processContext/ns1:ProcessContext/EngineName,&quot;&#xD;&#xA;&quot;,&quot;&#xD;&#xA;&quot;)"/>
+                </msg>
+                <level>
+                    <xsl:value-of select="&quot;Error&quot;"/>
+                </level>
+                <subject>
+                    <xsl:value-of select="$_error/ns1:ErrorReport/Msg"/>
+                </subject>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="SetTriggerData">
+        <pd:type>com.tibco.pe.core.SetSharedVariableActivity</pd:type>
+        <pd:resourceType>ae.activities.setSharedVariable</pd:resourceType>
+        <pd:x>222</pd:x>
+        <pd:y>48</pd:y>
+        <config>
+            <variableConfig>/ProjectComponents/GWROutbound/Resources/SharedVariables/TriggerMsg.jobsharedvariable</variableConfig>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <FullFileName>
+                    <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/FileReference"/>
+                </FullFileName>
+                <FileName>
+                    <xsl:value-of select="if ($JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Target = 'ISE' ) &#xA;then&#xA;  if (contains($JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Filename , 'EMCEDI') ) &#xA;  then&#xA;       $_globalVariables/ns:GlobalVariables/GWROutbound/FileName/EMC&#xA;  else if (contains($JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Filename , 'NEICUB') ) &#xA;  then&#xA;       $_globalVariables/ns:GlobalVariables/GWROutbound/FileName/NEI &#xA;  else &#xA;       $JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Filename&#xA;else&#xA;  $JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Filename"/>
+                </FileName>
+                <TrackingID>
+                    <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Trackingid"/>
+                </TrackingID>
+                <TradingPartnerID>
+                    <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/TradingpartnerID"/>
+                </TradingPartnerID>
+                <TrxType>
+                    <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Transactiontype"/>
+                </TrxType>
+                <TxnIDGUID>
+                    <xsl:value-of select="getGUID:createGUID()"/>
+                </TxnIDGUID>
+                <EDITxnType>
+                    <xsl:value-of select="{--if ($JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Target='PAYSPAN') then '835'&#xA;else--}&#xA;&#xA; $JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/EDITxnType"/>
+                </EDITxnType>
+                <GroupVersionNumber>
+                    <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/GroupVersionNumber"/>
+                </GroupVersionNumber>
+                <OutMailBox>
+                    <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/OutMailBox"/>
+                </OutMailBox>
+                <target>
+                    <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Target"/>
+                </target>
+                <xsl:if test="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/ClaimType">
+                    <ClaimType>
+                        <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/ClaimType"/>
+                    </ClaimType>
+                </xsl:if>
+                <xsl:if test="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/TransmissionSID">
+                    <TransmissionSID>
+                        <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/TransmissionSID"/>
+                    </TransmissionSID>
+                </xsl:if>
+                <xsl:if test="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Interchange_senderId">
+                    <Interchange_senderId>
+                        <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Interchange_senderId"/>
+                    </Interchange_senderId>
+                </xsl:if>
+                <xsl:if test="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Interchange_ReceiverId">
+                    <Interchange_ReceiverId>
+                        <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Interchange_ReceiverId"/>
+                    </Interchange_ReceiverId>
+                </xsl:if>
+                <xsl:if test="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Group_senderId">
+                    <Group_senderId>
+                        <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Group_senderId"/>
+                    </Group_senderId>
+                </xsl:if>
+                <xsl:if test="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Group_ReceiverId">
+                    <Group_ReceiverId>
+                        <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Group_ReceiverId"/>
+                    </Group_ReceiverId>
+                </xsl:if>
+                <xsl:if test="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/ERADate">
+                    <ERADate>
+                        <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/ERADate"/>
+                    </ERADate>
+                </xsl:if>
+                <xsl:if test="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/ERAGUID">
+                    <ERAGUID>
+                        <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/ERAGUID"/>
+                    </ERAGUID>
+                </xsl:if>
+                <xsl:if test="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/TotalClaimCount">
+                    <TotalClaimCount>
+                        <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/TotalClaimCount"/>
+                    </TotalClaimCount>
+                </xsl:if>
+                <xsl:if test="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/TotalServiceCount">
+                    <TotalServiceCount>
+                        <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/TotalServiceCount"/>
+                    </TotalServiceCount>
+                </xsl:if>
+                <xsl:if test="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/TotalPaymentCount">
+                    <TotalPaymentCount>
+                        <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/TotalPaymentCount"/>
+                    </TotalPaymentCount>
+                </xsl:if>
+                <xsl:if test="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/TotalLinesCount">
+                    <TotalLinesCount>
+                        <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/TotalLinesCount"/>
+                    </TotalLinesCount>
+                </xsl:if>
+                <xsl:if test="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/SUPPFilename">
+                    <SUPPFilename>
+                        <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/SUPPFilename"/>
+                    </SUPPFilename>
+                </xsl:if>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="SendOutboundStatus">
+        <pd:type>com.tibco.plugin.jms.JMSQueueSendActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueSendActivity</pd:resourceType>
+        <pd:x>405</pd:x>
+        <pd:y>204</pd:y>
+        <config>
+            <PermittedMessageType>Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>%%GWROutbound/JMS/FileStatus%%</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/ProjectComponents/Resources/Connections/JMS/JMS Connection.sharedjmscon</ConnectionReference>
+            <ApplicationProperties>/ProjectComponents/GWROutbound/Resources/JMS/FileStatusProps.sharedjmsapp</ApplicationProperties>
+        </config>
+        <pd:inputBindings>
+            <ns2:ActivityInput>
+                <OtherProperties>
+                    <Filename>
+                        <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Filename"/>
+                    </Filename>
+                    <Filestatus>
+                        <xsl:value-of select="'503'"/>
+                    </Filestatus>
+                    <xsl:if test="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Trackingid">
+                        <Trackingid>
+                            <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Trackingid"/>
+                        </Trackingid>
+                    </xsl:if>
+                    <xsl:if test="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/TradingpartnerID">
+                        <TradingpartnerID>
+                            <xsl:value-of select="$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/TradingpartnerID"/>
+                        </TradingpartnerID>
+                    </xsl:if>
+                    <ComponentName>
+                        <xsl:value-of select="'GATEWAYOUT'"/>
+                    </ComponentName>
+                    <OperationType>
+                        <xsl:value-of select="'UPDATE'"/>
+                    </OperationType>
+                </OtherProperties>
+                <Body>
+                    <xsl:value-of select="'TransferFailed'"/>
+                </Body>
+            </ns2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>outBoundRouter</pd:from>
+        <pd:to>LogSuccess</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ExceptionHandler</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SetTriggerData</pd:from>
+        <pd:to>GetVariable</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SendNotification</pd:from>
+        <pd:to>ExceptionHandler</pd:to>
+        <pd:lineType>Multiple Bends</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GetVariable</pd:from>
+        <pd:to>outBoundRouter</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>JMS Queue Receiver</pd:from>
+        <pd:to>SetTriggerData</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogSuccess</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>CatchAll</pd:from>
+        <pd:to>LogFailure</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SendNotification</pd:from>
+        <pd:to>Null</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>error</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ExceptionHandler</pd:from>
+        <pd:to>Null</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>error</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Null</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Send835ERAStatus</pd:from>
+        <pd:to>Null-1</pd:to>
+        <pd:lineType>Multiple Bends</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogFailure</pd:from>
+        <pd:to>Send835ERAStatus</pd:to>
+        <pd:xpathDescription>835Trx</pd:xpathDescription>
+        <pd:lineType>Multiple Bends</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/EDITxnType = '835' or $JMS-Queue-Receiver/ns2:ActivityOutput/OtherProperties/Target='PAYSPAN835'</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>JMS Send RP</pd:from>
+        <pd:to>End</pd:to>
+        <pd:xpathDescription>Tp = 'TPINACTIVE' </pd:xpathDescription>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$_error/ns1:ErrorReport/MsgCode ='TPINACTIVE'</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>JMS Send RP</pd:from>
+        <pd:to>SendNotification</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogFailure</pd:from>
+        <pd:to>SendOutboundStatus</pd:to>
+        <pd:xpathDescription>Otherwise</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Null-1</pd:from>
+        <pd:to>JMS Send RP</pd:to>
+        <pd:lineType>Multiple Bends</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SendOutboundStatus</pd:from>
+        <pd:to>JMS Send RP</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

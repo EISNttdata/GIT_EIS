@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:ns2="http://www.tibco.com/pe/GenerateErrorActivity/InputSchema" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns1="http://www.tibco.com/pe/EngineTypes" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns3="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:CreateZipFile="java://ZipDirFiles" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx="http://www.tibco.com/ns/no_namespace_schema_location/ProjectComponents/Resources/Schemas/FileInfo.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/ProjectComponents/Resources/Schemas/FileInfo.xsd" schemaLocation="/ProjectComponents/Resources/Schemas/FileInfo.xsd"/>
+    <pd:name>ProjectComponents/GWROutbound/Process/Sub/ZipEDOCBundleFile.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element ref="pfx:FileInfo"/>
+                    <xsd:element name="TrxType" type="xsd:string"/>
+                    <xsd:element name="DirName" type="xsd:string"/>
+                    <xsd:element name="Target" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>27</pd:startX>
+    <pd:startY>43</pd:startY>
+    <pd:returnBindings>
+        <root>
+            <xsl:if test="$ZipEDOCBundle/javaCodeActivityOutput/outZipFullFileName">
+                <LocalEDOCBundleZipFile>
+                    <xsl:value-of select="$ZipEDOCBundle/javaCodeActivityOutput/outZipFullFileName"/>
+                </LocalEDOCBundleZipFile>
+            </xsl:if>
+        </root>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="LocalEDOCBundleZipFile" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:endType>
+    <pd:endX>410</pd:endX>
+    <pd:endY>41</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1467125984658</pd:targetNamespace>
+    <pd:activity name="GenerateCraeteZipJavaError">
+        <pd:type>com.tibco.pe.core.GenerateErrorActivity</pd:type>
+        <pd:resourceType>ae.activities.throw</pd:resourceType>
+        <pd:x>153</pd:x>
+        <pd:y>166</pd:y>
+        <config>
+            <faultName/>
+        </config>
+        <pd:inputBindings>
+            <ns2:ActivityInput>
+                <message>
+                    <xsl:value-of select="$ZipEDOCBundle/javaCodeActivityOutput/zipFileStatus"/>
+                </message>
+                <messageCode>
+                    <xsl:value-of select="'GENERROR'"/>
+                </messageCode>
+            </ns2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="ZipEDOCBundle">
+        <pd:type>com.tibco.plugin.java.JavaActivity</pd:type>
+        <pd:resourceType>ae.javapalette.javaActivity</pd:resourceType>
+        <pd:x>151</pd:x>
+        <pd:y>42</pd:y>
+        <config>
+            <fileName>ZipEDOCBundleFileZipEDOCBundle</fileName>
+            <packageName>ProjectComponents.GWROutbound.Process.Sub.ZipEDOCBundleFile</packageName>
+            <fullsource>package ProjectComponents.GWROutbound.Process.Sub.ZipEDOCBundleFile;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+public class ZipEDOCBundleFileZipEDOCBundle{
+/****** START SET/GET METHOD, DO NOT MODIFY *****/
+	protected String inputFilePath = "";
+	protected String inputFileName = "";
+	protected String zipFullFileName = "";
+	protected String zipFileStatus = "";
+	protected String outZipFullFileName = "";
+	protected String controlFullFileName = "";
+	public String getinputFilePath() {
+		return inputFilePath;
+	}
+	public void setinputFilePath(String val) {
+		inputFilePath = val;
+	}
+	public String getinputFileName() {
+		return inputFileName;
+	}
+	public void setinputFileName(String val) {
+		inputFileName = val;
+	}
+	public String getzipFullFileName() {
+		return zipFullFileName;
+	}
+	public void setzipFullFileName(String val) {
+		zipFullFileName = val;
+	}
+	public String getzipFileStatus() {
+		return zipFileStatus;
+	}
+	public void setzipFileStatus(String val) {
+		zipFileStatus = val;
+	}
+	public String getoutZipFullFileName() {
+		return outZipFullFileName;
+	}
+	public void setoutZipFullFileName(String val) {
+		outZipFullFileName = val;
+	}
+	public String getcontrolFullFileName() {
+		return controlFullFileName;
+	}
+	public void setcontrolFullFileName(String val) {
+		controlFullFileName = val;
+	}
+/****** END SET/GET METHOD, DO NOT MODIFY *****/
+	public ZipEDOCBundleFileZipEDOCBundle() {
+	}
+	public void invoke() throws Exception {
+/* Available Variables: DO NOT MODIFY
+	In  : String inputFilePath
+	In  : String inputFileName
+	In  : String zipFullFileName
+	Out : String zipFileStatus
+	Out : String outZipFullFileName
+	Out : String controlFullFileName
+* Available Variables: DO NOT MODIFY *****/
+try {
+            
+        	File inputFile = new File(inputFilePath+"//"+inputFileName);
+		
+        	if (!inputFile.exists()){
+        		zipFileStatus = "FILE NOT FOUND";
+        	}
+            //Create input and output streams
+            FileInputStream inStream = new FileInputStream(inputFile);
+            
+            ZipOutputStream outStream = new ZipOutputStream(new FileOutputStream(zipFullFileName));
+            
+            
+            // Add a zip entry to the output stream
+            outStream.putNextEntry(new ZipEntry(inputFileName));
+            
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            
+            //Each chunk of data read from the input stream
+            //is written to the output stream
+            while ((bytesRead = inStream.read(buffer)) &gt; 0) {
+                outStream.write(buffer, 0, bytesRead);
+            }
+
+            //Close zip entry and file streams
+            outStream.closeEntry();
+
+            outStream.close();
+            inStream.close();
+            outZipFullFileName = zipFullFileName;
+            
+            // Create corresponding control file for EDOC Zip file
+	    controlFullFileName = (outZipFullFileName.substring(0,outZipFullFileName.lastIndexOf('.')))+".ctl";
+	    File controlFile = new File(controlFullFileName);
+            Writer writer = new BufferedWriter(new FileWriter(controlFile));
+            writer.write("FTP Finished for file : "+ outZipFullFileName);
+            writer.close();
+            
+            //Set Zip File Status
+            zipFileStatus =  "SUCCESS";
+            
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            zipFileStatus = ("FAILED: "+ "Exception While creating Zip file, zipFullFileName: "+zipFullFileName+ ", EXCEPTION Message:"+ ex.getMessage()); 
+        }
+}
+}
+</fullsource>
+            <inputData>
+                <row>
+                    <fieldName>inputFilePath</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>required</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>inputFileName</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>required</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>zipFullFileName</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>required</fieldRequired>
+                </row>
+            </inputData>
+            <outputData>
+                <row>
+                    <fieldName>zipFileStatus</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>required</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>outZipFullFileName</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>controlFullFileName</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+            </outputData>
+            <byteCode>
+                <class>
+                    <name>ZipEDOCBundleFileZipEDOCBundle</name>
+                    <byteCode>yv66vgAAADEAlgkAMABQCQAwAFEJADAAUgkAMABTCQAwAFQJADAAVQoAMQBWCABXBwBYBwBZCgAKAFYKAAoAWggAWwoACgBcCgAJAF0KAAkAXggAXwcAYAoAEgBhBwBiBwBjCgAVAF0KABQAZAcAZQoAGABdCgAUAGYKABIAZwoAFABoCgAUAGkKABQAagoAEgBqCgBrAGwKAGsAbQgAbgcAbwcAcAoAJABhCgAjAHEIAHIKAHMAdAoAcwBqCAB1BwB2CgArAHcIAHgIAHkKACsAegcAewcAfAEADWlucHV0RmlsZVBhdGgBABJMamF2YS9sYW5nL1N0cmluZzsBAA1pbnB1dEZpbGVOYW1lAQAPemlwRnVsbEZpbGVOYW1lAQANemlwRmlsZVN0YXR1cwEAEm91dFppcEZ1bGxGaWxlTmFtZQEAE2NvbnRyb2xGdWxsRmlsZU5hbWUBABBnZXRpbnB1dEZpbGVQYXRoAQAUKClMamF2YS9sYW5nL1N0cmluZzsBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQAQc2V0aW5wdXRGaWxlUGF0aAEAFShMamF2YS9sYW5nL1N0cmluZzspVgEAEGdldGlucHV0RmlsZU5hbWUBABBzZXRpbnB1dEZpbGVOYW1lAQASZ2V0emlwRnVsbEZpbGVOYW1lAQASc2V0emlwRnVsbEZpbGVOYW1lAQAQZ2V0emlwRmlsZVN0YXR1cwEAEHNldHppcEZpbGVTdGF0dXMBABVnZXRvdXRaaXBGdWxsRmlsZU5hbWUBABVzZXRvdXRaaXBGdWxsRmlsZU5hbWUBABZnZXRjb250cm9sRnVsbEZpbGVOYW1lAQAWc2V0Y29udHJvbEZ1bGxGaWxlTmFtZQEABjxpbml0PgEAAygpVgEABmludm9rZQEACkV4Y2VwdGlvbnMHAH0BAApTb3VyY2VGaWxlAQAjWmlwRURPQ0J1bmRsZUZpbGVaaXBFRE9DQnVuZGxlLmphdmEMADIAMwwANAAzDAA1ADMMADYAMwwANwAzDAA4ADMMAEkASgEAAAEADGphdmEvaW8vRmlsZQEAF2phdmEvbGFuZy9TdHJpbmdCdWlsZGVyDAB+AH8BAAIvLwwAgAA6DABJAD4MAIEAggEADkZJTEUgTk9UIEZPVU5EAQAXamF2YS9pby9GaWxlSW5wdXRTdHJlYW0MAEkAgwEAHWphdmEvdXRpbC96aXAvWmlwT3V0cHV0U3RyZWFtAQAYamF2YS9pby9GaWxlT3V0cHV0U3RyZWFtDABJAIQBABZqYXZhL3V0aWwvemlwL1ppcEVudHJ5DACFAIYMAIcAiAwAiQCKDACLAEoMAIwASgcAjQwAjgCPDACQAJEBAAQuY3RsAQAWamF2YS9pby9CdWZmZXJlZFdyaXRlcgEAEmphdmEvaW8vRmlsZVdyaXRlcgwASQCSAQAYRlRQIEZpbmlzaGVkIGZvciBmaWxlIDogBwCTDACJAD4BAAdTVUNDRVNTAQATamF2YS9pby9JT0V4Y2VwdGlvbgwAlABKAQA8RkFJTEVEOiBFeGNlcHRpb24gV2hpbGUgY3JlYXRpbmcgWmlwIGZpbGUsIHppcEZ1bGxGaWxlTmFtZTogAQAULCBFWENFUFRJT04gTWVzc2FnZToMAJUAOgEAWlByb2plY3RDb21wb25lbnRzL0dXUk91dGJvdW5kL1Byb2Nlc3MvU3ViL1ppcEVET0NCdW5kbGVGaWxlL1ppcEVET0NCdW5kbGVGaWxlWmlwRURPQ0J1bmRsZQEAEGphdmEvbGFuZy9PYmplY3QBABNqYXZhL2xhbmcvRXhjZXB0aW9uAQAGYXBwZW5kAQAtKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL1N0cmluZ0J1aWxkZXI7AQAIdG9TdHJpbmcBAAZleGlzdHMBAAMoKVoBABEoTGphdmEvaW8vRmlsZTspVgEAGShMamF2YS9pby9PdXRwdXRTdHJlYW07KVYBAAxwdXROZXh0RW50cnkBABsoTGphdmEvdXRpbC96aXAvWmlwRW50cnk7KVYBAARyZWFkAQAFKFtCKUkBAAV3cml0ZQEAByhbQklJKVYBAApjbG9zZUVudHJ5AQAFY2xvc2UBABBqYXZhL2xhbmcvU3RyaW5nAQALbGFzdEluZGV4T2YBAAQoSSlJAQAJc3Vic3RyaW5nAQAWKElJKUxqYXZhL2xhbmcvU3RyaW5nOwEAEyhMamF2YS9pby9Xcml0ZXI7KVYBAA5qYXZhL2lvL1dyaXRlcgEAD3ByaW50U3RhY2tUcmFjZQEACmdldE1lc3NhZ2UAIQAwADEAAAAGAAQAMgAzAAAABAA0ADMAAAAEADUAMwAAAAQANgAzAAAABAA3ADMAAAAEADgAMwAAAA4AAQA5ADoAAQA7AAAAHQABAAEAAAAFKrQAAbAAAAABADwAAAAGAAEAAAAVAAEAPQA+AAEAOwAAACIAAgACAAAABiortQABsQAAAAEAPAAAAAoAAgAAABgABQAZAAEAPwA6AAEAOwAAAB0AAQABAAAABSq0AAKwAAAAAQA8AAAABgABAAAAGwABAEAAPgABADsAAAAiAAIAAgAAAAYqK7UAArEAAAABADwAAAAKAAIAAAAeAAUAHwABAEEAOgABADsAAAAdAAEAAQAAAAUqtAADsAAAAAEAPAAAAAYAAQAAACEAAQBCAD4AAQA7AAAAIgACAAIAAAAGKiu1AAOxAAAAAQA8AAAACgACAAAAJAAFACUAAQBDADoAAQA7AAAAHQABAAEAAAAFKrQABLAAAAABADwAAAAGAAEAAAAnAAEARAA+AAEAOwAAACIAAgACAAAABiortQAEsQAAAAEAPAAAAAoAAgAAACoABQArAAEARQA6AAEAOwAAAB0AAQABAAAABSq0AAWwAAAAAQA8AAAABgABAAAALQABAEYAPgABADsAAAAiAAIAAgAAAAYqK7UABbEAAAABADwAAAAKAAIAAAAwAAUAMQABAEcAOgABADsAAAAdAAEAAQAAAAUqtAAGsAAAAAEAPAAAAAYAAQAAADMAAQBIAD4AAQA7AAAAIgACAAIAAAAGKiu1AAaxAAAAAQA8AAAACgACAAAANgAFADcAAQBJAEoAAQA7AAAAXQACAAEAAAApKrcAByoSCLUAASoSCLUAAioSCLUAAyoSCLUABCoSCLUABSoSCLUABrEAAAABADwAAAAiAAgAAAA5AAQADgAKAA8AEAAQABYAEQAcABIAIgATACgAOgABAEsASgACADsAAAGnAAYACAAAASu7AAlZuwAKWbcACyq0AAG2AAwSDbYADCq0AAK2AAy2AA63AA9MK7YAEJoACSoSEbUABLsAElkrtwATTbsAFFm7ABVZKrQAA7cAFrcAF04tuwAYWSq0AAK3ABm2ABoRBAC8CDoELBkEtgAbWTYFngAPLRkEAxUFtgAcp//rLbYAHS22AB4stgAfKiq0AAO1AAUquwAKWbcACyq0AAUDKrQABRAutgAgtgAhtgAMEiK2AAy2AA61AAa7AAlZKrQABrcADzoGuwAjWbsAJFkZBrcAJbcAJjoHGQe7AApZtwALEie2AAwqtAAFtgAMtgAOtgAoGQe2ACkqEiq1AASnAC5MK7YALCq7AApZtwALEi22AAwqtAADtgAMEi62AAwrtgAvtgAMtgAOtQAEsQABAAAA/AD/ACsAAQA8AAAAYgAYAAAARgAlAEgALABJADIATAA7AE4ATgBSAF0AVABkAFkAcABaAHwAXgCAAGAAhABhAIgAYgCQAGUAtwBmAMQAZwDWAGgA8QBpAPYAbAD8AHEA/wBuAQAAbwEEAHABKgByAEwAAAAEAAEATQABAE4AAAACAE8=</byteCode>
+                </class>
+            </byteCode>
+        </config>
+        <pd:inputBindings>
+            <javaCodeActivityInput>
+                <inputFilePath>
+                    <xsl:value-of select="tib:substring-before-last($Start/root/FileInfo/FullFileName, $_globalVariables/ns:GlobalVariables/GWROutbound/FolderSep)"/>
+                </inputFilePath>
+                <inputFileName>
+                    <xsl:value-of select="$Start/root/FileInfo/FileName"/>
+                </inputFileName>
+                <zipFullFileName>
+                    <xsl:value-of select="concat($_globalVariables/ns:GlobalVariables/GWROutbound/EXP/EDOCZipPath,tib:substring-before-last($Start/root/FileInfo/FileName, '.xml'),'.zip')"/>
+                </zipFullFileName>
+            </javaCodeActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Remove EDOC Bundle">
+        <pd:type>com.tibco.plugin.file.FileRemoveActivity</pd:type>
+        <pd:resourceType>ae.activities.FileRemoveActivity</pd:resourceType>
+        <pd:x>288</pd:x>
+        <pd:y>42</pd:y>
+        <config/>
+        <pd:inputBindings>
+            <ns3:RemoveActivityInputClass>
+                <fileName>
+                    <xsl:value-of select="$Start/root/FileInfo/FullFileName"/>
+                </fileName>
+            </ns3:RemoveActivityInputClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>ZipEDOCBundle</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ZipEDOCBundle</pd:from>
+        <pd:to>GenerateCraeteZipJavaError</pd:to>
+        <pd:xpathDescription>Otherwise</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Remove EDOC Bundle</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ZipEDOCBundle</pd:from>
+        <pd:to>Remove EDOC Bundle</pd:to>
+        <pd:xpathDescription>Success</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$ZipEDOCBundle/javaCodeActivityOutput/zipFileStatus="SUCCESS"</pd:xpath>
+    </pd:transition>
+</pd:ProcessDefinition>

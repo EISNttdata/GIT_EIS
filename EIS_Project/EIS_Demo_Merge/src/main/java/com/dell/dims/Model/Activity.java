@@ -23,6 +23,8 @@ public class Activity extends ActivityGopNode
     private ExtendedQName outputSchemaQname;
     private TibcoBWProcess parentProcess;
 
+    private ActivityClassType classType;
+
     public Activity(String name, ActivityType type) {
         this.name = name;
         this.type = type;
@@ -31,7 +33,13 @@ public class Activity extends ActivityGopNode
     public Activity() throws Exception {
     }
 
+    public ActivityClassType getClassType() {
+        return classType;
+    }
 
+    public void setClassType(ActivityClassType classType) {
+        this.classType = classType;
+    }
     public ExtendedQName getInputSchemaQname() {
         return inputSchemaQname;
     }

@@ -6,6 +6,7 @@ import freemarker.template.TemplateException;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.io.IOException;
 
 /**
@@ -13,7 +14,7 @@ import java.io.IOException;
  */
 public class GenerateErrorActivityBuilder extends AbstractActivityBuilder {
     @Override
-    public void build(Activity activity) throws IOException, SAXException, ParserConfigurationException, TemplateException, IllegalAccessException, InstantiationException, ClassNotFoundException {
+    public void build(Activity activity) throws IOException, SAXException, ParserConfigurationException, TemplateException, IllegalAccessException, InstantiationException, ClassNotFoundException, TransformerException {
 
         GenerateErrorActivity generateErrorActivity= (GenerateErrorActivity) activity;
 

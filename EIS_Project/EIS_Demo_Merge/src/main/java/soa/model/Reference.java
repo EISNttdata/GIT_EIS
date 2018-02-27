@@ -9,9 +9,29 @@ public class Reference {
 
 
   //Added by @Manoj
-  private String wsdlLocation;
+  private String uiWsdlLocation;
   private String interfaceWsdl;
+  private String bindingPort;
+  private String bindingLocation;
+
+  public String getBindingLocation() {
+    return bindingLocation;
+  }
+
+  public void setBindingLocation(String bindingLocation) {
+    this.bindingLocation = bindingLocation;
+  }
+
+  public String getBindingPort() {
+    return bindingPort;
+  }
+
+  public void setBindingPort(String bindingPort) {
+    this.bindingPort = bindingPort;
+  }
+
   private String callbackInterface;
+
 
   public String getType() {
     return type;
@@ -37,12 +57,12 @@ public class Reference {
     this.name_space = name_space;
   }
 
-  public String getWsdlLocation() {
-    return wsdlLocation;
+  public String getUiWsdlLocation() {
+    return uiWsdlLocation;
   }
 
-  public void setWsdlLocation(String wsdlLocation) {
-    this.wsdlLocation = wsdlLocation;
+  public void setUiWsdlLocation(String uiWsdlLocation) {
+    this.uiWsdlLocation = uiWsdlLocation;
   }
 
   public String getInterfaceWsdl() {

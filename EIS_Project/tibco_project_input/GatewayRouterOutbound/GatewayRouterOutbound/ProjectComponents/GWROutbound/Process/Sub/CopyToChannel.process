@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:ns2="http://www.tibco.com/pe/EngineTypes" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns1="http://www.tibco.com/pe/DeployedVarsType" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx="http://www.tibco.com/namespaces/tnt/plugins/file/v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <pd:name>ProjectComponents/GWROutbound/Process/Sub/CopyToChannel.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startX>52</pd:startX>
+    <pd:startY>85</pd:startY>
+    <pd:returnBindings>
+        <root>
+            <channel>
+                <xsl:value-of select="$GetTPInfo/resultSet/outputSet/P_CHANNEL"/>
+            </channel>
+            <mailbag>
+                <xsl:value-of select="$GetTPInfo/resultSet/outputSet/P_INBOX"/>
+            </mailbag>
+            <transferStatus>
+                <xsl:value-of select="if (exists($NofitySetStatus/root/status) and $NofitySetStatus/root/status=&quot;failure&quot;) then &quot;failure&quot;&#xA;else &quot;success&quot;"/>
+            </transferStatus>
+            <xsl:if test="(exists($NofitySetStatus/root/status) and $NofitySetStatus/root/status=&quot;failure&quot;)">
+                <ErrorDetails>
+                    <xsl:value-of select="substring(concat(&quot;Partner info not complete or not active, file is not transferred.&quot;,&quot;&#xD;&#xA;&quot;, &quot;&#xD;&#xA;&quot;, &#xA;&quot;More information about this message is available at:&quot;, &quot;&#xD;&#xA;&quot;,&#xA;&quot;&#x9;&quot;, $_globalVariables/ns1:GlobalVariables/GWROutbound/Notification/MessageDocLink, &quot;&#xD;&#xA;&quot;, &quot;&#xD;&#xA;&quot;,&#xA;&quot;Incoming message detail:&quot;,        &quot;&#xD;&#xA; &quot;,  tib:render-xml($GetTriggerData/root,true(),true()), &quot;  &quot;, &quot;&#xD;&#xA;&quot;, &quot;&#xD;&#xA;&quot;,&#xA;&quot;DB data detail:&quot;,  &quot;&#xD;&#xA;&quot;,&#xA;&quot;&#xD;&#xA;&quot;, &quot;channel:&quot;,$GetTPInfo/resultSet/outputSet/P_CHANNEL,&#xA;&quot;&#xD;&#xA;&quot;, &quot;inbox:&quot;, $GetTPInfo/resultSet/outputSet/P_INBOX,&#xA;&quot;&#xD;&#xA;&quot;, &quot;Active:&quot;,$GetTPInfo/resultSet/outputSet/P_ACTIVE,&#xA;&quot;&#xD;&#xA;&quot;, &quot;ftpuser:&quot;,$GetTPInfo/resultSet/outputSet/P_USER,&#xA;&quot;&#xD;&#xA;&quot;, &quot;ftpserver:&quot;,$GetTPInfo/resultSet/outputSet/P_SERVER,&#xA;&quot;&#xD;&#xA;&quot;, &quot;accessID:&quot;,$GetTPInfo/resultSet/outputSet/P_ACCESS_ID,&quot;&#xD;&#xA;&quot;,&quot;&#xD;&#xA;&quot;,&#xA;&quot;Project name:&quot;, $_processContext/ns2:ProcessContext/ProjectName,&quot;&#xD;&#xA;&quot;,&#xA;&quot;Engine name:&quot;, $_processContext/ns2:ProcessContext/EngineName), 1, 512)"/>
+                </ErrorDetails>
+            </xsl:if>
+            <xsl:if test="$TransferFile/root/LocalEDOCBundleZipFile">
+                <LocalEDOCBundleZipFile>
+                    <xsl:value-of select="$TransferFile/root/LocalEDOCBundleZipFile"/>
+                </LocalEDOCBundleZipFile>
+            </xsl:if>
+        </root>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="channel" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="mailbag" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="transferStatus" type="xsd:string"/>
+                    <xsd:element name="ErrorDetails" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="LocalEDOCBundleZipFile" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:endType>
+    <pd:endX>797</pd:endX>
+    <pd:endY>85</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables>
+        <pvFTPStatus>
+            <xsd:element name="root">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="transferStatus" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </pvFTPStatus>
+    </pd:processVariables>
+    <pd:targetNamespace>http://xmlns.example.com/1242419543940</pd:targetNamespace>
+    <pd:activity name="BuildCopyControlFile">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>654</pd:x>
+        <pd:y>218</pd:y>
+        <config>
+            <processName>/ProjectComponents/GWROutbound/Process/Sub/BuildnCopyControlFile.process</processName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <channel>
+                    <xsl:value-of select="$GetTPInfo/resultSet/outputSet/P_CHANNEL"/>
+                </channel>
+                <mailbag>
+                    <xsl:value-of select="$GetTPInfo/resultSet/outputSet/P_INBOX"/>
+                </mailbag>
+                <trio_access_id>
+                    <xsl:value-of select="$GetTPInfo/resultSet/outputSet/P_ACCESS_ID"/>
+                </trio_access_id>
+                <fileName>
+                    <xsl:value-of select="$GetTriggerData/root/FileName"/>
+                </fileName>
+                <fileType>
+                    <xsl:value-of select="$GetTriggerData/root/TrxType"/>
+                </fileType>
+                <fileSize>
+                    <xsl:value-of select="$Read-File/ns:ReadActivityOutputNoContentClass/fileInfo/size"/>
+                </fileSize>
+                <EDItxnType>
+                    <xsl:value-of select="$GetTriggerData/root/EDITxnType"/>
+                </EDItxnType>
+                <txnid>
+                    <xsl:value-of select="$GetTriggerData/root/TxnIDGUID"/>
+                </txnid>
+                <server>
+                    <xsl:value-of select="$GetTPInfo/resultSet/outputSet/P_SERVER"/>
+                </server>
+                <user>
+                    <xsl:value-of select="$GetTPInfo/resultSet/outputSet/P_USER"/>
+                </user>
+                <password>
+                    <xsl:value-of select="$GetTPInfo/resultSet/outputSet/P_PASSWORD"/>
+                </password>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="FileCompletion">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>410</pd:x>
+        <pd:y>218</pd:y>
+        <config>
+            <processName>/ProjectComponents/GWROutbound/Process/Sub/wait for complete file.process</processName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <fullname>
+                    <xsl:value-of select="$GetTriggerData/root/FullFileName"/>
+                </fullname>
+                <channel>
+                    <xsl:value-of select="$GetTPInfo/resultSet/outputSet/P_CHANNEL"/>
+                </channel>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="GetTPInfo">
+        <pd:type>com.tibco.plugin.jdbc.JDBCCallActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCCallActivity</pd:resourceType>
+        <pd:x>287</pd:x>
+        <pd:y>86</pd:y>
+        <config>
+            <timeout>10</timeout>
+            <maxRows>100</maxRows>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/ProjectComponents/Resources/Connections/JDBC/TPMConnetion.sharedjdbc</jdbcSharedConfig>
+            <schema>%%GWROutbound/JDBC/schema%%</schema>
+            <ProcedureName>EDFCS_CUSTOM_FIELDS</ProcedureName>
+            <parameterTypes>
+                <parameter>
+                    <colName>P_PARTY_SID</colName>
+                    <colType>1</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_CHANNEL</colName>
+                    <colType>4</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_INBOX</colName>
+                    <colType>4</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_ACCESS_ID</colName>
+                    <colType>4</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_USER</colName>
+                    <colType>4</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_PASSWORD</colName>
+                    <colType>4</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_SERVER</colName>
+                    <colType>4</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_ACTIVE</colName>
+                    <colType>4</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+            </parameterTypes>
+        </config>
+        <pd:inputBindings>
+            <inputs>
+                <inputSet>
+                    <P_PARTY_SID>
+                        <xsl:value-of select="$GetTriggerData/root/TradingPartnerID"/>
+                    </P_PARTY_SID>
+                </inputSet>
+            </inputs>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="GetTriggerData">
+        <pd:type>com.tibco.pe.core.GetSharedVariableActivity</pd:type>
+        <pd:resourceType>ae.activities.getSharedVariable</pd:resourceType>
+        <pd:x>169</pd:x>
+        <pd:y>84</pd:y>
+        <config>
+            <variableConfig>/ProjectComponents/GWROutbound/Resources/SharedVariables/TriggerMsg.jobsharedvariable</variableConfig>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="NofitySetStatus">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>555</pd:x>
+        <pd:y>80</pd:y>
+        <config>
+            <processName>/ProjectComponents/GWROutbound/Process/Sub/NotifyAndSetStatus.process</processName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <errorMsg>
+                    <xsl:value-of select="concat(&quot;Partner info not complete or not active, file is not transferred.&quot;,&quot;&#xD;&#xA;&quot;, &quot;&#xD;&#xA;&quot;, &#xA;&quot;More information about this message is available at:&quot;, &quot;&#xD;&#xA;&quot;,&#xA;&quot;&#x9;&quot;, $_globalVariables/ns1:GlobalVariables/GWROutbound/Notification/MessageDocLink, &quot;&#xD;&#xA;&quot;, &quot;&#xD;&#xA;&quot;,&#xA;&quot;Incoming message detail:&quot;,        &quot;&#xD;&#xA; &quot;,  tib:render-xml($GetTriggerData/root,true(),true()), &quot;  &quot;, &quot;&#xD;&#xA;&quot;, &quot;&#xD;&#xA;&quot;,&#xA;&quot;DB data detail:&quot;,  &quot;&#xD;&#xA;&quot;,&#xA;&quot;&#xD;&#xA;&quot;, &quot;channel:&quot;,$GetTPInfo/resultSet/outputSet/P_CHANNEL,&#xA;&quot;&#xD;&#xA;&quot;, &quot;inbox:&quot;, $GetTPInfo/resultSet/outputSet/P_INBOX,&#xA;&quot;&#xD;&#xA;&quot;, &quot;Active:&quot;,$GetTPInfo/resultSet/outputSet/P_ACTIVE,&#xA;&quot;&#xD;&#xA;&quot;, &quot;ftpuser:&quot;,$GetTPInfo/resultSet/outputSet/P_USER,&#xA;&quot;&#xD;&#xA;&quot;, &quot;ftpserver:&quot;,$GetTPInfo/resultSet/outputSet/P_SERVER,&#xA;&quot;&#xD;&#xA;&quot;, &quot;accessID:&quot;,$GetTPInfo/resultSet/outputSet/P_ACCESS_ID,&quot;&#xD;&#xA;&quot;,&quot;&#xD;&#xA;&quot;,&#xA;&quot;Project name:&quot;, $_processContext/ns2:ProcessContext/ProjectName,&quot;&#xD;&#xA;&quot;,&#xA;&quot;Engine name:&quot;, $_processContext/ns2:ProcessContext/EngineName)"/>
+                </errorMsg>
+                <errorSource>
+                    <xsl:value-of select="&quot; Edifecs DB data issue&quot;"/>
+                </errorSource>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Notify">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>793</pd:x>
+        <pd:y>218</pd:y>
+        <config>
+            <processName>/ProjectComponents/GWROutbound/Process/Sub/NotifyByJMS.process</processName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <msg>
+                    <xsl:value-of select="concat(&quot;File is transferred ---&quot;,&quot;&#xD;&#xA;&quot;, &quot;&#xD;&#xA;&quot;,&#xA;&quot;Incoming message detail:&quot;, &quot;&#xD;&#xA;&quot;,&quot;&#xD;&#xA;&quot;,&#xA;tib:render-xml($GetTriggerData, true(), true()),&quot;*&#xD;&#xA;&quot;,&quot;&#xD;&#xA;&quot;,&#xA; &quot;Channel detail:&quot;, &quot;&#xD;&#xA;&quot;,&#xA;&quot;Channel:&quot;,$GetTPInfo/resultSet/outputSet/P_CHANNEL, &quot;|&quot;,&#xA;&quot;Mailbox:&quot;, $GetTPInfo/resultSet/outputSet/P_INBOX, &quot;|&quot;, &#xA;&quot;Active:&quot;, $GetTPInfo/resultSet/outputSet/P_ACTIVE,&quot;|&quot;,&#xA;&quot;User:&quot;, $GetTPInfo/resultSet/outputSet/P_USER,&quot;|&quot;,&#xA;&quot;Server:&quot;,$GetTPInfo/resultSet/outputSet/P_SERVER, &quot;|&quot;,&#xA;&quot;AccessId:&quot;, $GetTPInfo/resultSet/outputSet/P_ACCESS_ID, &quot;&#xD;&#xA;&quot;, &quot;&#xD;&#xA;&quot;,&#xA;&quot;Project name:&quot;, $_processContext/ns2:ProcessContext/ProjectName,&quot;&#xD;&#xA;&quot;,&#xA;&quot;Engine name:&quot;, $_processContext/ns2:ProcessContext/EngineName)"/>
+                </msg>
+                <level>
+                    <xsl:value-of select="&quot;Info&quot;"/>
+                </level>
+                <subject>
+                    <xsl:value-of select="&quot;File is transferred&quot;"/>
+                </subject>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Read File">
+        <pd:type>com.tibco.plugin.file.FileReadActivity</pd:type>
+        <pd:resourceType>ae.activities.FileReadActivity</pd:resourceType>
+        <pd:x>286</pd:x>
+        <pd:y>217</pd:y>
+        <config>
+            <encoding>text</encoding>
+            <excludeContent>true</excludeContent>
+        </config>
+        <pd:inputBindings>
+            <pfx:ReadActivityInputClass>
+                <fileName>
+                    <xsl:value-of select="$GetTriggerData/root/FullFileName"/>
+                </fileName>
+            </pfx:ReadActivityInputClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="TransferFile">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>527</pd:x>
+        <pd:y>218</pd:y>
+        <config>
+            <processName>/ProjectComponents/GWROutbound/Process/Sub/TransferFile.process</processName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <FileInfo>
+                    <FullFileName>
+                        <xsl:value-of select="$GetTriggerData/root/FullFileName"/>
+                    </FullFileName>
+                    <FileName>
+                        <xsl:value-of select="$GetTriggerData/root/FileName"/>
+                    </FileName>
+                    <Channel>
+                        <xsl:value-of select="$GetTPInfo/resultSet/outputSet/P_CHANNEL"/>
+                    </Channel>
+                    <EDITranType>
+                        <xsl:value-of select="$GetTriggerData/root/EDITxnType"/>
+                    </EDITranType>
+                    <GUID>
+                        <xsl:value-of select="$GetTriggerData/root/TxnIDGUID"/>
+                    </GUID>
+                    <FTPServer>
+                        <xsl:value-of select="$GetTPInfo/resultSet/outputSet/P_SERVER"/>
+                    </FTPServer>
+                    <FTPUser>
+                        <xsl:value-of select="$GetTPInfo/resultSet/outputSet/P_USER"/>
+                    </FTPUser>
+                    <FTPPassword>
+                        <xsl:value-of select="$GetTPInfo/resultSet/outputSet/P_PASSWORD"/>
+                    </FTPPassword>
+                    <PartyID>
+                        <xsl:value-of select="$GetTriggerData/root/TradingPartnerID"/>
+                    </PartyID>
+                    <xsl:if test="not(($GetTPInfo/resultSet/outputSet/P_INBOX/@xsi:nil=(&quot;true&quot;)) or ($GetTPInfo/resultSet/outputSet/P_INBOX/@xsi:nil=(&quot;1&quot;)))">
+                        <MailBox>
+                            <xsl:value-of select="$GetTPInfo/resultSet/outputSet/P_INBOX"/>
+                        </MailBox>
+                    </xsl:if>
+                    <xsl:if test="not(($GetTPInfo/resultSet/outputSet/P_ACCESS_ID/@xsi:nil=(&quot;true&quot;)) or ($GetTPInfo/resultSet/outputSet/P_ACCESS_ID/@xsi:nil=(&quot;1&quot;)))">
+                        <AccessID>
+                            <xsl:value-of select="$GetTPInfo/resultSet/outputSet/P_ACCESS_ID"/>
+                        </AccessID>
+                    </xsl:if>
+                </FileInfo>
+                <DirName>
+                    <xsl:value-of select="if ($GetTPInfo/resultSet/outputSet/P_CHANNEL=&quot;WTS&quot; or $GetTPInfo/resultSet/outputSet/P_CHANNEL=&quot;HTS&quot;) &#xA;  then concat($GetTPInfo/resultSet/outputSet/P_INBOX, $_globalVariables/ns1:GlobalVariables/GWROutbound/FolderSep, $_globalVariables/ns1:GlobalVariables/GWROutbound/ChannelRule/DestinationDir)&#xA;else if ($GetTPInfo/resultSet/outputSet/P_CHANNEL=&quot;CSOAP&quot;)&#xA;then &#xA;( if ($GetTriggerData/root/EDITxnType = '835') &#xA;  then concat($_globalVariables/ns1:GlobalVariables/GWROutbound/FolderSep,'sv_caqh',$_globalVariables/ns1:GlobalVariables/GWROutbound/FolderSep,$GetTPInfo/resultSet/outputSet/P_INBOX, $_globalVariables/ns1:GlobalVariables/GWROutbound/FolderSep, $GetTriggerData/root/EDITxnType)&#xA; else concat($_globalVariables/ns1:GlobalVariables/GWROutbound/FolderSep,'sv_caqh',$_globalVariables/ns1:GlobalVariables/GWROutbound/FolderSep,$GetTPInfo/resultSet/outputSet/P_INBOX, $_globalVariables/ns1:GlobalVariables/GWROutbound/FolderSep, $_globalVariables/ns1:GlobalVariables/GWROutbound/ChannelRule/DestinationDir)&#xA;)&#xA;else&#xA;  $GetTriggerData/root/EDITxnType"/>
+                </DirName>
+                <TrxType>
+                    <xsl:value-of select="$GetTriggerData/root/TrxType"/>
+                </TrxType>
+                <Target>
+                    <xsl:value-of select="$GetTriggerData/root/target"/>
+                </Target>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>GetTriggerData</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GetTriggerData</pd:from>
+        <pd:to>GetTPInfo</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Read File</pd:from>
+        <pd:to>FileCompletion</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GetTPInfo</pd:from>
+        <pd:to>Read File</pd:to>
+        <pd:xpathDescription>Success</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>(
+exists($GetTPInfo/resultSet/outputSet) and  string-length(tib:trim($GetTPInfo/resultSet/outputSet/P_CHANNEL)) &gt;  0 and 
+string-length(tib:trim($GetTPInfo/resultSet/outputSet/P_INBOX)) &gt;  0 and $GetTPInfo/resultSet/outputSet/P_ACTIVE="True"
+)
+or
+(
+exists($GetTPInfo/resultSet/outputSet) and  string-length(tib:trim($GetTPInfo/resultSet/outputSet/P_CHANNEL)) &gt;  0 and 
+string-length(tib:trim($GetTPInfo/resultSet/outputSet/P_INBOX)) =  0
+and  tib:trim($GetTPInfo/resultSet/outputSet/P_CHANNEL) =  $_globalVariables/ns1:GlobalVariables/GWROutbound/ChannelNames/HTRIO 
+and $GetTPInfo/resultSet/outputSet/P_ACTIVE="True"
+)</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>BuildCopyControlFile</pd:from>
+        <pd:to>End</pd:to>
+        <pd:xpathDescription/>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GetTPInfo</pd:from>
+        <pd:to>NofitySetStatus</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>NofitySetStatus</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>FileCompletion</pd:from>
+        <pd:to>TransferFile</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>TransferFile</pd:from>
+        <pd:to>BuildCopyControlFile</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Notify</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>BuildCopyControlFile</pd:from>
+        <pd:to>Notify</pd:to>
+        <pd:xpathDescription>SendDebugEmail</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$_globalVariables/ns1:GlobalVariables/GWROutbound/Notification/SendDebugEmails="Y"</pd:xpath>
+    </pd:transition>
+</pd:ProcessDefinition>

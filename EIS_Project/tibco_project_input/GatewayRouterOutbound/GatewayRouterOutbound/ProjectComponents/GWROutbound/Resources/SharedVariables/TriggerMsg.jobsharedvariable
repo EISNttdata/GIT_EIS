@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BWSharedResource xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <name>TriggerMsg</name>
+    <resourceType>ae.shared.jobSharedVariable</resourceType>
+    <config xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        <initialValue>none</initialValue>
+        <xsdString>
+            <xsd:element name="root">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="FullFileName" type="xsd:string"/>
+                        <xsd:element name="FileName" type="xsd:string"/>
+                        <xsd:element name="TrackingID" type="xsd:string"/>
+                        <xsd:element name="TradingPartnerID" type="xsd:string"/>
+                        <xsd:element name="TrxType" type="xsd:string"/>
+                        <xsd:element name="TxnIDGUID" type="xsd:string"/>
+                        <xsd:element name="EDITxnType" type="xsd:string"/>
+                        <xsd:element name="GroupVersionNumber" type="xsd:string"/>
+                        <xsd:element name="OutMailBox" type="xsd:string"/>
+                        <xsd:element name="target" type="xsd:string"/>
+                        <xsd:element name="ClaimType" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="TransmissionSID" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="Interchange_senderId" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="Interchange_ReceiverId" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="Group_senderId" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="Group_ReceiverId" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="ERADate" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="ERAGUID" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="TotalClaimCount" type="xsd:int" minOccurs="0"/>
+                        <xsd:element name="TotalServiceCount" type="xsd:int" minOccurs="0"/>
+                        <xsd:element name="TotalPaymentCount" type="xsd:int" minOccurs="0"/>
+                        <xsd:element name="TotalLinesCount" type="xsd:int" minOccurs="0"/>
+                        <xsd:element name="SUPPFilename" type="xsd:string" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsdString>
+    </config>
+</BWSharedResource>

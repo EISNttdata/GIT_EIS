@@ -96,6 +96,11 @@ public class OutputGenerator
                             handleActivities(processDef.getEndActivity());
                         }
                     }
+                    //starter activity
+                    else if(processDef.getStartActivity().getType().toString().equalsIgnoreCase(ActivityType.jmsQueueEventSourceActivityType.toString()))
+                    {
+                        handleActivities(processDef.getStartActivity());
+                    }
                 }
                 else//End
                 {

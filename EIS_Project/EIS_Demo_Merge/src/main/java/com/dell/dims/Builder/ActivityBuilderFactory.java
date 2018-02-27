@@ -124,6 +124,13 @@ public class ActivityBuilderFactory implements ActivityBuilderInterface
         {
             return new FileRemoveActivityBuilder();
         }
+
+        //starter
+        else if (activityType.toString().equalsIgnoreCase(ActivityType.jmsQueueEventSourceActivityType.toString()))
+        {
+            return new JMSQueueEventSourceActivityBuilder();
+        }
+
         return new DefaultActivityBuilder();
     }
 

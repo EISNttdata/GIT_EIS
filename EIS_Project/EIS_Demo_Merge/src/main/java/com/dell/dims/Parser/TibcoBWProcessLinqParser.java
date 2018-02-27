@@ -1,6 +1,8 @@
 package com.dell.dims.Parser;
 
 import com.dell.dims.Model.*;
+import com.dell.dims.Model.InterfaceInventoryDetails.InterfaceInventory;
+import com.dell.dims.Model.InterfaceInventoryDetails.WriteInventory;
 import com.dell.dims.Parser.Utils.XmlnsConstant;
 import com.dell.dims.ReturnBindings.EndActivityReturnBinding;
 import com.dell.dims.Transition.TransitionFlow;
@@ -86,6 +88,10 @@ public class TibcoBWProcessLinqParser  {
         List<XsdImport> xsdImports = new ArrayList<XsdImport>();
         List<Transition> existingTransitions= new ArrayList<Transition>();
         List<Activity> existingActivities=new ArrayList<Activity>();
+
+        List<InterfaceInventory> inventoryList = new ArrayList<>();
+
+
         for (int i = 0; i < nodes.getLength(); i++) {
             Node node = nodes.item(i);
 
@@ -127,6 +133,12 @@ public class TibcoBWProcessLinqParser  {
         tibcoBwProcess.setXsdImports(xsdImports);
         tibcoBwProcess.setTransitions(existingTransitions);
         tibcoBwProcess.setActivities(existingActivities);
+
+        //inventoryList.add
+/*
+        InterfaceInventory inventory = new InterfaceInventory();
+        inventoryList.add(inventory);
+*/
 
         return tibcoBwProcess;
     }
@@ -638,7 +650,7 @@ public class TibcoBWProcessLinqParser  {
         activity.setActivities(groupActivities); //group activities
         activity.setTransitions(groupTransition); // group transitions
         activities.add(activity);
-        return activities;
+         return activities;
     }
 
     private Activity parseActivity(Activity activity, Node node) throws Exception
@@ -657,6 +669,9 @@ public class TibcoBWProcessLinqParser  {
         }
         return activity;
     }
+
+
+
 
     public List<EndActivityReturnBinding> parseReturnBindings(Node node) throws Exception {
         NodeList childNodes = node.getChildNodes();
@@ -716,6 +731,10 @@ public class TibcoBWProcessLinqParser  {
             ((CallProcessActivity) activity).setSubProcess(pd_subProcess);
         }
     }
+
+
+
+
 }
 
 

@@ -1,0 +1,949 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Document : TrackingInfo.xsd Description: XML Schema for Tracking information
+  of Business Item in Edifecs Transaction Management
+-->
+<xsd:schema targetNamespace="http://com.edifecs/schema/TrackingInfo/1.0"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+    xmlns:ti="http://com.edifecs/schema/TrackingInfo/1.0"
+    elementFormDefault="qualified">
+    
+  <xsd:element name="TrackingInfo" type="ti:tTrackingInfo">
+    <xsd:annotation>
+      <xsd:documentation>
+        Root element for Business Item Tracking Information. 
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  
+  <xsd:complexType name="tTrackingInfo">
+    <xsd:annotation>
+      <xsd:documentation>
+        Definition of TM Business Item Tracking Information.  When passed to
+        the tracking info processor for the first time, the TrackingInfo 
+        element should only include the BusinessItems element.  The 
+        ProcessingInfo element will be added by the tracking info processor
+        the first time the content is processed, and will be updated on each
+        subsequent pass with additional processing information.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:all>
+      <xsd:element name="ProcessingInfo" type="ti:tProcessingInfo" minOccurs="0" />
+      <xsd:element name="BusinessItems" type="ti:tBusinessItems" />
+    </xsd:all>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tBusinessItems">
+    <xsd:annotation>
+      <xsd:documentation>
+        Definition of BusinessItems list element, which simply contains zero or more
+        BusinessItem elements.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="BusinessItem" type="ti:tBusinessItem" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tBusinessItem">
+    <xsd:annotation>
+      <xsd:documentation>
+        Definition of an individual BusinessItem.  As defined by the 
+        tVersionedProcessingElement type, elements of this type may have
+        additional attributes for supporting chronological versioning
+        and tracking info processing status. 
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="ti:tVersionedProcessingElement">
+        <xsd:all>
+          <xsd:element name="Identification" type="ti:tIdentification" />
+          <xsd:element name="Properties" type="ti:tProperties" minOccurs="0" />
+          <xsd:element name="ExternalIDs" type="ti:tExternalIDs" minOccurs="0" />          
+          <xsd:element name="GroupIdentifiers" type="ti:tGroupIdentifiers" minOccurs="0" />
+          <xsd:element name="CustomFields" type="ti:tCustomFields" minOccurs="0" />
+          <xsd:element name="Parties" type="ti:tParties" minOccurs="0" />
+          <xsd:element name="Associations" type="ti:tAssociations" minOccurs="0" />
+          <xsd:element name="Events" type="ti:tEvents" minOccurs="0" />
+          <xsd:element name="Exceptions" type="ti:tExceptions" minOccurs="0" />
+          <xsd:element name="Attachments" type="ti:tAttachments" minOccurs="0" />
+        </xsd:all>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tIdentification">
+    <xsd:annotation>
+      <xsd:documentation>
+        Definition of Identification for a BusinessItem.  Used to identify the
+        business item to which the updates are to be applied, as well as the
+        business item to be related through either an Association or Event. 
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice>
+      <xsd:element name="SID" type="ti:tSID" />
+      <xsd:sequence>
+          <xsd:choice>
+              <xsd:element name="TrackingID" type="ti:tTrackingID" />
+              <xsd:element name="CID" type="ti:tCID" />
+          </xsd:choice>
+        <xsd:element name="ParentTransmission" type="ti:tParentTransmission" minOccurs="0" />
+      </xsd:sequence>
+      <xsd:sequence>
+        <xsd:element name="Type">
+          <xsd:complexType>
+            <xsd:annotation>
+              <xsd:documentation>
+                Item Type
+              </xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleContent>
+              <xsd:extension base="ti:tCreateItemType">
+                <xsd:attribute name="subtype" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Subtype of the Item in the context of its Type.
+                      For example the subtype for a WorkUnit is the WorkUnitType.
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:attribute>
+              </xsd:extension>
+            </xsd:simpleContent>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="ParentTransmission" type="ti:tParentTransmission" minOccurs="0"/>
+      </xsd:sequence>
+
+    </xsd:choice>
+  </xsd:complexType>  
+  
+  <xsd:complexType name="tParentTransmission">
+    <xsd:annotation>
+      <xsd:documentation>
+        Definition of Identification for a parent transmission.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice>
+      <xsd:element name="SID" type="ti:tSID" />
+      <xsd:element name="CID" type="ti:tCID" />       
+      <xsd:element name="TrackingID" type="ti:tTrackingID" />
+    </xsd:choice>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tSID">
+    <xsd:annotation>
+      <xsd:documentation>
+        Definition of a System Identifier
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:nonNegativeInteger">
+        <xsd:attribute name="type" type="xsd:string" use="required" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="tTrackingID">
+    <xsd:annotation>
+      <xsd:documentation>
+        Definition of a Tracking Identifier
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:simpleContent>
+      <xsd:extension base="ti:tStringProcessingElement">
+        <xsd:attribute name="type" type="xsd:string" use="required" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="tCID">
+    <xsd:annotation>
+      <xsd:documentation>
+        Definition of an External Correlation Identifier
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:simpleContent>
+      <xsd:extension base="ti:tStringProcessingElement">
+        <xsd:attribute name="type" type="xsd:string" use="required" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+    
+  <xsd:simpleType name="tCreateItemType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Transmission" />
+      <xsd:enumeration value="WorkUnit" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="tProperties">
+    <xsd:sequence>
+      <xsd:element name="Property" type="ti:tProperty" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tExtendedProperties">
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="PropertyGroup" type="ti:tExtendedPropertyGroup" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tExtendedPropertyGroup">
+    <xsd:sequence>
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+        <xsd:element name="ExtendedProperty" type="ti:tExtendedProperty" />
+      </xsd:choice>
+    </xsd:sequence>
+    <xsd:attribute name="type" type="ti:ExtendedPropertyGroupType" />
+  </xsd:complexType>
+  
+  <xsd:complexType name="tExtendedProperty">
+    <xsd:simpleContent>
+      <xsd:extension base="ti:tStringProcessingElement">
+        <xsd:attribute name="name" type="xsd:string" />
+        <xsd:attribute name="dataType" type="ti:ExtendedPropsDataType" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  
+  <xsd:simpleType name="ExtendedPropertyGroupType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SituationData" />
+      <xsd:enumeration value="ContextData" />
+      <xsd:enumeration value="ComponentData" />
+      <xsd:enumeration value="ExtendedData" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="ExtendedPropsDataType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="AMOUNT" />
+      <xsd:enumeration value="DATE" />
+      <xsd:enumeration value="NUMBER" />
+      <xsd:enumeration value="STRING" />
+      <xsd:enumeration value="COMPLEX" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:complexType name="tProperty">
+    <xsd:simpleContent>
+      <xsd:extension base="ti:tVersionedStringProcessingElement">
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tAssociation">
+    <xsd:complexContent>
+      <xsd:extension base="ti:tProcessingElement">
+        <xsd:sequence>
+          <xsd:element name="RelatedItem" type="ti:tIdentification" />
+        </xsd:sequence>
+        <xsd:attribute name="type" type="xsd:string" />
+        <xsd:attribute name="relatedItemRole" type="ti:enumAssociationRole" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:simpleType name="enumAssociationRole">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Source" />
+      <xsd:enumeration value="Target" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:complexType name="tEvent">
+    <xsd:annotation>
+      <xsd:documentation>
+        Definition of an Edifecs Event
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="ti:tProcessingElement">
+        <xsd:sequence>
+          <xsd:element name="Identification" type="ti:tIdentification" minOccurs="0" />
+          <xsd:element name="Type">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string" />
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="Topic">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string" />
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="Severity" type="ti:enumSeverity" />
+          <xsd:element name="Situation" type="ti:tSituation" />
+          <xsd:element name="Message">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string" />
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="SourceComponent" type="ti:tComponent" />
+          <xsd:element name="ReporterComponent" type="ti:tComponent" minOccurs="0" />
+          <xsd:element name="ExtendedProperties" type="ti:tExtendedProperties" minOccurs="0" />
+          <xsd:element name="ValidationErrors" type="ti:tValidationErrors" minOccurs="0" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tComponent">
+    <xsd:annotation>
+      <xsd:documentation>
+        Definition of Software Component Information element
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="URL">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:anyURI">
+            <xsd:minLength value="1" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="Name" type="xsd:string" minOccurs="0" />
+      <xsd:element name="Type" type="xsd:string" minOccurs="0" />
+      <xsd:element name="Application" type="xsd:string" minOccurs="0" />
+      <xsd:element name="ExecutionEnvironment" type="xsd:string" minOccurs="0" />
+      <xsd:element name="InstanceID" type="xsd:string" minOccurs="0" />
+      <xsd:element name="Location" type="xsd:string" minOccurs="0" />
+      <xsd:element name="LocationType" type="xsd:string" minOccurs="0" />
+      <xsd:element name="ProcessID" type="xsd:string" minOccurs="0" />
+      <xsd:element name="SubComponent" type="xsd:string" minOccurs="0" />
+      <xsd:element name="ThreadID" type="xsd:string" minOccurs="0" />
+    </xsd:sequence>
+  </xsd:complexType>
+    
+  <xsd:complexType name="tSituation">
+    <xsd:sequence>
+      <xsd:element name="Time" type="xsd:dateTime" />
+      <xsd:element name="Category" type="ti:enumSituationCategory" />
+      <xsd:element name="Disposition" type="ti:enumSituationDisposition" />
+      <xsd:element name="ReasoningScope" type="ti:enumSituationReasoningScope" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:simpleType name="enumSeverity">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Fatal" />
+      <xsd:enumeration value="Critical" />
+      <xsd:enumeration value="Major" />
+      <xsd:enumeration value="Normal" />
+      <xsd:enumeration value="Minor" />
+      <xsd:enumeration value="Warning" />
+      <xsd:enumeration value="Harmless" />
+      <xsd:enumeration value="Information" />
+      <xsd:enumeration value="Unknown" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="enumSituationCategory">
+    <xsd:annotation>
+      <xsd:documentation>
+        This enumeration categorize the type of the situation
+        that caused the event to be reported.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="AVAILABLE">
+        <xsd:annotation>
+          <xsd:documentation>
+            This is data that is reported from the component,
+            regarding its operational state and availability.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CONFIGURE">
+        <xsd:annotation>
+          <xsd:documentation>
+            These are messages that components use to identify
+            their configuration.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CONNECT">
+        <xsd:annotation>
+          <xsd:documentation>
+            These are messages that components use to identify
+            aspects about a connection to another component.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CREATE">
+        <xsd:annotation>
+          <xsd:documentation>
+            As the name implies, these are messages documenting when a 
+            component creates an entity.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="DEPENDENCY">
+        <xsd:annotation>
+          <xsd:documentation>
+            These are messages that components produce to say that they 
+            cannot find some component or feature that they need.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="DESTROY">
+        <xsd:annotation>
+          <xsd:documentation>
+            These are messages documenting when an entity or component was 
+            removed or destroyed.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="FEATURE">
+        <xsd:annotation>
+          <xsd:documentation>
+            These are messages that announce that a feature of a component 
+            is now ready (or not ready) for service requests.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="REPORT">
+        <xsd:annotation>
+          <xsd:documentation>
+            This is data that is reported from the component, such as heartbeat
+            or performance information.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="REQUEST">
+        <xsd:annotation>
+          <xsd:documentation>
+            These are messages that a component uses to identify the completion
+            status of a request.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="START">
+        <xsd:annotation>
+          <xsd:documentation>
+            These are messages that deal with the start up process for a 
+            component.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="STOP">
+        <xsd:annotation>
+          <xsd:documentation>
+            These are message that deal with the shutdown process for a 
+            component.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="UNKNOWN">
+        <xsd:annotation>
+          <xsd:documentation>
+            Unknown category.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="enumSituationDisposition">
+    <xsd:annotation>
+      <xsd:documentation>
+        This enumeration specifies the disposition of an operation of a 
+        situation that caused the event to be reported.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="AVAILABLE" />
+      <xsd:enumeration value="CLOSED" />
+      <xsd:enumeration value="FREED" />
+      <xsd:enumeration value="FUNCTION_BLOCK" />
+      <xsd:enumeration value="FUNCTION_PROCESS" />
+      <xsd:enumeration value="HEARTBEAT" />
+      <xsd:enumeration value="INUSE" />
+      <xsd:enumeration value="MET" />
+      <xsd:enumeration value="MGMTTASK_BLOCKED" />
+      <xsd:enumeration value="MGMTTASK_PROCESS" />
+      <xsd:enumeration value="NONSTARTABLE" />
+      <xsd:enumeration value="NOTAVAILABLE" />
+      <xsd:enumeration value="NOTMET" />
+      <xsd:enumeration value="PERFORMANCE" />
+      <xsd:enumeration value="SECURITY" />
+      <xsd:enumeration value="STARTABLE" />
+      <xsd:enumeration value="STATUS" />
+      <xsd:enumeration value="SUCCESSFUL" />
+      <xsd:enumeration value="UNKNOWN" />
+      <xsd:enumeration value="UNSUCCESSFUL" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="enumSituationReasoningScope">
+    <xsd:annotation>
+      <xsd:documentation>
+        This Enumeration specifies the scope of the situation that caused the 
+        event to be reported. In other words whether the impact of the 
+        situation in on within the product or may have an impact on other
+        entities in the serving environment.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="EXTERNAL">
+        <xsd:annotation>
+          <xsd:documentation>
+            The event is caused by external system.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="INTERNAL">
+        <xsd:annotation>
+          <xsd:documentation>
+            The event is caused by internal system.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="UNKNOWN">
+        <xsd:annotation>
+          <xsd:documentation>
+            Scope is not known.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:complexType name="tException">
+    <xsd:complexContent>
+      <xsd:extension base="ti:tProcessingElement">
+        <xsd:sequence>
+          <xsd:element name="Event" type="ti:tEvent" />
+          <xsd:element name="Subject" type="xsd:string" />
+          <xsd:element name="Summary" type="xsd:string" />
+          <xsd:element name="Category" type="xsd:string" minOccurs="0"  maxOccurs="1"/>
+          <xsd:element name="RaisedBy" type="ti:tComponent" minOccurs="0"  maxOccurs="1"/>
+          <xsd:element name="ProjectedDate" type="xsd:dateTime" minOccurs="0"/>
+          <xsd:element name="ExtendedProperties" type="ti:tProperties" minOccurs="0" />
+          <xsd:element name="Attachments" type="ti:tAttachments" minOccurs="0" />
+          <xsd:element name="CustomFields" type="ti:tCustomFields" minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="severity" type="ti:enumSeverity" />
+        <xsd:attribute name="priority" type="ti:enumPriority" />
+        <xsd:attribute name="type" type="xsd:string" />
+        <xsd:attribute name="trackingID" type="xsd:string" />
+        <xsd:attribute name="raisedTime" type="xsd:dateTime" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:simpleType name="enumPriority">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="P1" />
+      <xsd:enumeration value="P2" />
+      <xsd:enumeration value="P3" />
+      <xsd:enumeration value="P4" />
+      <xsd:enumeration value="P5" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="tAttachment">
+    <xsd:complexContent>
+      <xsd:extension base="ti:tProcessingElement">
+        <xsd:sequence>
+          <xsd:element name="Description" type="xsd:string" minOccurs="0" />
+          <xsd:element name="MIMEContentType" type="xsd:string" minOccurs="0" />
+          <xsd:choice>
+              <xsd:element name="URL">
+                  <xsd:complexType>
+                      <xsd:simpleContent>
+                          <xsd:extension base="xsd:anyURI">
+                      <xsd:attribute name="delete" type="xsd:boolean"/>
+                          </xsd:extension>
+                      </xsd:simpleContent>
+                  </xsd:complexType>
+              </xsd:element>
+              <xsd:element name="Data" type="xsd:base64Binary" />
+          </xsd:choice>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string" />
+        <xsd:attribute name="type" type="xsd:string" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tValidationErrors">
+    <xsd:annotation>
+      <xsd:documentation>
+        Data Validation Errors
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="Error" type="ti:tValidationError" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tValidationError">
+    <xsd:annotation>
+      <xsd:documentation>
+        Data Validation Error
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="ti:tProcessingElement">
+        <xsd:sequence>
+          <xsd:element name="ErrorID">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="ID">
+                  <xsd:simpleType>
+              		<xsd:restriction base="xsd:string" />
+            		</xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="Location">
+                  <xsd:complexType>
+                    <xsd:simpleContent>
+                      <xsd:extension base="xsd:string">
+                        <xsd:attribute name="type" type="ti:ErrorLocationType" />
+                      </xsd:extension>
+                    </xsd:simpleContent>
+                  </xsd:complexType>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="TechErrorMessage">
+            <xsd:annotation>
+              <xsd:documentation>
+                Technical Error Message
+              </xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string" />
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="BizErrorMessage">
+            <xsd:annotation>
+              <xsd:documentation>
+                Business Error Message
+              </xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string" />
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="ErrorData" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>
+                Portion of the data which has error
+              </xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string" />
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="PreErrorData" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>
+                Data fragment right before the errored data
+              </xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string" />
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="PostErrorData" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>
+                Data fragment right after the errored data
+              </xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string" />
+            </xsd:simpleType>
+          </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="severity" type="xsd:string">
+          <xsd:annotation>
+            <xsd:documentation>
+              Error Severity
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="SNIPType" type="ti:enumSNIPType">
+          <xsd:annotation>
+            <xsd:documentation>
+              SNIP Type for this Error
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="offset" type="xsd:nonNegativeInteger" use="optional" default="0">
+          <xsd:annotation>
+            <xsd:documentation>
+              Offset in bytes in the data file where the error has occurred
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="size" type="xsd:string" use="optional" default="1">
+          <xsd:annotation>
+            <xsd:documentation>
+              Size in bytes of the data fragment that is in error
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:simpleType name="enumSNIPType">
+    <xsd:annotation>
+      <xsd:documentation>
+        SNIP Types
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="BALANCING">
+        <xsd:annotation>
+          <xsd:documentation>
+            Balancing fields testing
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="EDI_SYNTAX">
+        <xsd:annotation>
+          <xsd:documentation>
+            EDI syntax integrity testing
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="EXTERNAL_CODE_SET">
+        <xsd:annotation>
+          <xsd:documentation>
+            External code set testing
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="IG_SYNTAX">
+        <xsd:annotation>
+          <xsd:documentation>
+            HIPAA syntactical requirement testing
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="LINE_OF_SERVICE">
+        <xsd:annotation>
+          <xsd:documentation>
+            Product types or line of services
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="NOT_APPLICABLE">
+        <xsd:annotation>
+          <xsd:documentation>
+            No value was submitted in this field
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="PARTNER_SPECIFIC">
+        <xsd:annotation>
+          <xsd:documentation>
+            Implementation Guide-Specific Trading Partners
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="SITUATIONAL">
+        <xsd:annotation>
+          <xsd:documentation>
+            Situation testing
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="SYSTEM">
+        <xsd:annotation>
+          <xsd:documentation>
+            Internal System testing
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="UNKNOWN">
+        <xsd:annotation>
+          <xsd:documentation>
+            Unknown Snip type
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:complexType name="tExternalIDs">
+    <xsd:sequence>
+      <xsd:element name="CID" type="ti:tCID" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tCustomFields">
+    <xsd:sequence>
+      <xsd:element name="CustomField" type="ti:tCustomField" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tCustomField">
+    <xsd:annotation>
+      <xsd:documentation>
+        Custom Field Information
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:simpleContent>
+      <xsd:extension base="ti:tStringProcessingElement">
+        <xsd:attribute name="name" type="xsd:string" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tGroupIdentifiers">
+    <xsd:sequence>
+      <xsd:element name="GroupIdentifier" type="ti:tGroupIdentifier" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tGroupIdentifier">
+    <xsd:annotation>
+      <xsd:documentation>
+        Group Identifier Information
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:simpleContent>
+      <xsd:extension base="ti:tStringProcessingElement">
+        <xsd:attribute name="defname" type="xsd:string" use="required" />
+        <xsd:attribute name="rolename" type="xsd:string" use="required" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="tAssociations">
+    <xsd:sequence>
+      <xsd:element name="Association" type="ti:tAssociation" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tProcessingElement">
+    <xsd:attribute name="processingErrors" type="xsd:string" />
+    <xsd:attribute name="loadedByProcessId" type="xsd:integer" />
+  </xsd:complexType>
+  
+  <xsd:complexType name="tVersionedProcessingElement">
+    <xsd:complexContent>
+      <xsd:extension base="ti:tProcessingElement">
+        <xsd:attribute name="timestamp" type="xsd:dateTime" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tStringProcessingElement">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="processingErrors" type="xsd:string" />
+        <xsd:attribute name="loadedByProcessId" type="xsd:integer" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tVersionedStringProcessingElement">
+    <xsd:simpleContent>
+      <xsd:extension base="ti:tStringProcessingElement">
+        <xsd:attribute name="timestamp" type="xsd:dateTime" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tAttachments">
+    <xsd:sequence>
+      <xsd:element name="Attachment" type="ti:tAttachment" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tEvents">
+    <xsd:sequence>
+      <xsd:element name="Event" type="ti:tEvent" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tExceptions">
+    <xsd:sequence>
+      <xsd:element name="Exception" type="ti:tException" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tParties">
+    <xsd:sequence>
+      <xsd:element name="Party" type="ti:tParty" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tParty">
+    <xsd:complexContent>
+      <xsd:extension base="ti:tProcessingElement">
+        <xsd:sequence>
+          <xsd:choice>
+            <xsd:element name="ExternalID" type="xsd:string" />
+            <xsd:element name="Identifier" type="ti:tIdentifier" />
+            <xsd:element name="SID" type="xsd:nonNegativeInteger" />
+          </xsd:choice>
+        </xsd:sequence>
+        <xsd:attribute name="role" type="ti:enumPartyRole" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:simpleType name="enumPartyRole">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Originator" />
+      <xsd:enumeration value="Sender" />
+      <xsd:enumeration value="Receiver" />
+      <xsd:enumeration value="Destination" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:complexType name="tIdentifier">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="qualifier" type="xsd:string" use="required" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  
+  <xsd:simpleType name="ErrorLocationType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Unknown" />
+      <xsd:enumeration value="X12" />
+      <xsd:enumeration value="PFF" />
+      <xsd:enumeration value="NCPDP" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:complexType name="tProcessingInfo">
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="Process" type="ti:tProcess" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tProcess">
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="ProcessingError" type="ti:tProcessingError" />
+    </xsd:sequence>
+    <xsd:attribute name="id" type="xsd:string" />
+    <xsd:attribute name="errorsCount" type="xsd:integer" />
+    <xsd:attribute name="result" type="ti:tProcessingResult" />
+  </xsd:complexType>
+  
+  <xsd:simpleType name="tProcessingResult">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Success" />
+      <xsd:enumeration value="Failed" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:complexType name="tProcessingError">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="id" type="xsd:string" />
+        <xsd:attribute name="xpath" type="xsd:string" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+</xsd:schema>

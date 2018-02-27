@@ -88,19 +88,7 @@ public class AdapterSubscriberActivityParser extends AbstractActivityParser impl
                 .extract(selector("outputSchema"))
                 .asString());
 
-        //outputSchemaElement = configElement.Element(AeSubscriberPropertyPrefix + "outputMeta");
-      /*  String outputSchemaElement=config.getOutputMeta();
-        if (outputSchemaElement != null)
-        {
-            String outputSchema = Extractors.on(outputSchemaElement)
-                    .extract(new SelectorExtractor("aeMeta"))
-                    .asString();
-
-            activity.setOutputSchema(outputSchema);
-            //activity.setOutputSchema(XElementParserUtils.GetStringValue(outputSchemaElement.Element("aeMeta")));
-        }*/
-
-        return activity;
+            return activity;
     }
 }
 

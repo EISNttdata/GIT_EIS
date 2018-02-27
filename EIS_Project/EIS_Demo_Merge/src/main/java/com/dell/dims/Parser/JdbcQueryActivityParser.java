@@ -3,12 +3,15 @@ package com.dell.dims.Parser;
 import com.dell.dims.Model.Activity;
 import com.dell.dims.Model.ActivityType;
 import com.dell.dims.Model.ClassParameter;
+import com.dell.dims.Model.InterfaceInventoryDetails.InterfaceInventory;
 import com.dell.dims.Model.JdbcQueryActivity;
 import im.nll.data.extractor.Extractors;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,20 +48,7 @@ public class JdbcQueryActivityParser extends AbstractActivityParser implements I
                 .extract(selector("jdbcSharedConfig"))
                 .asString());
 
-        //For QueryStatementParameters extraction using Nodes to get values as using aove extraction we cannot extract all childs which r at same level.
-
-        /* <Prepared_Param_DataType>
-                <parameter>
-                    <parameterName>outFilename</parameterName>
-                    <dataType>VARCHAR</dataType>
-                </parameter>
-                <parameter>
-                    <parameterName>ack997URI</parameterName>
-                    <dataType>VARCHAR</dataType>
-                </parameter>
-                </Prepared_Param_DataType>
-               */
-        Map<String,String> mapParams = new HashMap<String,String>();
+        Map<String,String> mapParams = new HashMap<String,String>();;
         NodeList childNodes= node.getChildNodes();
         for (int j = 0; j < childNodes.getLength(); j++) {
             Node configNode = childNodes.item(j);
@@ -110,8 +100,66 @@ public class JdbcQueryActivityParser extends AbstractActivityParser implements I
         jdbcQueryActivity.setQueryOutputStatementParameters(getOutputParameters(node));
         jdbcQueryActivity.setInputBindings(parseInputBindings(node,jdbcQueryActivity));
 
+
+        InterfaceInventory interfaceInventory = new InterfaceInventory();
+        interfaceInventory.setActivityNameforInventory(jdbcQueryActivity.getName());
+        interfaceInventory.setActivityTypeforInventory(jdbcQueryActivity.getType().toString());
+        interfaceInventory.setInputBindingsforInventory(jdbcQueryActivity.getInputBindings());
+
+        Map<String,String> mapConfig = new HashMap<String,String>();
+        mapConfig.put("jdbcSharedConfig",jdbcQueryActivity.getJdbcSharedConfig());
+        mapConfig.put("statement",jdbcQueryActivity.getQueryStatement());
+        mapConfig.put("timeout",jdbcQueryActivity.getTimeOut());
+        mapConfig.put("commit", Boolean.toString(jdbcQueryActivity.isCommit()));
+        mapConfig.put("emptyStrAsNil", Boolean.toString(jdbcQueryActivity.isEmptyStringAsNull()));
+
+        interfaceInventory.setConfigforInventory(mapConfig);
+
+        interfaceInventory.setConfigProperty(configProperty(mapConfig));
+        interfaceInventory.setConfigValue(configValue(mapConfig));
+
+         addToMap(interfaceInventory);
+
         return jdbcQueryActivity;
     }
+
+    public static String configProperty(Map<String, String> map) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (String key : map.keySet()) {
+            if (stringBuilder.length() > 0) {
+                stringBuilder.append("\n");
+            }
+            String value = map.get(key);
+            try {
+                stringBuilder.append((key != null ? URLEncoder.encode(key, "UTF-8") : ""));
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException("This method requires UTF-8 encoding support", e);
+            }
+        }
+
+        return stringBuilder.toString();
+    }
+
+    public static String configValue(Map<String, String> map) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (String key : map.keySet()) {
+            if (stringBuilder.length() > 0) {
+                stringBuilder.append(System.lineSeparator());
+            }
+            String value = map.get(key);
+            try {
+                stringBuilder.append(value != null ? URLEncoder.encode(value, "UTF-8") : "");
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException("This method requires UTF-8 encoding support", e);
+            }
+        }
+
+        return stringBuilder.toString();
+
+    }
+
 
     private List<ClassParameter> getOutputParameters(Node node) throws Exception {
 

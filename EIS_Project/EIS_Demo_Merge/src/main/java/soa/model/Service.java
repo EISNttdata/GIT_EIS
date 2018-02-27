@@ -13,7 +13,26 @@ public class Service {
     //Added by @Manoj
     private String wsdlLocation;
     private String interfaceWsdl;
+    private String bindingPort;
+    private String bindingLocation;
     private String callbackInterface;
+
+
+    public String getBindingPort() {
+        return bindingPort;
+    }
+
+    public void setBindingPort(String bindingPort) {
+        this.bindingPort = bindingPort;
+    }
+
+    public String getBindingLocation() {
+        return bindingLocation;
+    }
+
+    public void setBindingLocation(String bindingLocation) {
+        this.bindingLocation = bindingLocation;
+    }
 
     public String getType() {
         return type;

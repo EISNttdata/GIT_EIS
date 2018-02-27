@@ -1,0 +1,45 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
+	<globalVariables>
+		<globalVariable>
+			<name>Daemon</name>
+			<value>tcp:7700</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1329785496399</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>GNSSubj</name>
+			<value>HPHC.UAT.SEND.EMAIL</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1329785496399</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>LoggingSvcSubj</name>
+			<value>HPHC.UAT.LOGSERVICE.LOGGING.STORE</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1329785496399</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>Network</name>
+			<value>;239.0.2.10</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1329785496399</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>Service</name>
+			<value>7700</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1329785496399</modTime>
+		</globalVariable>
+	</globalVariables>
+</repository>

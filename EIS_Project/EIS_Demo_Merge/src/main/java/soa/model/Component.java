@@ -9,10 +9,18 @@ import java.util.List;
 public class Component
 {
     private String name;
-    private String implementationBpel;
-    private List<Service> listService;
-    private List<Reference> listReference;
+   private String implementationBpel;
+   /* private List<Service> listService;
+    private List<Reference> listReference;*/
     ComponentType componentType;
+
+    public String getImplementationBpel() {
+        return implementationBpel;
+    }
+
+    public void setImplementationBpel(String implementationBpel) {
+        this.implementationBpel = implementationBpel;
+    }
 
     private LinkedHashSet<String> componentNames;
 
@@ -24,21 +32,6 @@ public class Component
         this.componentNames = componentNames;
     }
 
-    public List<Service> getListService() {
-        return listService;
-    }
-
-    public void setListService(List<Service> listService) {
-        this.listService = listService;
-    }
-
-    public List<Reference> getListReference() {
-        return listReference;
-    }
-
-    public void setListReference(List<Reference> listReference) {
-        this.listReference = listReference;
-    }
 
     public Component(String name) {
         this.name = name;
@@ -52,15 +45,7 @@ public class Component
         this.name = name;
     }
 
-    public String getImplementationBpel() {
-        return implementationBpel;
-    }
-
-    public void setImplementationBpel(String implementationBpel) {
-        this.implementationBpel = implementationBpel;
-    }
-
-    public ComponentType getComponentType() {
+   public ComponentType getComponentType() {
         return componentType;
     }
 

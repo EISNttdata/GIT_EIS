@@ -3,6 +3,7 @@ package com.dell.dims.Parser;
 import com.dell.dims.Model.Activity;
 import com.dell.dims.Model.ActivityType;
 import com.dell.dims.Model.ClassParameter;
+import com.dell.dims.Model.InterfaceInventoryDetails.InterfaceInventory;
 import com.dell.dims.Model.MapperActivity;
 import com.dell.dims.Utils.NodesExtractorUtil;
 import org.w3c.dom.Node;
@@ -95,6 +96,14 @@ public class MapperActivityParser extends AbstractActivityParser implements IAct
             }
         }
         mapperActivity.setInputBindings(parseInputBindings(node,mapperActivity));
+
+
+        /*InterfaceInventory interfaceInventory = new InterfaceInventory();
+        interfaceInventory.setActivityNameforInventory(mapperActivity.getName());
+        interfaceInventory.setActivityTypeforInventory(mapperActivity.getType().toString());
+        interfaceInventory.setInputBindingsforInventory(mapperActivity.getInputBindings());
+
+        addToMap(interfaceInventory);*/
 
         return mapperActivity;
     }

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://www.example.org"
+
+            targetNamespace="http://www.example.org" elementFormDefault="qualified"
+            xmlns:tns="http://www.tibco.com/namespaces/tnt/plugins/file" >
+
+<!--copyActivity input schema-->
+<xsd:element name="CopyActivityInputClass">
+<xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="fromFileName" type="xsd:string"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="toFileName" type="xsd:string"/>
+                </xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+
+<!--ReadActivityInput schema-->
+<xsd:element name="ReadActivityInputClass">
+<xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="fileName" type="xsd:string"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="encoding" type="xsd:string"/>
+                </xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+
+<!--ReadActivityOutputClass schema-->
+<xsd:element name="ReadActivityOutputClass">
+ <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="1" name="fileInfo" type="tns:fileInfoType"/>
+                    <xsd:element maxOccurs="1" minOccurs="1" name="fileContent" type="tns:fileContentTypeTextClass"/>
+                </xsd:sequence>
+            </xsd:complexType>
+</xsd:element>
+
+<!--RenameActivityInputClass schema-->
+<xsd:element name="RenameActivityInputClass">
+<xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="fromFileName" type="xsd:string"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="toFileName" type="xsd:string"/>
+                </xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+
+<!--RenameActivityOutput schema-->
+ <xsd:element name="RenameActivityOutput">
+    <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="1" name="fileInfo" type="tns:fileInfoType"/>
+                </xsd:sequence>
+            </xsd:complexType>
+  </xsd:element>
+
+
+  <!--WriteActivityInput schema-->
+  <xsd:element name="WriteActivityInput">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="fileName" type="xsd:string"/>
+                    <xsd:element maxOccurs="1" minOccurs="1" name="textContent" type="xsd:string"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="addLineSeparator" type="xsd:boolean"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="encoding" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+  </xsd:element>
+
+  <!--WriteActivityOutput schema-->
+<xsd:element name="WriteActivityOutput">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="1" name="fileInfo" type="tns:fileInfoType"/>
+                </xsd:sequence>
+            </xsd:complexType>
+</xsd:element>
+</xsd:schema>

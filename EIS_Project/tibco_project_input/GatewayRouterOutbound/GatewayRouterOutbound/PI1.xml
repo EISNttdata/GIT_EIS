@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DeploymentDescriptors xmlns="http://www.tibco.com/xmlns/dd">
+    <name>Process Archive.par</name>
+    <version>4</version>
+    <owner>kyadav</owner>
+    <creationDate>10/31/11 5:29 PM</creationDate>
+    <DeploymentDescriptorFactory>
+        <name>{http://www.tibco.com/xmlns/dd}StartAsOneOf</name>
+        <deploymentDescriptorFactoryClassName>com.tibco.archive.helpers.StartAsOneOf</deploymentDescriptorFactoryClassName>
+    </DeploymentDescriptorFactory>
+    <StartAsOneOf>
+        <name>StartAsOneOf</name>
+        <ComponentSoftwareReference>
+            <componentSoftwareName>bwengine</componentSoftwareName>
+            <minimumComponentSoftwareVersion>5.3.0.0</minimumComponentSoftwareVersion>
+            <minimumTRAVersion>5.3.0.0</minimumTRAVersion>
+            <configVersion>5.3.0.0</configVersion>
+        </ComponentSoftwareReference>
+    </StartAsOneOf>
+    <DeploymentDescriptorFactory>
+        <name>{http://www.tibco.com/xmlns/dd}NameValuePairs</name>
+        <deploymentDescriptorFactoryClassName>com.tibco.archive.helpers.NameValuePairs</deploymentDescriptorFactoryClassName>
+    </DeploymentDescriptorFactory>
+    <NameValuePairs>
+        <name>EXTERNAL_DEPENDENCIES</name>
+        <NameValuePair>
+            <name>EXTERNAL_RESOURCE_DEPENDENCY</name>
+            <value>/ProjectComponents/Resources/Connections/JDBC/ECACTIVE Connetion.sharedjdbc,/ProjectComponents/GWROutbound/Resources/DataFormats/Data Format.sharedparse,/ProjectComponents/Resources/Schemas/FileInfo.xsd,/ProjectComponents/Resources/Connections/FTP/FTP Connection.sharedftp,/ProjectComponents/GWROutbound/Resources/Schemas/EDITransaction.xsd,/ProjectComponents/Resources/SharedVar/FileSize.jobsharedvariable,/ProjectComponents/GWROutbound/Resources/utils/Replace_JavaCustomFunction.javaxpath,/ProjectComponents/GWROutbound/Resources/JMS/JMS Application Properties.sharedjmsapp,/ProjectComponents/Resources/Connections/JMS/NotifyConn.sharedjmscon,/ProjectComponents/GWROutbound/Resources/utils/GUID_JavaCustomFunction.javaxpath,/ProjectComponents/Resources/Schemas/TrackingInfo.xsd,/ProjectComponents/Resources/Schemas/EmailSchema.xsd,/ProjectComponents/GWROutbound/Process/Starter/outBoundRouterStart.process,/ProjectComponents/Resources/Connections/JDBC/TPMConnetion.sharedjdbc,/ProjectComponents/Resources/Schemas/LoggingService_v1r04.xsd,/ProjectComponents/GWROutbound/Resources/SharedVariables/TriggerMsg.jobsharedvariable,/ProjectComponents/Resources/Connections/JMS/JMS Connection.sharedjmscon</value>
+            <description>External resource configuration required by the archive.</description>
+            <requiresConfiguration>false</requiresConfiguration>
+            <disableConfigureAtDeployment>true</disableConfigureAtDeployment>
+        </NameValuePair>
+    </NameValuePairs>
+    <DeploymentDescriptorFactory>
+        <name>{http://www.tibco.com/xmlns/checkpoint}BwCheckpoint</name>
+        <deploymentDescriptorFactoryClassName>com.tibco.dd.bw.BwCheckpoint</deploymentDescriptorFactoryClassName>
+        <deploymentDescriptorXsdFileName>com/tibco/dd/bw/BwCheckpoint.xsd</deploymentDescriptorXsdFileName>
+    </DeploymentDescriptorFactory>
+    <chk:BwCheckpoint xmlns:chk="http://www.tibco.com/xmlns/checkpoint">
+        <name>TIBCO BusinessWorks Checkpoint Data Repository</name>
+        <chk:availableSharedResourceName>/ProjectComponents/Resources/Connections/JDBC/ECACTIVE Connetion</chk:availableSharedResourceName>
+        <chk:availableSharedResourceName>/ProjectComponents/Resources/Connections/JDBC/TPMConnetion</chk:availableSharedResourceName>
+        <chk:useSharedResource>false</chk:useSharedResource>
+        <!--<chk:tablePrefix>Process_Ar_17311615</chk:tablePrefix>-->
+    </chk:BwCheckpoint>
+    <DeploymentDescriptorFactory>
+        <name>{http://www.tibco.com/xmlns/pdconfiguration}BwBPConfigurations</name>
+        <deploymentDescriptorFactoryClassName>com.tibco.dd.bw.BwBPConfigurations</deploymentDescriptorFactoryClassName>
+        <deploymentDescriptorXsdFileName>com/tibco/dd/bw/BwBPConfigurations.xsd</deploymentDescriptorXsdFileName>
+    </DeploymentDescriptorFactory>
+    <pd:BwBPConfigurations xmlns:pd="http://www.tibco.com/xmlns/pdconfiguration">
+        <name>TIBCO BusinessWorks Process Configurations</name>
+        <pd:BwBPConfiguration>
+            <pd:processDefinitionName>ProjectComponents/GWROutbound/Process/Starter/outBoundRouterStart.process</pd:processDefinitionName>
+            <pd:isDynamicCallProcess>false</pd:isDynamicCallProcess>
+            <pd:processDefinitionStarterName>JMS Queue Receiver</pd:processDefinitionStarterName>
+            <pd:enabled>true</pd:enabled>
+            <pd:maxJobs>0</pd:maxJobs>
+            <pd:activation>true</pd:activation>
+            <!--<pd:flowLimit>0</pd:flowLimit>-->
+        </pd:BwBPConfiguration>
+    </pd:BwBPConfigurations>
+    <DeploymentDescriptorFactory>
+        <name>{http://www.tibco.com/xmlns/dd}SupportsFaultTolerance</name>
+        <deploymentDescriptorFactoryClassName>com.tibco.archive.helpers.SupportsFaultTolerance</deploymentDescriptorFactoryClassName>
+    </DeploymentDescriptorFactory>
+    <SupportsFaultTolerance>
+        <name>SupportsFaultTolerance</name>
+    </SupportsFaultTolerance>
+    <NameValuePairs>
+        <name>Adapter SDK Properties</name>
+        <NameValuePair>
+            <name>Trace.Task.*</name>
+            <value>false</value>
+            <description>Activity Trace Controls activity invocation trace</description>
+            <requiresConfiguration>false</requiresConfiguration>
+        </NameValuePair>
+        <NameValuePair>
+            <name>EnableMemorySavingMode</name>
+            <value>false</value>
+            <description>Memory Saving Mode controls process variable memory saving mode</description>
+            <requiresConfiguration>false</requiresConfiguration>
+        </NameValuePair>
+        <NameValuePair>
+            <name>bw.engine.enableJobRecovery</name>
+            <value>false</value>
+            <description>maintain checkpoints for failed processes enables the preservation of checkpoints for process instances that end with a fault</description>
+            <requiresConfiguration>false</requiresConfiguration>
+        </NameValuePair>
+        <NameValuePair>
+            <name>bw.engine.autoCheckpointRestart</name>
+            <value>true</value>
+            <description>auto checkpoint restart controls automatic restarting of checkpoints when engine first starts up</description>
+            <requiresConfiguration>false</requiresConfiguration>
+        </NameValuePair>
+        <NameValuePair>
+            <name>bw.engine.jobstats.enable</name>
+            <value>false</value>
+            <description>maintain job history file controls maintence of job history csv file</description>
+            <requiresConfiguration>false</requiresConfiguration>
+        </NameValuePair>
+        <NameValuePair>
+            <name>log.file.encoding</name>
+            <value/>
+            <description>set log file encoding controls log file encoding</description>
+            <requiresConfiguration>false</requiresConfiguration>
+        </NameValuePair>
+        <NameValuePair>
+            <name>bw.engine.emaEnabled</name>
+            <value>false</value>
+            <description>Enables Enterprise Management Advisor Interface Enables Enterprise Management Advisor driven process control based on resource state</description>
+            <requiresConfiguration>false</requiresConfiguration>
+        </NameValuePair>
+        <NameValuePair>
+            <name>bw.container.service</name>
+            <value/>
+            <description>BW Service Container Enables BW engine to be hosted within a container</description>
+            <requiresConfiguration>false</requiresConfiguration>
+        </NameValuePair>
+        <NameValuePair>
+            <name>bw.container.service.rmi.port</name>
+            <value>9995</value>
+            <description>BW Service Container RMI Port Enables Container Communication Port</description>
+            <requiresConfiguration>false</requiresConfiguration>
+        </NameValuePair>
+        <NameValuePair>
+            <name>bw.platform.services.retreiveresources.Enabled</name>
+            <value>false</value>
+            <description>Built-in Resource Provider Activation Enables Built in Resource Provider</description>
+            <requiresConfiguration>false</requiresConfiguration>
+        </NameValuePair>
+        <NameValuePair>
+            <name>bw.platform.services.retreiveresources.Hostname</name>
+            <value>localhost</value>
+            <description>Built-in Resource Provider Host Sets Built-in Resource Provider Host Name</description>
+            <requiresConfiguration>false</requiresConfiguration>
+        </NameValuePair>
+        <NameValuePair>
+            <name>bw.platform.services.retreiveresources.Httpport</name>
+            <value>8010</value>
+            <description>Built-in Resource Provider Http Port Sets Built-in Resource Provider Http Port Number</description>
+            <requiresConfiguration>false</requiresConfiguration>
+        </NameValuePair>
+        <NameValuePair>
+            <name>bw.platform.services.retreiveresources.defaultEncoding</name>
+            <value>ISO8859_1</value>
+            <description>Built-in Resource Provider Default Encoding Sets Built-in Resource Provider defaultEncoding</description>
+            <requiresConfiguration>false</requiresConfiguration>
+        </NameValuePair>
+        <NameValuePair>
+            <name>bw.platform.services.retreiveresources.enableLookups</name>
+            <value>false</value>
+            <description>Built-in Resource Provider DNS Lookups Enables Built-in Resource Provider DNS Lookups</description>
+            <requiresConfiguration>false</requiresConfiguration>
+        </NameValuePair>
+        <NameValuePair>
+            <name>bw.platform.services.retreiveresources.isSecure</name>
+            <value>false</value>
+            <description>Built-in Resource Provider Secure Socket Layer(SSL) support Enables Built-in Resource Provider Secure Socket Layer(SSL) support</description>
+            <requiresConfiguration>false</requiresConfiguration>
+        </NameValuePair>
+        <NameValuePair>
+            <name>bw.platform.services.retreiveresources.identity</name>
+            <value>/Identity_HTTPConnection.id</value>
+            <description>Built-in Resource Provider Identity  Sets Built-in Resource Provider Identity if Secure Socket Layer(SSL) support is enabled</description>
+            <requiresConfiguration>false</requiresConfiguration>
+        </NameValuePair>
+        <NameValuePair>
+            <name>bw.log4j.configuration</name>
+            <value/>
+            <description>Log4j Configuration File Log4j Configuration file path</description>
+            <requiresConfiguration>false</requiresConfiguration>
+        </NameValuePair>
+    </NameValuePairs>
+</DeploymentDescriptors>

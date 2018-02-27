@@ -14,7 +14,8 @@
               xmlns:ns7="http://www.tibco.com/namespaces/tnt/plugins/file/v2"
               xmlns:sca-bpel="http://docs.oasis-open.org/ns/opencsa/sca-bpel/200801"
               xmlns:tibex="http://www.tibco.com/bpel/2007/extensions"
-              xmlns:tns="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+              xmlns:tns="http://www.tibco.com/namespaces/tnt/plugins/file"
+              xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <tibex:Types>
         <xs:schema attributeFormDefault="unqualified"
                    elementFormDefault="qualified"

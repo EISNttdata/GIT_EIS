@@ -3,8 +3,12 @@ package com.dell.dims.service;
 import com.dell.dims.Builder.AbstractActivityBuilder;
 import com.dell.dims.Builder.DefaultActivityBuilder;
 import com.dell.dims.Builder.GlobalVariableBuilder;
+import com.dell.dims.Builder.Utils.*;
+import com.dell.dims.Model.InterfaceInventoryDetails.InterfaceInventory;
+import com.dell.dims.Model.InterfaceInventoryDetails.WriteInventory;
 import com.dell.dims.Model.Activity;
 import com.dell.dims.Model.ClassParameter;
+
 import com.dell.dims.Model.TibcoBWProcess;
 import com.dell.dims.Model.Transition;
 import com.dell.dims.Model.bpel.ObjectFactory;
@@ -34,6 +38,7 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import im.nll.data.extractor.Extractors;
 import im.nll.data.extractor.utils.XmlUtils;
+import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -67,6 +72,9 @@ public class DimsServiceImpl {
     public static Properties props;
     public static String projectName;
 
+    //to add all objects of template details with no duplicate values
+    public static Map<String,InterfaceInventory> interfaceInventoryMap = new HashMap<>();
+
     /**
      * Size of the buffer to read/write data
      */
@@ -79,6 +87,15 @@ public class DimsServiceImpl {
     StarterProcessFinder starterProcessFinder=new StarterProcessFinder();
     ActivityParserFactory activityParserFactory;
     DefaultActivityBuilder defaultActivityBuilder;
+    public static MultiValueMap multiValueMapTibcoAdapter=null;
+
+  /*  public MultiValueMap getMultiValueMapTibcoAdapter() {
+        return multiValueMapTibcoAdapter;
+    }
+
+    public void setMultiValueMapTibcoAdapter(MultiValueMap multiValueMapTibcoAdapter) {
+        this.multiValueMapTibcoAdapter = multiValueMapTibcoAdapter;
+    }*/
 
     public DimsServiceImpl() throws Exception {
         activityParserFactory = new ActivityParserFactory();
@@ -91,6 +108,28 @@ public class DimsServiceImpl {
     public String process(DimsDTO dimsDTO) {
         try {
             Init(dimsDTO);
+
+            //code for reading migration excel and populating the object
+            ReadMappingXls mapper=new ReadMappingXls();
+            mapper.readExcelSheet();
+            Map<TibcoAdapterProperties,SoaAdapterProperties> mapperMap= mapper.getAttributesMap();
+            multiValueMapTibcoAdapter = mapper.getMultiValueMapTibcoAdapter();
+            //iterate multiValueMapTibcoAdapter
+            for(Object keyTibcoAdapter : multiValueMapTibcoAdapter.keySet())
+            {
+                mapper.getSOAObject(keyTibcoAdapter,mapperMap);
+            }
+
+            //set multiValueMapTibcoAdapter
+            //  setMultiValueMapTibcoAdapter(multiValueMapTibcoAdapter);
+
+            //test code
+          /*  TibcoAdapterType adapterType=new TibcoAdapterType();
+            adapterType.setActivityType("com.tibco.plugin.file.FileRenameActivity");
+            adapterType.setClassType("Output");
+            mapper.getSOAObject(adapterType.getActivityType()+" TYPE["+adapterType.getClassType()+"]",mapperMap);*/
+
+            //************************************code for migration mapping ends******** //
 
             //Search for Starting .process file of Project
             HashMap<String, String> starterProcessWithPath= starterProcessFinder.getStarterProcess(input_project_path);
@@ -178,7 +217,7 @@ public class DimsServiceImpl {
 
                         //create bpel process
                         //globalVariableBuilder.createBpelProcessFlow(globalVariableBuilder.getBpelProcess());
-                          globalVariableBuilder.createBpelProcessFlow(AbstractActivityBuilder.getBpelProcess(),processName);//multiple bpel scenario
+                        globalVariableBuilder.createBpelProcessFlow(AbstractActivityBuilder.getBpelProcess(),processName);//multiple bpel scenario
 
                         //pop out main scope
                         AbstractActivityBuilder.scopeStack.pop();
@@ -194,7 +233,7 @@ public class DimsServiceImpl {
                     logger.info("Activities For which Parser not Created yet..\n"+String.valueOf(activityParserFactory.getActivitiesWithoutParserList()));
 
                     StringBuffer activityWithoutParser =new StringBuffer("\n\n****************************Log for process file :::: "+file.getName()+" *********************\n");
-                     activityWithoutParser.append("--------------------Activity without Parser :: count :"+activityParserFactory.getActivitiesWithoutParserList().size()+"\n");
+                    activityWithoutParser.append("--------------------Activity without Parser :: count :"+activityParserFactory.getActivitiesWithoutParserList().size()+"\n");
 
                     if(activityParserFactory.getActivitiesWithoutParserList().size()==0)
                     {
@@ -221,7 +260,7 @@ public class DimsServiceImpl {
 
                     logger.info(activityWithoutBuilder.toString());
 
-                   // activityWithoutBuilder.append("\n\n"+activityWithoutParser);// append both in one log
+                    // activityWithoutBuilder.append("\n\n"+activityWithoutParser);// append both in one log
                     missingDataLog.append(activityWithoutParser);
                     missingDataLog.append(activityWithoutBuilder);
 
@@ -233,6 +272,13 @@ public class DimsServiceImpl {
                     defaultActivityBuilder.clearList();
                     activityParserFactory.clearList();
 
+                    //**********Code related to Inventory Excel to write to excel
+                    //write to excel
+                    WriteInventory writeInventory = new WriteInventory();
+                    writeInventory.RendertoXls(DimsServiceImpl.interfaceInventoryMap,processName);
+
+                    //clear map
+                    DimsServiceImpl.interfaceInventoryMap.clear();
 
                 } catch (IOException e) {
                     e.printStackTrace();

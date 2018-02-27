@@ -26,6 +26,7 @@
          xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
          xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap" xmlns:ns4="http://www.example.org"
          xmlns:mf="http://www.oracle.com/XSL/Transform/java/com.example.reusable.asset"
+         xmlns:client="http://xmlns.oracle.com/${projectName}/${processName}"
 
          <#list process.import as import>
 

@@ -4,8 +4,15 @@ package com.dell.dims.Parser;
 import com.dell.dims.Model.Activity;
 import com.dell.dims.Model.ActivityType;
 import com.dell.dims.Model.FileRenameActivity;
+import com.dell.dims.Model.InterfaceInventoryDetails.InterfaceInventory;
+import com.dell.dims.service.DimsServiceImpl;
 import im.nll.data.extractor.Extractors;
 import org.w3c.dom.Node;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 import static im.nll.data.extractor.Extractors.selector;
 
@@ -17,24 +24,6 @@ public class FileRenameActivityParser extends AbstractActivityParser implements 
     public Activity parse(Node node, boolean isGroupActivity) throws Exception {
         FileRenameActivity renameActivity = new FileRenameActivity();
 
-      /*  String nodeStr=NodesExtractorUtil.nodeToString(node);
-
-        Map<String, String> activityMap=null;
-
-        if(isGroupActivity) {
-            activityMap = Extractors.on(nodeStr)
-                    .extract("overwrite", xpath(PropertiesUtil.getPropertyFile().getProperty("ProcessDefinition.group.activity.config.overwrite")))
-                    .extract("createMissingDirectories", xpath(PropertiesUtil.getPropertyFile().getProperty("ProcessDefinition.group.activity.config.createMissingDirectories")))
-                    .asMap();
-        }
-        else
-        {
-            activityMap = Extractors.on(nodeStr)
-                    .extract("overwrite", xpath(PropertiesUtil.getPropertyFile().getProperty("ProcessDefinition.activity.config.overwrite")))
-                    .extract("createMissingDirectories", xpath(PropertiesUtil.getPropertyFile().getProperty("ProcessDefinition.activity.config.createMissingDirectories")))
-                    .asMap();
-        }
-*/
         renameActivity.setName(parseActivityName(node,isGroupActivity));
         renameActivity.setType(new ActivityType(parseActivityType(node,isGroupActivity)));
 
@@ -51,38 +40,71 @@ public class FileRenameActivityParser extends AbstractActivityParser implements 
         renameActivity.setGroupActivity(isGroupActivity);
 
         // for input bindings
-
-        /*Activity activity= InputBindingExtractor.extractInputBindingAndParameters(node,renameActivity);
-        renameActivity.setInputBindings(activity.getInputBindings());
-        renameActivity.setParameters(activity.getParameters());*/
         renameActivity.setInputBindings(parseInputBindings(node,renameActivity));
 
 
+        InterfaceInventory interfaceInventory = new InterfaceInventory();
+        interfaceInventory.setActivityNameforInventory(renameActivity.getName());
+        interfaceInventory.setActivityTypeforInventory(renameActivity.getType().toString());
+        interfaceInventory.setInputBindingsforInventory(renameActivity.getInputBindings());
+
+        Map<String,String> mapConfig = new HashMap<String,String>();
+        mapConfig.put("overwrite",Boolean.toString(renameActivity.isOverwrite()));
+
+        mapConfig.put("createMissingDirectories", Boolean.toString(renameActivity.isCreateMissingDirectories()));
+
+        interfaceInventory.setConfigforInventory(mapConfig);
+
+        interfaceInventory.setConfigProperty(configProperty(mapConfig));
+        interfaceInventory.setConfigValue(configValue(mapConfig));
+
+        /*DimsServiceImpl.interfaceInventoryList.add(interfaceInventory);*/
+        addToMap(interfaceInventory);
+        //interfaceInventory.RendertoXls(interfaceInventory);
+
         return renameActivity;
     }
-}
 
-/*
-<activity name="Rename File">
-            <type>com.tibco.plugin.file.FileRenameActivity</type>
-            <resourceType>ae.activities.FileRenameActivity</resourceType>
-            <x>345</x>
-            <y>108</y>
-            <config>
-                <createMissingDirectories>true</createMissingDirectories>
-                <overwrite>true</overwrite>
-            </config>
-            <inputBindings>
-                <RenameActivityConfig>
-                    <fromFileName>
-                        <value-of select="$Start/root/fromFile"/>
-                    </fromFileName>
-                    <toFileName>
-                        <value-of select="$Start/root/toFile"/>
-                    </toFileName>
-                </RenameActivityConfig>
-            </inputBindings>
-        </activity>
- */
+    public static String configProperty(Map<String, String> map) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (String key : map.keySet()) {
+            if (stringBuilder.length() > 0) {
+                stringBuilder.append("\n");
+            }
+            String value = map.get(key);
+            try {
+                stringBuilder.append((key != null ? URLEncoder.encode(key, "UTF-8") : ""));
+                /*stringBuilder.append("=");
+                stringBuilder.append(value != null ? URLEncoder.encode(value, "UTF-8") : "");*/
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException("This method requires UTF-8 encoding support", e);
+            }
+        }
+
+        return stringBuilder.toString();
+    }
+
+    public static String configValue(Map<String, String> map) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (String key : map.keySet()) {
+            if (stringBuilder.length() > 0) {
+                stringBuilder.append(System.lineSeparator());
+             /*   stringBuilder.append("\n");*/
+                /*stringBuilder.append(System.getProperty("line.separator"));*/
+            }
+            String value = map.get(key);
+            try {
+                stringBuilder.append(value != null ? URLEncoder.encode(value, "UTF-8") : "");
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException("This method requires UTF-8 encoding support", e);
+            }
+        }
+
+        return stringBuilder.toString();
+
+    }
+}
 
 

@@ -1,29 +1,33 @@
 package com.dell.dims.Builder;
 
-import com.dell.dims.Builder.Utils.AdapterType;
-import com.dell.dims.Builder.Utils.GenericBuilder;
-import com.dell.dims.Builder.Utils.OperationTypes;
-import com.dell.dims.Builder.Utils.WSDLUtil;
+import com.dell.dims.Builder.Utils.*;
 import com.dell.dims.DimsDemo;
 import com.dell.dims.Model.Activity;
 import com.dell.dims.Model.*;
+import com.dell.dims.Model.InterfaceInventoryDetails.InterfaceInventory;
 import com.dell.dims.Model.bpel.*;
 import com.dell.dims.Model.bpel.Process;
 import com.dell.dims.Parser.Utils.FileUtility;
+import com.dell.dims.Utils.NodesExtractorUtil;
 import com.dell.dims.service.DimsServiceImpl;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
+import im.nll.data.extractor.utils.XmlUtils;
+import org.apache.commons.collections.map.MultiValueMap;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import soa.model.project.OutputProject;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.io.*;
 import java.util.*;
 
@@ -44,15 +48,21 @@ public abstract class AbstractActivityBuilder
     public static Stack<TbwProcess> processStack=new Stack<>();
     public static Stack<Scope> scopeStack=new Stack<>();
     public static Map<String,Scope> scopeMap=new HashMap<String,Scope>();
+    public final String OUTPUT_TYPE=" TYPE[Output]";//DO NOT REMOVE SPACE AT START INDEX
+    public final String INPUT_TYPE=" TYPE[Input]"; ////DO NOT REMOVE SPACE AT START INDEX
+    public final String INPUTTEXT_TYPE=" TYPE[InputText]";
+    public final String CONFIG_TYPE=" TYPE[Config]";
+    public final String OUTPUTTEXT_TYPE=" TYPE[OutputText]";
+    //public static List<ClassParameter> configParameters = new ArrayList<>();
 
     /**
      * Configuration for getting freemarker templates
      * @throws IOException
      */
     public void init(String bpelName) throws IOException
-   // public void init() throws IOException
+    // public void init() throws IOException
     {
-       //This should be main process name fetched from tibco
+        //This should be main process name fetched from tibco
         addNewProcessToStack(new TbwProcess(DimsServiceImpl.projectName));
 
         // Create your Configuration instance, and specify if up to what FreeMarker
@@ -65,7 +75,7 @@ public abstract class AbstractActivityBuilder
 
         //File file = new File(BuilderMain.class.getClassLoader().getResource("templates").getFile());
         File file = new File(DimsDemo.class.getClassLoader().getResource("templates").getFile());
-       // File file = new File(String.valueOf(PropertiesUtil.getPropertyFile("templates")));
+        // File file = new File(String.valueOf(PropertiesUtil.getPropertyFile("templates")));
         getCfg().setDirectoryForTemplateLoading(file);
 
 // Set the preferred charset template files are stored in. UTF-8 is
@@ -146,10 +156,13 @@ public abstract class AbstractActivityBuilder
 
             String operation= OperationTypes.getOperationType(activity.getType());
             //create wsdl
-              createWSDL(activity,operation);
+            createWSDL(activity,operation);
             //create Jca
-             createAdapter(activity,operation,configParams);
+            createAdapter(activity,operation,configParams);
+
+            // findClassType(configParams);
         }
+        //findClassType(configParams,activity);
     }
     public void addNewProcessToStack(TbwProcess item) {
         getProcessStack().push(item);
@@ -167,7 +180,7 @@ public abstract class AbstractActivityBuilder
         callProcessActivity.setOutputSchemaQname(doCreateOrFindOutputSchema(callProcessActivity));
     }
 
-    public void setInputSchemaQname(Activity callProcessActivity) throws ParserConfigurationException, IOException, SAXException, TemplateException, IllegalAccessException, ClassNotFoundException, InstantiationException {
+    public void setInputSchemaQname(Activity callProcessActivity) throws ParserConfigurationException, IOException, SAXException, TemplateException, IllegalAccessException, ClassNotFoundException, InstantiationException, TransformerException {
         callProcessActivity.setInputSchemaQname(doCreateOrFindInputSchema(callProcessActivity));
     }
 
@@ -347,14 +360,23 @@ public abstract class AbstractActivityBuilder
     }
 
 
-    public ExtendedQName doCreateOrFindInputSchema(Activity activity) throws ParserConfigurationException, IOException, SAXException, TemplateException, IllegalAccessException, ClassNotFoundException, InstantiationException {
+    public ExtendedQName doCreateOrFindInputSchema(Activity activity) throws ParserConfigurationException, IOException, SAXException, TemplateException, IllegalAccessException, ClassNotFoundException, InstantiationException, TransformerException {
         String inputSchema = findInputSchema(activity);
         if (inputSchema != null) {
-            String location = "../Schemas/Tibco_Defined_Schemas.xsd";
+            // String location = "../Schemas/Tibco_Defined_Schemas.xsd";
+            String location = "../Schemas/Tibco.xsd";
             String namespaceURI = "http://www.tibco.com/ns/activityschemas";
             String localPart = getRootNodeNameForInputSchema(activity,inputSchema);
             String prefix = "tbc";
             String type=ExtendedQNameType.ElementType.getType();
+            for(String key : DimsServiceImpl.interfaceInventoryMap.keySet()){
+                String activityType =  DimsServiceImpl.interfaceInventoryMap.get(key).getActivityTypeforInventory();
+                if(activity.getType().toString().equalsIgnoreCase(activityType)){
+                    InterfaceInventory inventoryInputSchema = DimsServiceImpl.interfaceInventoryMap.get(activity.getName());
+                    inventoryInputSchema.setInputSchema(inputSchema);
+                    DimsServiceImpl.interfaceInventoryMap.put(activity.getName(),inventoryInputSchema);
+                }
+            }
             return new ExtendedQNameBuilder().setNamespaceURI(namespaceURI).setLocalPart(localPart).setPrefix(prefix).setLocation(location).setSchema(inputSchema).setType(type).createExtendedQName();
         } else {
             String location = getLocationForInputSchema(activity);
@@ -363,8 +385,16 @@ public abstract class AbstractActivityBuilder
             inputSchema = createInputSchema(activity);
             String localPart = getRootNodeNameForInputSchema(activity,inputSchema);
             String type=ExtendedQNameType.ElementType.getType();
+            //  getSchemaForInventory(activity);
+            for(String key : DimsServiceImpl.interfaceInventoryMap.keySet()) {
+                String activityType = DimsServiceImpl.interfaceInventoryMap.get(key).getActivityTypeforInventory();
+                if (activity.getType().toString().equalsIgnoreCase(activityType)) {
+                    InterfaceInventory inventoryInputSchema = DimsServiceImpl.interfaceInventoryMap.get(activity.getName());
+                    inventoryInputSchema.setInputSchema(inputSchema);
+                    DimsServiceImpl.interfaceInventoryMap.put(activity.getName(), inventoryInputSchema);
+                }
+            }
             return new ExtendedQNameBuilder().setNamespaceURI(namespaceURI).setLocalPart(localPart).setPrefix(prefix).setLocation(location).setSchema(inputSchema).setType(type).createExtendedQName();
-
         }
     }
 
@@ -372,11 +402,20 @@ public abstract class AbstractActivityBuilder
     public ExtendedQName doCreateOrFindOutputSchema(Activity activity) throws ParserConfigurationException, IOException, SAXException, TemplateException, IllegalAccessException, ClassNotFoundException, InstantiationException {
         String outputSchema = findOutputSchema(activity);
         if (outputSchema != null) {
-            String location = "../Schemas/Tibco_Defined_Schemas.xsd";
+            //String location = "../Schemas/Tibco_Defined_Schemas.xsd";
+            String location = "../Schemas/Tibco.xsd";
             String namespaceURI = "http://www.tibco.com/ns/activityschemas";
             String localPart = getRootNodeNameForOutputSchema(activity,outputSchema);
             String prefix = "tbc";
             String type=ExtendedQNameType.ElementType.getType();
+            for(String key : DimsServiceImpl.interfaceInventoryMap.keySet()) {
+                String activityType = DimsServiceImpl.interfaceInventoryMap.get(key).getActivityTypeforInventory();
+                if (activity.getType().toString().equalsIgnoreCase(activityType)) {
+                    InterfaceInventory inventoryOutputSchema = DimsServiceImpl.interfaceInventoryMap.get(activity.getName());
+                    inventoryOutputSchema.setOutputSchema(outputSchema);
+                    DimsServiceImpl.interfaceInventoryMap.put(activity.getName(), inventoryOutputSchema);
+                }
+            }
             return new ExtendedQNameBuilder().setNamespaceURI(namespaceURI).setLocalPart(localPart).setPrefix(prefix).setLocation(location).setSchema(outputSchema).setType(type).createExtendedQName();
         } else {
             String prefix = getPrefix(activity);
@@ -385,11 +424,29 @@ public abstract class AbstractActivityBuilder
             outputSchema = createOutputSchema(activity);
             String localPart = getRootNodeNameForOutputSchema(activity,outputSchema);
             String type=ExtendedQNameType.ElementType.getType();
+            for(String key : DimsServiceImpl.interfaceInventoryMap.keySet()) {
+                String activityType = DimsServiceImpl.interfaceInventoryMap.get(key).getActivityTypeforInventory();
+                if (activity.getType().toString().equalsIgnoreCase(activityType)) {
+                    InterfaceInventory inventoryOutputSchema = DimsServiceImpl.interfaceInventoryMap.get(activity.getName());
+                    inventoryOutputSchema.setOutputSchema(outputSchema);
+                    DimsServiceImpl.interfaceInventoryMap.put(activity.getName(), inventoryOutputSchema);
+                }
+            }
             return new ExtendedQNameBuilder().setNamespaceURI(namespaceURI).setLocalPart(localPart).setPrefix(prefix).setLocation(location).setSchema(outputSchema).setType(type).createExtendedQName();
 
         }
     }
 
+   /* public void getSchemaForInventory(Activity activity){
+        for(String key : DimsServiceImpl.interfaceInventoryMap.keySet()){
+           String activityType =  DimsServiceImpl.interfaceInventoryMap.get(key).getActivityTypeforInventory();
+           if(activity.getType().toString().equalsIgnoreCase(activityType)){
+             InterfaceInventory inventoryInputSchema = DimsServiceImpl.interfaceInventoryMap.get(activity.getName());
+               inventoryInputSchema.setInputSchema(activity.getInputSchemaQname().getSchema());
+               DimsServiceImpl.interfaceInventoryMap.put(activity.getName(),inventoryInputSchema);
+        }
+        }
+    }*/
 
     String createInputSchema(Activity activity) throws IOException, TemplateException {
 
@@ -399,7 +456,7 @@ public abstract class AbstractActivityBuilder
         //  of the subprocess
         //The input schema is saved in file named  Activityname_input.xsd and output schema is saved in file Activiname_output.xsd...with targetnamespace as
         // targetNamespace="http://xmlns.oracle.com/${application.projectName}/${application.compositeFileName}/$(processName}/${subprocessName}/${activityName}"
-       if (activity.getType().getName().equals(ActivityType.javaActivityType.getName())) {
+        if (activity.getType().getName().equals(ActivityType.javaActivityType.getName())) {
 
             schema_in = processTemplate(getFtlMap(), "java_activity_input_schema.ftl");
 
@@ -423,22 +480,208 @@ public abstract class AbstractActivityBuilder
         return schema_out;
     }
 
+    /**
+     * @MM
+     * @param activity
+     * @return
+     */
     String findInputSchema(Activity activity) {
-        return null;
+
+
+        String rootNodeName = null;
+        //get from map
+        MultiValueMap mapMultiValue = DimsServiceImpl.multiValueMapTibcoAdapter;
+
+        if (activity.getClassType() != null) {
+            String searchKey = activity.getType() + activity.getClassType().toString() ;
+
+            ArrayList<TibcoAdapterProperties> listValues = (ArrayList<TibcoAdapterProperties>) mapMultiValue.get(searchKey);
+            if (listValues != null && listValues.size() > 0) {
+                rootNodeName = listValues.get(0).getRootName();
+            }
+
+        }
+/*
+        //get root nodeName of the activity type
+        try {
+            rootNodeName = getRootNodeNameForInputSchema(activity,activity.getInputBindings());
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }*/
+
+       /* if (activity.getType().toString().equalsIgnoreCase("com.tibco.plugin.file.FileWriteActivity")) {
+
+            String searchKey = activity.getType() + INPUTTEXT_TYPE;
+            ArrayList<TibcoAdapterProperties> listValues = (ArrayList<TibcoAdapterProperties>) mapMultiValue.get(searchKey);
+            if (listValues != null && listValues.size() > 0) {
+                rootNodeName = listValues.get(0).getRootName();
+            }
+        }
+        else if(activity.getType().toString().equalsIgnoreCase("com.tibco.plugin.file.FileCopyActivity")
+                || activity.getType().toString().equalsIgnoreCase("com.tibco.plugin.file.FileRenameActivity"))
+        {
+            String searchKey = activity.getType() + CONFIG_TYPE;
+            ArrayList<TibcoAdapterProperties> listValues = (ArrayList<TibcoAdapterProperties>) mapMultiValue.get(searchKey);
+            if (listValues != null && listValues.size() > 0) {
+                rootNodeName = listValues.get(0).getRootName();
+            }
+        }
+        else  {
+            String searchKey = activity.getType() + INPUT_TYPE;
+            ArrayList<TibcoAdapterProperties> listValues = (ArrayList<TibcoAdapterProperties>) mapMultiValue.get(searchKey);
+            if (listValues != null && listValues.size() > 0) {
+                rootNodeName = listValues.get(0).getRootName();
+            }
+        }*/
+        //com.tibco.plugin.file.FileWriteActivity TYPE[InputBinary]
+        System.out.println("rootNodeName InputSchema::::: "+rootNodeName);
+
+      /*  InterfaceInventory interfaceInventory = DimsServiceImpl.interfaceInventoryMap.get(activity.getName());
+
+        if(activity.getName().equalsIgnoreCase("InFolders")) {
+
+              interfaceInventory.setInputSchema(rootNodeName);
+            *//*DimsServiceImpl.interfaceInventoryMap.put(activity.getName() + "#" + activity.getType().toString(), interfaceInventory);*//*
+            DimsServiceImpl.interfaceInventoryMap.put(activity.getName(), interfaceInventory);
+
+        }
+*/
+        if(rootNodeName!=null && rootNodeName!="")
+        {
+            return findSchema(rootNodeName);
+        }
+        else
+        {
+            return null;
+        }
     }
 
 
-    String findOutputSchema(Activity activity) {
-        return null;
-
-    }
-
-
-    String getRootNodeNameForInputSchema(Activity activity,String schema) throws ParserConfigurationException, IOException, SAXException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-    if(schema==null || schema=="")
+    /**
+     * @MM
+     * @param activity
+     * @return
+     */
+    String findOutputSchema(Activity activity)
     {
-        return "";
+
+        String rootNodeName = null;
+
+        //get from map
+        MultiValueMap mapMultiValue = DimsServiceImpl.multiValueMapTibcoAdapter;
+
+        if (activity.getType().toString().equalsIgnoreCase("EventSource")) {
+
+            String searchKey = activity.getType() + OUTPUTTEXT_TYPE;
+            ArrayList<TibcoAdapterProperties> listValues = (ArrayList<TibcoAdapterProperties>) mapMultiValue.get(searchKey);
+            if (listValues != null && listValues.size() > 0) {
+                rootNodeName = listValues.get(0).getRootName();
+            }
+        }
+        else if(activity.getType().toString().equalsIgnoreCase("com.tibco.plugin.file.FileCopyActivity")
+                || activity.getType().toString().equalsIgnoreCase("com.tibco.plugin.file.FileRenameActivity"))
+        {
+            String searchKey = activity.getType() + CONFIG_TYPE;
+            ArrayList<TibcoAdapterProperties> listValues = (ArrayList<TibcoAdapterProperties>) mapMultiValue.get(searchKey);
+            if (listValues != null && listValues.size() > 0) {
+                rootNodeName = listValues.get(0).getRootName();
+            }
+        }
+        else  {
+            String searchKey = activity.getType() + OUTPUT_TYPE;
+            ArrayList<TibcoAdapterProperties> listValues = (ArrayList<TibcoAdapterProperties>) mapMultiValue.get(searchKey);
+            if (listValues != null && listValues.size() > 0) {
+                rootNodeName = listValues.get(0).getRootName();
+            }
+        }
+
+       /* String searchKey=activity.getType()+OUTPUT_TYPE;
+        ArrayList<TibcoAdapterProperties> listValues = (ArrayList<TibcoAdapterProperties>) mapMultiValue.get(searchKey);
+        if(listValues!=null && listValues.size()>0)
+        {
+            rootNodeName = listValues.get(0).getRootName();
+        }
+*/
+        //com.tibco.plugin.file.FileWriteActivity TYPE[InputBinary]
+        System.out.println("rootNodeName Output schema: "+rootNodeName);
+
+        if(rootNodeName!=null && rootNodeName!="")
+        {
+            return findSchema(rootNodeName);
+        }
+        else
+        {
+            return null;
+        }
     }
+
+    /**
+     * @MM
+     * @param rootNodeName
+     * @return
+     */
+    String findSchema(String rootNodeName)
+    {
+        if(rootNodeName==null)
+            return null;
+
+        String schema = null;
+        //search schema from Tibco.xsd
+        //Get file from resources folder   //get schema from Tibco.xsd
+
+        //   File file = new File(DimsDemo.class.getClassLoader().getResource("Tibco.xsd").getFile());
+        File file = new File(DimsDemo.class.getClassLoader().getResource("TibcoCommonSchemas.xsd").getFile());
+        String xsdString = null;
+        try {
+            xsdString = XmlUtils.removeNamespace(IOUtils.toString(
+                    new FileInputStream(file), "UTF-8"));
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            NodeList ndList=NodesExtractorUtil.getChildNode(xsdString);
+            for(int i=0;i<ndList.getLength();i++)
+            {
+                Node node=ndList.item(i);
+                if(node instanceof Element)
+                {
+                    System.out.println("Node name from tibco.xsd ::"+((Element) node).getAttribute("name"));
+                    if(rootNodeName.equalsIgnoreCase(((Element) node).getAttribute("name")))
+                    {
+                        //System.out.println("node name**********"+"name::"+ ((Element) node).getAttribute("name"));
+                        System.out.println("Schema for Node :::"+rootNodeName+"\n"+rootNodeName);
+                        schema=NodesExtractorUtil.nodeToString(node);
+                        System.out.println(schema);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return schema;
+    }
+
+    String getRootNodeNameForInputSchema(Activity activity,String schema) throws ParserConfigurationException, IOException, SAXException, InstantiationException, IllegalAccessException, ClassNotFoundException
+    {
+        if(schema==null || schema=="")
+        {
+            return "";
+        }
         Element root;
         if (activity.getType().getName().equals(ActivityType.javaActivityType.getName()))
         {
@@ -448,12 +691,27 @@ public abstract class AbstractActivityBuilder
         {
             return "jdbcUpdateActivityInput";
         }
+        else if(activity.getType().getName().equals(ActivityType.jdbcQueryActivityType.getName()))
+        {
+            return "jdbcQueryActivityInput";
+        }
         else
         {
+            //if schema contains value-of , then skip it as parser not able to parse it
+          /*  if(schema.toString().toLowerCase().indexOf("value-of")!=-1)
+            {
+                return "";
+            }*/
+
             root = DocumentBuilderFactory.newInstance().newDocumentBuilder()
                     .parse(new ByteArrayInputStream(schema.getBytes()))
-                    .getDocumentElement();}
-        return root.getAttribute("name");
+                    .getDocumentElement();
+
+            if(root==null)
+                return "";
+        }
+        return root.getNodeName();
+        //return root.getAttribute("name");
     }
 
 
@@ -465,11 +723,56 @@ public abstract class AbstractActivityBuilder
         Element root;
         if (activity.getType().getName().equals(ActivityType.javaActivityType.getName())) {
             return "javaCodeActivityOutput";
-        }else{
+        }
+        else if (activity.getType().getName().equals(ActivityType.jdbcUpdateActivityType.getName()))
+        {
+            return "jdbcUpdateActivityOutput";
+        }
+        else if(activity.getType().getName().equals(ActivityType.jdbcQueryActivityType.getName()))
+        {
+            return "jdbcQueryActivityOutput";
+        }
+        else
+        {
+            //if schema contains value-of , then skip it as parser not able to parse it
+            if(schema.toString().toLowerCase().indexOf("value-of")!=-1)
+            {
+                return "";
+            }
             root = DocumentBuilderFactory.newInstance().newDocumentBuilder()
                     .parse(new ByteArrayInputStream(schema.getBytes()))
-                    .getDocumentElement();}
-        return root.getAttribute("name");
+                    .getDocumentElement();
+
+            if(root==null)
+                return "";
+        }
+        return root.getNodeName();
+    }
+
+
+    Activity findClassType(List<ClassParameter> configParams, Activity activity){
+
+
+
+        for (int i=0; i < configParams.size(); i++){
+
+            if(configParams.get(i).getName().equalsIgnoreCase("encoding")){
+                if(configParams.get(i).getDefaultValue().equalsIgnoreCase("text")){
+                    activity.setClassType(ActivityClassType.inputType);
+                }
+            }
+            else if(configParams.get(i).getName().equalsIgnoreCase("overwrite")){
+                if(configParams.get(i).getDefaultValue().equalsIgnoreCase("true")){
+                    activity.setClassType(ActivityClassType.configType);
+                }
+            }
+            else if(configParams.get(i).getName().equalsIgnoreCase("encoding")){
+                if(configParams.get(i).getDefaultValue().equalsIgnoreCase("binary")){
+                    activity.setClassType(ActivityClassType.inputbinaryType);
+                }
+            }
+        }
+        return activity;
     }
 
     String getPrefix(Activity activity) {
@@ -557,7 +860,7 @@ public abstract class AbstractActivityBuilder
         return  getProcessStack().peek();
     }
 
-     Scope  getCurrentScope()
+    Scope  getCurrentScope()
     {
         return  getScopeStack().peek();
     }
@@ -763,4 +1066,6 @@ public abstract class AbstractActivityBuilder
     public static void setBpelProcess(Process bpelProcess) {
         AbstractActivityBuilder.bpelProcess = bpelProcess;
     }
+
+
 }

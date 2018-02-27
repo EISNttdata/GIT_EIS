@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BWSharedResource>
+    <name>JMS Connection</name>
+    <resourceType>ae.shared.JMSConnectionKey</resourceType>
+    <config>
+        <NamingEnvironment>
+            <UseJNDI>false</UseJNDI>
+            <ProviderURL>%%GWROutbound/JMS/ServerURL%%</ProviderURL>
+            <NamingURL>tibjmsnaming://lnappl001a:7222</NamingURL>
+            <NamingInitialContextFactory>com.tibco.tibjms.naming.TibjmsInitialContextFactory</NamingInitialContextFactory>
+            <TopicFactoryName>TopicConnectionFactory</TopicFactoryName>
+            <QueueFactoryName>QueueConnectionFactory</QueueFactoryName>
+            <NamingPrincipal>edifecs</NamingPrincipal>
+            <NamingCredential>#!lYz9J+4KtchyED2phTM+Rm9gjHBlDrvq</NamingCredential>
+        </NamingEnvironment>
+        <ConnectionAttributes>
+            <username>%%GWROutbound/JMS/Userid%%</username>
+            <password>%%GWROutbound/JMS/Password%%</password>
+            <clientID/>
+            <autoGenClientID>true</autoGenClientID>
+        </ConnectionAttributes>
+        <UseXACF>false</UseXACF>
+    </config>
+</BWSharedResource>

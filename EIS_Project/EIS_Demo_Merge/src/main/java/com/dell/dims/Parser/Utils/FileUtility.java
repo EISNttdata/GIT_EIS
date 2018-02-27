@@ -1,13 +1,9 @@
 package com.dell.dims.Parser.Utils;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.OpenOption;
-import java.nio.file.Paths;
+import java.nio.file.*;
 
 /**
  * Created by Pramod_Kumar_Tyagi on 6/4/2017.
